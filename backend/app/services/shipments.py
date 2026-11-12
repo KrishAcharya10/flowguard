@@ -51,6 +51,24 @@ def advance_state(db: Session, sh: m.Shipment, to_state: str, at: datetime, sour
     add_event(db, sh.id, "MILESTONE", at, note or LABEL[to_state], state=to_state, user=user, source=source)
 
 
+def record_delivery(db: Session, user: m.User, sh: m.Shipment, recipient: str) -> None:
+    """Complete a delivery (ARRIVED_AT_CUSTOMER_GATE -> DELIVERED). Used by the driver and, on the driver's behalf,
+    by the coordinator. The delivered time is the SIMULATION clock. Does not commit."""
+    from .core import audit, sim_now
+    recipient = (recipient or "").strip()
+    if len(recipient) < 2 or len(recipient) > 80:
+        raise HTTPException(422, "Enter the name of the person who received the delivery (2 to 80 characters).")
+    if sh.disposition != "ACTIVE":
+        raise HTTPException(409, "This shipment was split; complete the delivery on its child lots instead.")
+    if sh.state != "ARRIVED_AT_CUSTOMER_GATE":
+        raise HTTPException(409, "A delivery can only be completed after the vehicle has arrived at the customer gate.")
+    sh.pod_recipient = recipient
+    by_driver = user.role == "TRANSPORTER"
+    advance_state(db, sh, "DELIVERED", sim_now(db), "DRIVER" if by_driver else "COORDINATOR", user,
+                  note=f"Delivery completed: received by {recipient}" + ("" if by_driver else " (recorded by the control tower)"))
+    audit(db, user, "POD_RECORDED", "shipment", sh.id, after={"recipient": recipient, "by": user.role})
+
+
 def attribute_delay(db: Session, sh: m.Shipment) -> None:
     """Realised delay = max(0, arrived_at - planned_arrival_at), split across observed
     disruption causes by how long each overlapped the trip. Rows do not overlap in time

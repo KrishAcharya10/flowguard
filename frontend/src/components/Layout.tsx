@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { api, getSession, refreshAll, setSession, startLiveSync, useApi, type Alert, type Clock } from '../api/client'
 import { fmtTime } from '../lib/format'
 import Icon from './Icons'
@@ -66,6 +66,7 @@ function Footer() {
 export default function Layout({ children }: { children: ReactNode }) {
   const session = getSession()
   const nav = useNavigate()
+  const here = useLocation().pathname
   const [drawer, setDrawer] = useState(false)
   useEffect(() => startLiveSync(), [])                       // one poller per open tab, every role
   const clock = useApi<Clock>(session ? '/api/simulation/clock' : null)
@@ -121,15 +122,6 @@ export default function Layout({ children }: { children: ReactNode }) {
           {NAV.map((n) => <NavLink key={n.to} to={n.to} className={link}><Icon name={n.icon} />{n.label}</NavLink>)}
         </nav>
         <div className="mt-auto space-y-3">
-          {clock.data && (
-            <div className="rounded-xl bg-white/10 p-3 text-xs">
-              <div className="text-slate-300">Simulated time</div>
-              <div className="text-base font-bold">{fmtTime(clock.data.sim_now)}</div>
-              <div className={`mt-1 font-semibold ${running ? 'text-emerald-300' : 'text-amber-300'}`}>
-                {running ? `● Running · ${clock.data.speed} min/s` : '❚❚ Paused'}
-              </div>
-            </div>
-          )}
           {session && (
             <div className="text-xs text-slate-300">
               <div className="font-semibold text-white truncate">{session.user.display_name}</div>
@@ -149,7 +141,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               ))}
             </nav>
             <div className="ml-auto flex flex-wrap items-center gap-2">
-              <span className="hidden md:block">{clockChip}</span>
+              {here !== '/tower' && <span className="hidden md:block">{clockChip}</span>}
               <LiveBadge />
               <button className="btn-secondary relative" onClick={() => setDrawer(true)} aria-label={`Open alerts, ${open.data?.length ?? 0} unacknowledged`}>
                 <Icon name="bell" size={16} />Alerts

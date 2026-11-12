@@ -100,7 +100,7 @@ def test_booking_rules_are_enforced(client, auth):
     assert book(client, co, sid, full["id"]).status_code == 409 and "full" in book(client, co, sid, full["id"]).json()["detail"]
     assert "unavailable" in book(client, co, sid, closed["id"]).json()["detail"]
     assert "past" in book(client, co, sid, past["id"]).json()["detail"]
-    assert book(client, co, "SHP-1003", open_slot["id"]).status_code == 409                   # already in transit
+    assert book(client, co, "SHP-AMV-1116-01", open_slot["id"]).status_code == 409                   # already in transit
     assert book(client, co, "NOPE", open_slot["id"]).status_code == 404
     assert book(client, co, sid, open_slot["id"], transporter_id="TR-2").status_code == 422   # not the shipment's transporter
     other_driver = next(u for u in client.get("/api/reference-data", headers=co).json()["drivers"] if u["transporter_id"] == "TR-2")
@@ -109,7 +109,7 @@ def test_booking_rules_are_enforced(client, auth):
     dup = book(client, co, sid, slot_at(client, co, 10)["id"])
     assert dup.status_code == 409 and "already has an active booking" in dup.json()["detail"]
     assert slot_at(client, co, 10)["booked"] == 0                                              # nothing leaked into the other slot
-    assert "SHP-1004" in [b["shipment_id"] for b in client.get("/api/gate/bookings?scope=upcoming", headers=co).json()]
+    assert "SHP-AMV-1116-02" in [b["shipment_id"] for b in client.get("/api/gate/bookings?scope=upcoming", headers=co).json()]
 
 
 def test_reschedule_releases_the_old_slot_and_never_double_books(client, auth):
@@ -117,7 +117,7 @@ def test_reschedule_releases_the_old_slot_and_never_double_books(client, auth):
     sid = new_order(client, co)["shipment_id"]
     a, b, full = slot_at(client, co, 9), slot_at(client, co, 10), slot_at(client, co, 7)
     bk = book(client, co, sid, a["id"]).json()
-    assert slot_at(client, co, 9)["booked"] == 2                                                 # seeded SHP-1004 + the new one
+    assert slot_at(client, co, 9)["booked"] == 2                                                 # seeded SHP-AMV-1116-02 + the new one
     bad = client.post(f"/api/gate/bookings/{bk['id']}/reschedule", headers=co, json={"slot_id": full["id"]})
     assert bad.status_code == 409
     assert slot_at(client, co, 9)["booked"] == 2 and slot_at(client, co, 7)["booked"] == 3     # a failed move changes nothing
@@ -213,7 +213,7 @@ def test_gate_access_rules(client, auth):
 # ================================================================================ DOCUMENTS
 def test_invoice_upload_download_and_customer_isolation(client, auth):
     co = auth("coordinator")
-    r = upload(client, co, "/api/orders/ORD-G1/invoice?filename=invoice-g1.pdf&invoice_number=INV-G1-001", PDF)
+    r = upload(client, co, "/api/orders/ORD-PTH-1116-01/invoice?filename=invoice-g1.pdf&invoice_number=INV-G1-001", PDF)
     assert r.status_code == 201, r.text
     doc = r.json()["document"]
     assert doc["version"] == 1 and doc["status"] == "ISSUED" and doc["content_type"] == "application/pdf" and doc["invoice_number"] == "INV-G1-001"
@@ -239,18 +239,18 @@ def test_invoice_upload_download_and_customer_isolation(client, auth):
 
 def test_invoice_replacement_creates_an_audited_new_version(client, auth):
     co = auth("coordinator")
-    first = upload(client, co, "/api/orders/ORD-G1/invoice?filename=v1.pdf", PDF).json()["document"]
-    refused = upload(client, co, "/api/orders/ORD-G1/invoice?filename=v2.pdf", docgen.make_pdf("v2", ["x"]))
+    first = upload(client, co, "/api/orders/ORD-PTH-1116-01/invoice?filename=v1.pdf", PDF).json()["document"]
+    refused = upload(client, co, "/api/orders/ORD-PTH-1116-01/invoice?filename=v2.pdf", docgen.make_pdf("v2", ["x"]))
     assert refused.status_code == 409 and "reason" in refused.json()["detail"]
     v2_bytes = docgen.make_pdf("CORRECTED", ["fixed amount"])
-    ok = upload(client, co, "/api/orders/ORD-G1/invoice?filename=v2.pdf&reason=Wrong%20quantity%20on%20the%20first%20invoice", v2_bytes)
+    ok = upload(client, co, "/api/orders/ORD-PTH-1116-01/invoice?filename=v2.pdf&reason=Wrong%20quantity%20on%20the%20first%20invoice", v2_bytes)
     assert ok.status_code == 201
     v2 = ok.json()["document"]
     assert v2["version"] == 2 and v2["is_current"] and v2["replace_reason"].startswith("Wrong quantity")
-    docs = client.get("/api/orders/ORD-G1/documents", headers=co).json()
+    docs = client.get("/api/orders/ORD-PTH-1116-01/documents", headers=co).json()
     assert [d["version"] for d in docs["invoices"]] == [2, 1] and docs["invoices"][1]["status"] == "SUPERSEDED"
     # the customer now sees ONLY the current version; the old one is gone for them but kept for the coordinator
-    ids = [d["id"] for d in client.get("/api/customer/me/documents", headers=auth("customer_a")).json() if d["kind"] == "INVOICE" and d["order_id"] == "ORD-G1"]
+    ids = [d["id"] for d in client.get("/api/customer/me/documents", headers=auth("customer_a")).json() if d["kind"] == "INVOICE" and d["order_id"] == "ORD-PTH-1116-01"]
     assert ids == [v2["id"]]
     assert client.get(f"/api/documents/{first['id']}/download", headers=auth("customer_a")).status_code == 404
     assert client.get(f"/api/documents/{first['id']}/download", headers=co).content == PDF
@@ -267,7 +267,7 @@ def test_invoice_replacement_creates_an_audited_new_version(client, auth):
     ("empty.pdf", b"", 422),
 ])
 def test_upload_validation_uses_the_file_content(client, auth, name, data, status):
-    r = upload(client, auth("coordinator"), f"/api/orders/ORD-G1/invoice?filename={name}", data)
+    r = upload(client, auth("coordinator"), f"/api/orders/ORD-PTH-1116-01/invoice?filename={name}", data)
     assert r.status_code == status, r.text
 
 
@@ -276,11 +276,11 @@ def test_all_allowed_types_work_and_filenames_are_sanitised(client, auth, tmp_pa
     out = {}
     for i, (name, data) in enumerate([("a.pdf", PDF), ("b.png", PNG), ("c.jpg", JPG), ("d.jpeg", JPG)]):
         reason = "&reason=Replacing%20for%20test" if i else ""
-        r = upload(client, co, f"/api/orders/ORD-G1/invoice?filename={name}{reason}", data)
+        r = upload(client, co, f"/api/orders/ORD-PTH-1116-01/invoice?filename={name}{reason}", data)
         assert r.status_code == 201, (name, r.text)
         out[name] = r.json()["document"]["content_type"]
     assert out == {"a.pdf": "application/pdf", "b.png": "image/png", "c.jpg": "image/jpeg", "d.jpeg": "image/jpeg"}
-    nasty = upload(client, co, "/api/orders/ORD-G1/invoice?filename=..%2F..%2Fetc%2Fpasswd%20%3Cscript%3E.pdf&reason=Path%20traversal%20test", PDF)
+    nasty = upload(client, co, "/api/orders/ORD-PTH-1116-01/invoice?filename=..%2F..%2Fetc%2Fpasswd%20%3Cscript%3E.pdf&reason=Path%20traversal%20test", PDF)
     d = nasty.json()["document"]
     assert nasty.status_code == 201 and "/" not in d["original_filename"] and ".." not in d["original_filename"] and "<" not in d["original_filename"]
     with SessionLocal() as db:
@@ -299,30 +299,30 @@ def test_size_limit_is_enforced(client, auth, monkeypatch):
     monkeypatch.setattr(config, "MAX_UPLOAD_BYTES", 1500)
     big = docgen.make_pdf("big", ["x" * 100] * 30)
     assert len(big) > 1500
-    r = upload(client, auth("coordinator"), "/api/orders/ORD-G1/invoice?filename=big.pdf", big)
+    r = upload(client, auth("coordinator"), "/api/orders/ORD-PTH-1116-01/invoice?filename=big.pdf", big)
     assert r.status_code == 413 and "limit" in r.json()["detail"]
     assert config.MAX_UPLOAD_MB == 10                                       # the real default is 10 MB
 
 
 def test_proof_of_delivery_driver_coordinator_customer_flow(client, auth, db):
     co, dr, cust = auth("coordinator"), auth("driver11"), auth("customer_c")
-    state = client.get("/api/shipments/SHP-1011", headers=co).json()
+    state = client.get("/api/shipments/SHP-BHW-1116-02", headers=co).json()
     assert state["state"] == "ARRIVED_AT_CUSTOMER_GATE"
     # before the document exists the customer is told it is not available
     assert not [d for d in client.get("/api/customer/me/documents", headers=cust).json() if d["kind"] == "POD"]
-    r = upload(client, dr, "/api/transporter/shipments/SHP-1011/pod-document?filename=signed-note.png&recipient_name=Anita%20Rao", PNG)
+    r = upload(client, dr, "/api/transporter/shipments/SHP-BHW-1116-02/pod-document?filename=signed-note.png&recipient_name=Anita%20Rao", PNG)
     assert r.status_code == 201, r.text
     out = r.json()
     assert out["shipment"]["state"] == "DELIVERED" and out["shipment"]["pod_recipient"] == "Anita Rao"
     d = out["document"]
-    assert d["kind"] == "POD" and d["status"] == "UPLOADED" and d["recipient_name"] == "Anita Rao" and d["shipment_id"] == "SHP-1011"
+    assert d["kind"] == "POD" and d["status"] == "UPLOADED" and d["recipient_name"] == "Anita Rao" and d["shipment_id"] == "SHP-BHW-1116-02"
     now = client.get("/api/simulation/clock", headers=co).json()["sim_now"]
     assert d["delivered_sim_at"] == now                                    # the delivery time is the SIMULATION clock
-    sh = client.get("/api/shipments/SHP-1011", headers=co).json()
+    sh = client.get("/api/shipments/SHP-BHW-1116-02", headers=co).json()
     assert sh["state"] == "DELIVERED" and sh["delivered_at"] == now
     # coordinator sees and verifies it
-    docs = client.get("/api/orders/ORD-1011/documents", headers=co).json()
-    pod = next(x for x in docs["shipments"] if x["shipment_id"] == "SHP-1011")
+    docs = client.get("/api/orders/ORD-BHW-1116-02/documents", headers=co).json()
+    pod = next(x for x in docs["shipments"] if x["shipment_id"] == "SHP-BHW-1116-02")
     assert pod["pod_status"] == "UPLOADED" and pod["documents"][0]["id"] == d["id"]
     assert client.get(f"/api/documents/{d['id']}/download", headers=co).content == PNG
     v = client.post(f"/api/documents/{d['id']}/verify", headers=co)
@@ -338,30 +338,30 @@ def test_proof_of_delivery_driver_coordinator_customer_flow(client, auth, db):
     actions = [a["action"] for a in client.get("/api/audit-events?limit=100", headers=co).json()]
     assert {"POD_DOCUMENT_UPLOADED", "POD_VERIFIED", "DOCUMENT_DOWNLOADED"} <= set(actions)
     # a replacement document is a new audited version
-    r2 = upload(client, dr, "/api/transporter/shipments/SHP-1011/pod-document?filename=clearer.png&recipient_name=Anita%20Rao", PNG)
+    r2 = upload(client, dr, "/api/transporter/shipments/SHP-BHW-1116-02/pod-document?filename=clearer.png&recipient_name=Anita%20Rao", PNG)
     assert r2.status_code == 201 and r2.json()["document"]["version"] == 2
     assert [x["id"] for x in client.get("/api/customer/me/documents", headers=cust).json() if x["kind"] == "POD"] == [r2.json()["document"]["id"]]
 
 
 def test_pod_rules(client, auth):
     dr1 = auth("driver1")
-    base = "/api/transporter/shipments/SHP-G1/pod-document?filename=x.png&recipient_name=Bob"
+    base = "/api/transporter/shipments/SHP-PTH-1116-01/pod-document?filename=x.png&recipient_name=Bob"
     assert upload(client, dr1, base, PNG).status_code == 409                                 # still loading, not at the customer gate
     assert upload(client, auth("driver2"), base, PNG).status_code == 404                     # not their shipment
-    r = upload(client, auth("driver11"), "/api/transporter/shipments/SHP-1011/pod-document?filename=x.png&recipient_name=B", PNG)
+    r = upload(client, auth("driver11"), "/api/transporter/shipments/SHP-BHW-1116-02/pod-document?filename=x.png&recipient_name=B", PNG)
     assert r.status_code == 422                                                              # recipient too short (query validation)
-    assert upload(client, auth("driver11"), "/api/transporter/shipments/SHP-1011/pod-document?filename=x.pdf&recipient_name=Bob", PNG).status_code == 415
-    assert client.get("/api/shipments/SHP-1011", headers=auth("coordinator")).json()["state"] == "ARRIVED_AT_CUSTOMER_GATE"  # nothing changed
+    assert upload(client, auth("driver11"), "/api/transporter/shipments/SHP-BHW-1116-02/pod-document?filename=x.pdf&recipient_name=Bob", PNG).status_code == 415
+    assert client.get("/api/shipments/SHP-BHW-1116-02", headers=auth("coordinator")).json()["state"] == "ARRIVED_AT_CUSTOMER_GATE"  # nothing changed
     assert client.post("/api/documents/999999/verify", headers=auth("coordinator")).status_code == 404
 
 
 def test_documents_overview_and_seeded_invoices(client, auth):
     co = auth("coordinator")
     rows = {r["order_id"]: r for r in client.get("/api/documents/overview", headers=co).json()}
-    assert rows["ORD-1003"]["invoice"]["invoice_number"] == "INV-2026-1003" and rows["ORD-G1"]["invoice"] is None
-    assert rows["ORD-1011"]["pods_expected"] == 1 and rows["ORD-1011"]["pods_delivered"] == 0
+    assert rows["ORD-AMV-1116-01"]["invoice"]["invoice_number"] == "INV-2026-1003" and rows["ORD-PTH-1116-01"]["invoice"] is None
+    assert rows["ORD-BHW-1116-02"]["pods_expected"] == 1 and rows["ORD-BHW-1116-02"]["pods_delivered"] == 0
     seeded = client.get("/api/customer/me/documents", headers=auth("customer_b")).json()
-    inv = next(d for d in seeded if d["order_id"] == "ORD-1003")
+    inv = next(d for d in seeded if d["order_id"] == "ORD-AMV-1116-01")
     assert client.get(f"/api/documents/{inv['id']}/download", headers=auth("customer_b")).content.startswith(b"%PDF-")
     assert client.get(f"/api/documents/{inv['id']}/download", headers=auth("customer_a")).status_code == 404
 
@@ -397,50 +397,50 @@ def test_chat_understands_the_example_questions(client, auth, message, intent):
 
 def test_chat_where_is_my_order_uses_real_position_and_timestamp(client, auth):
     cu, co = auth("customer_a"), auth("coordinator")
-    r = ask(client, cu, "Where is my order ORD-1007?")
-    assert r["order_id"] == "ORD-1007" and r["position"]["near"] and r["position"]["progress_pct"] > 0
+    r = ask(client, cu, "Where is my order ORD-PTH-1116-03?")
+    assert r["order_id"] == "ORD-PTH-1116-03" and r["position"]["near"] and r["position"]["progress_pct"] > 0
     assert "Latest reported position: near" in r["text"] and "IST" in r["text"]
-    truth = client.get("/api/customer/me/shipments/SHP-1007", headers=cu).json()["last_reported_position"]
+    truth = client.get("/api/customer/me/shipments/SHP-PTH-1116-03", headers=cu).json()["last_reported_position"]
     assert r["position"]["lat"] == truth["lat"] and r["position"]["reported_at"] == truth["reported_at"]   # not invented
     facts = {f["label"]: f["value"] for f in r["facts"]}
     assert facts["Status"] == "In transit" and "Original promise" in facts and "Updated expected delivery" in facts
-    assert any(l["kind"] == "order" and l["order_id"] == "ORD-1007" for l in r["links"])
+    assert any(l["kind"] == "order" and l["order_id"] == "ORD-PTH-1116-03" for l in r["links"])
     # an order that has not left Plant X: no position is invented
-    g1 = ask(client, cu, "where is it", order_id="ORD-G1")
+    g1 = ask(client, cu, "where is it", order_id="ORD-PTH-1116-01")
     assert g1["position"] is None and "no vehicle position" in g1["text"]
 
 
 def test_chat_with_several_open_orders_answers_for_each(client, auth):
     r = ask(client, auth("customer_a"), "When will my delivery arrive?")
     assert "You have 4 open orders" in r["text"]
-    assert {f["label"] for f in r["facts"]} == {"ORD-1007", "ORD-G1", "ORD-G2", "ORD-1012"}
+    assert {f["label"] for f in r["facts"]} == {"ORD-PTH-1116-03", "ORD-PTH-1116-01", "ORD-PTH-1116-02", "ORD-PTH-1116-04"}
 
 
 def test_chat_cannot_reach_another_customers_order(client, auth):
-    msg = "Where is ORD-G1?"
+    msg = "Where is ORD-PTH-1116-01?"
     other = ask(client, auth("customer_b"), msg)
     missing = ask(client, auth("customer_b"), "Where is ORD-NOPE?")
     assert "could not find" in other["text"] and other["position"] is None and not other["facts"]
-    for leak in ("SHP-G1", "PP-H110", "Northfield", "Loading", "17:00"):
+    for leak in ("SHP-PTH-1116-01", "PP-H110", "Sharma", "Loading", "17:00"):
         assert leak not in other["text"]
-    assert other["text"].replace("ORD-G1", "X") == missing["text"].replace("ORD-NOPE", "X")   # same answer: no existence leak
-    explicit = ask(client, auth("customer_b"), "status", order_id="ORD-G1")
+    assert other["text"].replace("ORD-PTH-1116-01", "X") == missing["text"].replace("ORD-NOPE", "X")   # same answer: no existence leak
+    explicit = ask(client, auth("customer_b"), "status", order_id="ORD-PTH-1116-01")
     assert "could not find" in explicit["text"]
     # and the orders it offers are only the caller's own
-    assert {l["order_id"] for l in other["links"]} <= {"ORD-1003", "ORD-1004", "ORD-1008", "ORD-1010", "ORD-1014"}
+    assert {l["order_id"] for l in other["links"]} <= {"ORD-AMV-1116-01", "ORD-AMV-1116-02", "ORD-AMV-1116-03", "ORD-AMV-1116-04", "ORD-AMV-1116-05"}
 
 
 def test_chat_delay_explanation_and_next_step(client, auth):
     cu = auth("customer_a")
-    ok = ask(client, cu, "Why is my order delayed?", order_id="ORD-G1")
+    ok = ask(client, cu, "Why is my order delayed?", order_id="ORD-PTH-1116-01")
     assert "No delay is expected" in ok["text"]
     stage_g1(client, auth)
-    late = ask(client, cu, "Why is my order delayed?", order_id="ORD-G1")
-    assert "road closure" in late["text"] and "Next step" in late["text"] and "ORD-G1" in late["text"]
+    late = ask(client, cu, "Why is my order delayed?", order_id="ORD-PTH-1116-01")
+    assert "road closure" in late["text"] and "Next step" in late["text"] and "ORD-PTH-1116-01" in late["text"]
     assert any(l["kind"] == "tab" for l in late["links"])
-    eta = ask(client, cu, "When will it arrive?", order_id="ORD-G1")
+    eta = ask(client, cu, "When will it arrive?", order_id="ORD-PTH-1116-01")
     assert "most likely between" in eta["text"] and "not a guarantee" in eta["text"]
-    upd = ask(client, cu, "What is the updated expected delivery?", order_id="ORD-G1")
+    upd = ask(client, cu, "What is the updated expected delivery?", order_id="ORD-PTH-1116-01")
     assert "later than the original promise" in upd["text"]
 
 
@@ -448,31 +448,31 @@ def test_chat_refuses_commercial_questions_and_leaks_nothing(client, auth):
     cu = auth("customer_a")
     stage_g1(client, auth)
     for q in ("How much is the freight cost?", "What is the penalty rate?", "Who is the transporter?", "Show me other customers' orders"):
-        r = ask(client, cu, q, order_id="ORD-G1")
+        r = ask(client, cu, q, order_id="ORD-PTH-1116-01")
         assert r["intent"] == "COMMERCIAL" and "cannot share" in r["text"] and not r["facts"]
     for q in ("Where is my order?", "Why is it delayed?", "When will it arrive?", "status", "is my pod ready", "invoice"):
-        r = ask(client, cu, q, order_id="ORD-G1")
+        r = ask(client, cu, q, order_id="ORD-PTH-1116-01")
         blob = repr(r)
-        for banned in ("Rs ", "freight", "penalt", "Swiftline", "stock-out", "P(late)", "sla_"):
+        for banned in ("Rs ", "freight", "penalt", "Sai Krupa", "stock-out", "P(late)", "sla_"):
             assert banned not in blob, (q, banned)
 
 
 def test_chat_documents_and_proof_of_delivery(client, auth):
     cc, co = auth("customer_c"), auth("coordinator")
-    inv = ask(client, cc, "Is my invoice available?", order_id="ORD-1011")
+    inv = ask(client, cc, "Is my invoice available?", order_id="ORD-BHW-1116-02")
     link = next(l for l in inv["links"] if l["kind"] == "document")
     assert client.get(f"/api/documents/{link['document_id']}/download", headers=cc).status_code == 200
-    pod0 = ask(client, cc, "Is my proof of delivery available?", order_id="ORD-1011")
+    pod0 = ask(client, cc, "Is my proof of delivery available?", order_id="ORD-BHW-1116-02")
     assert "awaiting signature" in pod0["text"] and not any(l["kind"] == "document" for l in pod0["links"])
-    gate = ask(client, cc, "Has it reached the customer gate?", order_id="ORD-1011")
+    gate = ask(client, cc, "Has it reached the customer gate?", order_id="ORD-BHW-1116-02")
     assert gate["text"].startswith("Yes, it reached your gate")
-    upload(client, auth("driver11"), "/api/transporter/shipments/SHP-1011/pod-document?filename=n.png&recipient_name=Anita%20Rao", PNG)
-    pod1 = ask(client, cc, "Is my proof of delivery available?", order_id="ORD-1011")
+    upload(client, auth("driver11"), "/api/transporter/shipments/SHP-BHW-1116-02/pod-document?filename=n.png&recipient_name=Anita%20Rao", PNG)
+    pod1 = ask(client, cc, "Is my proof of delivery available?", order_id="ORD-BHW-1116-02")
     assert "signed proof of delivery is available" in pod1["text"] and "Anita Rao" in pod1["text"]
     dl = next(l for l in pod1["links"] if l["kind"] == "document")
     assert client.get(f"/api/documents/{dl['document_id']}/download", headers=cc).content == PNG
     # a customer without a document gets an honest 'not yet'
-    none = ask(client, auth("customer_a"), "Is my invoice available?", order_id="ORD-G1")
+    none = ask(client, auth("customer_a"), "Is my invoice available?", order_id="ORD-PTH-1116-01")
     assert "no invoice" in none["text"] and not any(l["kind"] == "document" for l in none["links"])
 
 
@@ -497,8 +497,49 @@ def test_chat_validation_and_roles(client, auth):
 
 def test_reset_clears_stored_documents(client, auth):
     co = auth("coordinator")
-    upload(client, co, "/api/orders/ORD-G1/invoice?filename=x.pdf", PDF)
+    upload(client, co, "/api/orders/ORD-PTH-1116-01/invoice?filename=x.pdf", PDF)
     before = len(list(config.DOC_DIR.glob("*")))
     assert client.post("/api/admin/reset", headers=co).status_code == 200
     after = len(list(config.DOC_DIR.glob("*")))
     assert after == 4 and before == 5                                      # only the 4 seeded sample invoices remain
+
+
+# ======================================== coordinator completes a delivery on the driver's behalf
+def test_coordinator_can_complete_a_delivery_without_a_document(client, auth, db):
+    co = auth("coordinator")
+    assert client.get("/api/shipments/SHP-BHW-1116-02", headers=co).json()["state"] == "ARRIVED_AT_CUSTOMER_GATE"
+    r = client.post("/api/shipments/SHP-BHW-1116-02/complete-delivery", headers=co, json={"recipient_name": "Anita Rao"})
+    assert r.status_code == 200 and r.json()["state"] == "DELIVERED"
+    now = client.get("/api/simulation/clock", headers=co).json()["sim_now"]
+    sh = client.get("/api/shipments/SHP-BHW-1116-02", headers=co).json()
+    assert sh["state"] == "DELIVERED" and sh["delivered_at"] == now                    # delivered time = simulation clock
+    ev = next(e for e in client.get("/api/shipments/SHP-BHW-1116-02/events", headers=co).json() if e["state"] == "DELIVERED")
+    assert ev["source"] == "COORDINATOR" and "control tower" in ev["note"]
+    audit = next(a for a in client.get("/api/audit-events?limit=50", headers=co).json() if a["action"] == "POD_RECORDED")
+    assert audit["actor_role"] == "COORDINATOR" and audit["after"]["recipient"] == "Anita Rao"
+    assert client.post("/api/shipments/SHP-BHW-1116-02/complete-delivery", headers=co, json={"recipient_name": "Anita Rao"}).status_code == 200   # idempotent
+    docs = client.get("/api/orders/ORD-BHW-1116-02/documents", headers=co).json()["shipments"][0]
+    assert docs["pod_status"] == "NO_DOCUMENT"                                          # delivered, document can still be added
+
+
+def test_complete_delivery_rules(client, auth):
+    co = auth("coordinator")
+    assert client.post("/api/shipments/SHP-PTH-1116-01/complete-delivery", headers=co, json={"recipient_name": "Bob"}).status_code == 409   # still loading
+    assert client.post("/api/shipments/SHP-BHW-1116-02/complete-delivery", headers=co, json={"recipient_name": "B"}).status_code == 422
+    assert client.post("/api/shipments/NOPE/complete-delivery", headers=co, json={"recipient_name": "Bob"}).status_code == 404
+    assert client.post("/api/shipments/SHP-H001/complete-delivery", headers=co, json={"recipient_name": "Bob"}).status_code == 404   # history
+    for who in ("customer_c", "driver11"):
+        assert client.post("/api/shipments/SHP-BHW-1116-02/complete-delivery", headers=auth(who), json={"recipient_name": "Bob"}).status_code == 403
+
+
+def test_coordinator_uploads_pod_on_the_drivers_behalf(client, auth):
+    co, cc = auth("coordinator"), auth("customer_c")
+    r = upload(client, co, "/api/shipments/SHP-BHW-1116-02/pod-document?filename=scan.png&recipient_name=Anita%20Rao", PNG)
+    assert r.status_code == 201, r.text
+    d = r.json()["document"]
+    assert d["uploaded_by_role"] == "COORDINATOR" and d["recipient_name"] == "Anita Rao" and d["status"] == "UPLOADED"
+    assert client.get("/api/shipments/SHP-BHW-1116-02", headers=co).json()["state"] == "DELIVERED"
+    assert client.get(f"/api/documents/{d['id']}/download", headers=cc).content == PNG                 # the customer can download it
+    assert client.get(f"/api/documents/{d['id']}/download", headers=auth("customer_a")).status_code == 404
+    assert upload(client, auth("driver11"), "/api/shipments/SHP-BHW-1116-02/pod-document?filename=x.png&recipient_name=Bob", PNG).status_code == 403
+    assert upload(client, co, "/api/shipments/SHP-PTH-1116-01/pod-document?filename=x.png&recipient_name=Bob", PNG).status_code == 409

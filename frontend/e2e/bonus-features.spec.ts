@@ -104,21 +104,21 @@ test('CHATBOT: customer asks about their order; another customer\'s order cannot
   await chat.getByRole('button', { name: 'Where is my order?' }).click()
   await expect(chat.getByText(/You have 4 open orders/)).toBeVisible()
   // a specific order: real status, position with timestamp, ETA range
-  await chat.getByLabel('Your question').fill('Where is ORD-1007?')
+  await chat.getByLabel('Your question').fill('Where is ORD-PTH-1116-03?')
   await chat.getByRole('button', { name: 'Send' }).click()
   await expect(chat.getByText(/Latest reported position: near/).last()).toBeVisible()
   await expect(chat.getByText(/Reported .* IST \(simulated\)/)).toBeVisible()
-  await chat.getByLabel('Your question').fill('When will ORD-1007 arrive?')
+  await chat.getByLabel('Your question').fill('When will ORD-PTH-1116-03 arrive?')
   await chat.getByRole('button', { name: 'Send' }).click()
   await expect(chat.getByText(/most likely between/)).toBeVisible()
-  await chat.getByLabel('Your question').fill('What was the original promised delivery for ORD-1007?')
+  await chat.getByLabel('Your question').fill('What was the original promised delivery for ORD-PTH-1116-03?')
   await chat.getByRole('button', { name: 'Send' }).click()
-  await expect(chat.getByText(/original promised delivery for ORD-1007 is/)).toBeVisible()
+  await expect(chat.getByText(/original promised delivery for ORD-PTH-1116-03 is/)).toBeVisible()
   // another customer's order and commercial questions are refused
-  await chat.getByLabel('Your question').fill('Where is ORD-1003?')
+  await chat.getByLabel('Your question').fill('Where is ORD-AMV-1116-01?')
   await chat.getByRole('button', { name: 'Send' }).click()
-  await expect(chat.getByText(/I could not find an order ORD-1003 on your account/)).toBeVisible()
-  await expect(chat.getByText(/Eastgate|FILM-L30/)).toHaveCount(0)
+  await expect(chat.getByText(/I could not find an order ORD-AMV-1116-01 on your account/)).toBeVisible()
+  await expect(chat.getByText(/Vidarbha|FILM-L30/)).toHaveCount(0)
   await chat.getByLabel('Your question').fill('What freight cost and penalty do you pay?')
   await chat.getByRole('button', { name: 'Send' }).click()
   await expect(chat.getByText(/I cannot share internal commercial information/)).toBeVisible()
@@ -128,12 +128,12 @@ test('CHATBOT: customer asks about their order; another customer\'s order cannot
   const b = await login(browser, 'customer_b')
   await b.getByRole('button', { name: 'Open the Where is my order chat' }).click()
   const chatB = b.getByTestId('chat-panel')
-  await chatB.getByLabel('Your question').fill('Where is ORD-1003?')
+  await chatB.getByLabel('Your question').fill('Where is ORD-AMV-1116-01?')
   await chatB.getByRole('button', { name: 'Send' }).click()
   await expect(chatB.getByText(/Latest reported position: near/)).toBeVisible()
-  await chatB.getByLabel('Your question').fill('Where is ORD-1007?')               // belongs to customer A
+  await chatB.getByLabel('Your question').fill('Where is ORD-PTH-1116-03?')               // belongs to customer A
   await chatB.getByRole('button', { name: 'Send' }).click()
-  await expect(chatB.getByText(/I could not find an order ORD-1007 on your account/)).toBeVisible()
+  await expect(chatB.getByText(/I could not find an order ORD-PTH-1116-03 on your account/)).toBeVisible()
 })
 
 test('INVOICE AND POD: upload, replace, verify and download across the three roles; other customers are refused', async ({ browser, request }) => {
@@ -141,23 +141,23 @@ test('INVOICE AND POD: upload, replace, verify and download across the three rol
   const co = await token(request, 'coordinator')
   expect((await request.post('/api/admin/reset', { headers: hdr(co) })).ok()).toBeTruthy()
 
-  // ---- coordinator uploads an invoice against ORD-G1 ----
+  // ---- coordinator uploads an invoice against ORD-PTH-1116-01 ----
   const coordinator = await login(browser, 'coordinator')
   await coordinator.getByRole('link', { name: 'Documents', exact: true }).click()
-  await coordinator.getByTestId('doc-row-ORD-G1').click()
+  await coordinator.getByRole('button', { name: 'Manage documents for ORD-PTH-1116-01' }).click()
   const panel = coordinator.getByTestId('documents-panel')
   await expect(panel.getByText('No invoice has been uploaded for this order yet.')).toBeVisible()
   await panel.getByLabel('Document file').setInputFiles(`${FILES}/sample_invoice.pdf`)
   await panel.getByLabel('Invoice number (optional)').fill('INV-DEMO-0001')
   await panel.getByRole('button', { name: 'Upload invoice' }).click()
-  await expect(panel.getByText(/Invoice version 1 uploaded for ORD-G1/)).toBeVisible()
+  await expect(panel.getByText(/Invoice version 1 uploaded for ORD-PTH-1116-01/)).toBeVisible()
   await expect(panel.getByText('sample_invoice.pdf')).toBeVisible()
   await coordinator.screenshot({ path: `${SHOTS}/43-invoice-management.png`, fullPage: true })
 
   // ---- the customer sees it (no reload) and downloads exactly that file ----
   const customer = await login(browser, 'customer_a')
   await customer.getByRole('tab', { name: 'Documents' }).click()
-  const card = customer.locator('section', { hasText: 'Order ORD-G1' })
+  const card = customer.locator('section', { hasText: 'Order ORD-PTH-1116-01' })
   await expect(card.getByText('sample_invoice.pdf')).toBeVisible({ timeout: 10_000 })
   const [dl] = await Promise.all([customer.waitForEvent('download'), card.getByRole('button', { name: 'Download' }).first().click()])
   expect(dl.suggestedFilename()).toBe('sample_invoice.pdf')
@@ -177,17 +177,17 @@ test('INVOICE AND POD: upload, replace, verify and download across the three rol
   // ---- another customer cannot see or fetch it ----
   const b = await token(request, 'customer_b')
   const mine = await (await request.get('/api/customer/me/documents', { headers: hdr(b) })).json()
-  expect(mine.every((d: { order_id: string }) => d.order_id !== 'ORD-G1')).toBeTruthy()
+  expect(mine.every((d: { order_id: string }) => d.order_id !== 'ORD-PTH-1116-01')).toBeTruthy()
   const a = await token(request, 'customer_a')
   const aDocs = await (await request.get('/api/customer/me/documents', { headers: hdr(a) })).json()
-  const g1 = aDocs.find((d: { order_id: string }) => d.order_id === 'ORD-G1')
+  const g1 = aDocs.find((d: { order_id: string }) => d.order_id === 'ORD-PTH-1116-01')
   expect((await request.get(`/api/documents/${g1.id}/download`, { headers: hdr(b) })).status()).toBe(404)
   expect((await request.get(`/api/documents/${g1.id}/download`)).status()).toBe(401)
 
-  // ---- the driver uploads the proof of delivery after reaching the customer gate (SHP-1011 has arrived) ----
+  // ---- the driver uploads the proof of delivery after reaching the customer gate (SHP-BHW-1116-02 has arrived) ----
   const driver = await login(browser, 'driver11', true)
-  const dcard = driver.getByTestId('driver-card-SHP-1011')
-  await expect(dcard.getByText('Proof of delivery', { exact: true })).toBeVisible()
+  const dcard = driver.getByTestId('driver-card-SHP-BHW-1116-02')
+  await expect(dcard.getByText('You have arrived. Hand over the delivery')).toBeVisible()
   await expect(dcard.getByRole('button', { name: 'Upload proof of delivery' })).toBeDisabled()
   await dcard.getByLabel('Received by (name)').fill('Anita Rao')
   await dcard.getByLabel('Document file').setInputFiles(`${FILES}/sample_pod_photo.png`)
@@ -197,7 +197,7 @@ test('INVOICE AND POD: upload, replace, verify and download across the three rol
   await driver.screenshot({ path: `${SHOTS}/45-driver-pod-upload.png`, fullPage: true })
 
   // ---- the coordinator sees the POD and verifies that it belongs to the right shipment ----
-  await coordinator.getByTestId('doc-row-ORD-1011').click()
+  await coordinator.getByRole('button', { name: 'Manage documents for ORD-BHW-1116-02' }).click()
   await expect(panel.getByText('sample_pod_photo.png')).toBeVisible({ timeout: 10_000 })
   await expect(panel.getByText(/Received by Anita Rao/)).toBeVisible()
   await panel.getByRole('button', { name: 'Verify' }).click()
@@ -210,7 +210,7 @@ test('INVOICE AND POD: upload, replace, verify and download across the three rol
   // ---- the owning customer downloads the POD; others are refused ----
   const cc = await login(browser, 'customer_c')
   await cc.getByRole('tab', { name: 'Documents' }).click()
-  const podCard = cc.locator('section', { hasText: 'Order ORD-1011' })
+  const podCard = cc.locator('section', { hasText: 'Order ORD-BHW-1116-02' })
   await expect(podCard.getByText('sample_pod_photo.png')).toBeVisible({ timeout: 10_000 })
   const [pod] = await Promise.all([cc.waitForEvent('download'), podCard.getByRole('button', { name: 'Download' }).last().click()])
   expect(readFileSync(await pod.path()!).equals(readFileSync(`${FILES}/sample_pod_photo.png`))).toBeTruthy()
@@ -220,7 +220,7 @@ test('INVOICE AND POD: upload, replace, verify and download across the three rol
   expect((await request.get(`/api/documents/${podDoc.id}/download`, { headers: hdr(b) })).status()).toBe(404)
 
   // ---- invalid files are rejected by the server even if the browser lets them through ----
-  const bad = await request.post('/api/orders/ORD-1004/invoice?filename=fake.pdf', { headers: { ...hdr(co), 'Content-Type': 'application/pdf' }, data: Buffer.from('not really a pdf') })
+  const bad = await request.post('/api/orders/ORD-AMV-1116-02/invoice?filename=fake.pdf', { headers: { ...hdr(co), 'Content-Type': 'application/pdf' }, data: Buffer.from('not really a pdf') })
   expect(bad.status()).toBe(415)
   // ---- and everything was audited ----
   const audit = await (await request.get('/api/audit-events?limit=200', { headers: hdr(co) })).json()

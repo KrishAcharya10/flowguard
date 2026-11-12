@@ -3,9 +3,9 @@
     "active_report": null,
     "alternative_route_name": null,
     "can_report": false,
-    "customer_name": "Northfield Mouldings (fictional)",
-    "destination_name": "Northfield receiving gate",
-    "id": "SHP-G1",
+    "customer_name": "Sharma Mouldings Pvt Ltd (fictional)",
+    "destination_name": "Sharma Mouldings gate, Pithampur",
+    "id": "SHP-PTH-1116-01",
     "instruction": null,
     "last_reported_at": null,
     "lot_type": "SINGLE",
@@ -55,7 +55,7 @@
     ],
     "next_state": "AT_PLANT_GATE",
     "next_state_label": "Loaded, waiting at plant gate",
-    "order_id": "ORD-G1",
+    "order_id": "ORD-PTH-1116-01",
     "planned_loading_at": "2026-11-15T22:42:00Z",
     "pod_document_id": null,
     "pod_document_name": null,
@@ -67,10 +67,10 @@
     "progress_pct": 0,
     "promised_at": "2026-11-16T11:30:00Z",
     "quantity_tonnes": 24.0,
-    "route_name": "North Corridor",
+    "route_name": "Waluj to Pithampur",
     "state": "LOADING",
     "state_label": "Loading at Plant X",
     "total_km": 354.4489584788707,
-    "vehicle_label": "VEH-101 (fictional)"
+    "vehicle_label": "MH20 GH 4101"
   }
 ]

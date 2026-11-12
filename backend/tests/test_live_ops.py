@@ -28,8 +28,8 @@ def test_create_order_assigns_a_free_driver_and_every_role_sees_it(client, auth)
     r = _create(client, co)
     assert r.status_code == 201, r.text
     o = r.json()
-    assert o["shipment_id"].startswith("SHP-N-") and o["driver_username"] == "driver15"
-    assert o["vehicle_label"].startswith("VEH-2") and "Swiftline" in o["transporter_name"]
+    assert o["shipment_id"].startswith("SHP-") and o["driver_username"] == "driver15"
+    assert o["vehicle_label"].startswith("MH20") and "Sai Krupa" in o["transporter_name"]
     assert client.get("/api/sync/state", headers=co).json()["stamp"] != before
     # driver sees it, ready for the first milestone
     mine = client.get("/api/transporter/me/shipments", headers=auth("driver15")).json()
@@ -86,56 +86,56 @@ def test_new_order_flows_through_driver_coordinator_and_customer(client, auth):
 # ---------- driver reports ----------
 def test_driver_breakdown_report_becomes_a_real_disruption(client, auth):
     co, dr = auth("coordinator"), auth("driver14")
-    before = client.get("/api/shipments/SHP-1014", headers=co).json()["prediction"]
+    before = client.get("/api/shipments/SHP-AMV-1116-05", headers=co).json()["prediction"]
     sh = client.get("/api/transporter/me/shipments", headers=dr).json()[0]
     assert sh["can_report"] is True and sh["active_report"] is None
-    r = client.post("/api/transporter/shipments/SHP-1014/report", headers=dr,
+    r = client.post("/api/transporter/shipments/SHP-AMV-1116-05/report", headers=dr,
                     json={"kind": "BREAKDOWN", "note": "Tyre blown, waiting for the service truck"})
     assert r.status_code == 200, r.text
     assert r.json()["shipment"]["active_report"] == "Breakdown reported" and r.json()["shipment"]["can_report"] is False
-    after = client.get("/api/shipments/SHP-1014", headers=co).json()["prediction"]
+    after = client.get("/api/shipments/SHP-AMV-1116-05", headers=co).json()["prediction"]
     chips = {c["key"]: c["hours"] for c in after["reasons"]["chips"]}
     assert chips["repair_wait"] > 0.9 and after["p50_at"] > before["p50_at"]
     assert any(i["kind"] == "REPORT" and "Tyre blown" in i["detail"] for i in _feed(client, co))
-    assert client.post("/api/transporter/shipments/SHP-1014/report", headers=dr, json={"kind": "BREAKDOWN"}).status_code == 409
+    assert client.post("/api/transporter/shipments/SHP-AMV-1116-05/report", headers=dr, json={"kind": "BREAKDOWN"}).status_code == 409
     audit = client.get("/api/audit-events", headers=co).json()
     assert "DRIVER_REPORT" in [a["action"] for a in audit]
 
 
 def test_driver_hazard_report_slows_the_road_and_stays_customer_safe(client, auth):
     co, dr = auth("coordinator"), auth("driver3")
-    before = client.get("/api/shipments/SHP-1003", headers=co).json()["prediction"]
-    r = client.post("/api/transporter/shipments/SHP-1003/report", headers=dr,
+    before = client.get("/api/shipments/SHP-AMV-1116-01", headers=co).json()["prediction"]
+    r = client.post("/api/transporter/shipments/SHP-AMV-1116-01/report", headers=dr,
                     json={"kind": "ROAD_HAZARD", "note": "internal-note-xyz oil spill"})
     assert r.status_code == 200 and r.json()["shipment"]["active_report"] == "Road hazard reported"
-    after = client.get("/api/shipments/SHP-1003", headers=co).json()["prediction"]
+    after = client.get("/api/shipments/SHP-AMV-1116-01", headers=co).json()["prediction"]
     assert after["p50_at"] > before["p50_at"] and {c["key"]: c["hours"] for c in after["reasons"]["chips"]}["slowdown"] > 0
-    order = next(o for o in client.get("/api/customer/me/orders", headers=auth("customer_b")).json() if o["id"] == "ORD-1003")
+    order = next(o for o in client.get("/api/customer/me/orders", headers=auth("customer_b")).json() if o["id"] == "ORD-AMV-1116-01")
     text = json.dumps(order)
-    assert "internal-note-xyz" not in text and "oil spill" not in text and "Swiftline" not in text
+    assert "internal-note-xyz" not in text and "oil spill" not in text and "Sai Krupa" not in text
     assert any("disruption was detected" in e["text"] for e in order["shipments"][0]["timeline"])
 
 
 def test_report_rules(client, auth):
-    dr1 = auth("driver1")                                                    # SHP-G1 is still LOADING
-    assert client.post("/api/transporter/shipments/SHP-G1/report", headers=dr1, json={"kind": "BREAKDOWN"}).status_code == 409
-    assert client.post("/api/transporter/shipments/SHP-1014/report", headers=dr1, json={"kind": "BREAKDOWN"}).status_code == 404
-    assert client.post("/api/transporter/shipments/SHP-1014/report", headers=auth("driver14"), json={"kind": "FIRE"}).status_code == 422
+    dr1 = auth("driver1")                                                    # SHP-PTH-1116-01 is still LOADING
+    assert client.post("/api/transporter/shipments/SHP-PTH-1116-01/report", headers=dr1, json={"kind": "BREAKDOWN"}).status_code == 409
+    assert client.post("/api/transporter/shipments/SHP-AMV-1116-05/report", headers=dr1, json={"kind": "BREAKDOWN"}).status_code == 404
+    assert client.post("/api/transporter/shipments/SHP-AMV-1116-05/report", headers=auth("driver14"), json={"kind": "FIRE"}).status_code == 422
 
 
 # ---------- activity feed ----------
 def test_activity_feed_is_built_from_real_records_without_duplicates(client, auth, db):
     co = auth("coordinator")
     stage_g1(client, auth)
-    client.post("/api/shipments/SHP-G1/recalculate", headers=co)
-    client.post("/api/shipments/SHP-G1/recalculate", headers=co)             # must not duplicate alerts or lines
+    client.post("/api/shipments/SHP-PTH-1116-01/recalculate", headers=co)
+    client.post("/api/shipments/SHP-PTH-1116-01/recalculate", headers=co)             # must not duplicate alerts or lines
     items = _feed(client, co, 200)
     ids = [i["id"] for i in items]
     assert len(ids) == len(set(ids))
     kinds = {i["kind"] for i in items}
     assert {"MILESTONE", "DISRUPTION", "RISK", "ALERT", "NOTIFICATION", "ASSIGNED"} <= kinds
     assert [i["at"] for i in items] == sorted((i["at"] for i in items), reverse=True)
-    risk = next(i for i in items if i["kind"] == "RISK" and "SHP-G1" in i["title"])
+    risk = next(i for i in items if i["kind"] == "RISK" and "SHP-PTH-1116-01" in i["title"])
     assert "from LOW to HIGH" in risk["title"] and risk["severity"] == "alert"
     # every id points at a real row
     tables = {"ev": m.ShipmentEvent, "al": m.Alert, "pr": m.Prediction, "au": m.AuditEvent}
@@ -143,7 +143,7 @@ def test_activity_feed_is_built_from_real_records_without_duplicates(client, aut
         prefix, n = i["id"].split(":")
         assert db.get(tables[prefix], int(n)) is not None
     flood = next(i for i in items if i["kind"] == "DISRUPTION")
-    assert "Flooding" in flood["title"] and "SHP-G1" in flood["detail"]       # merged: one row for many shipments
+    assert "Flooding" in flood["title"] and "SHP-PTH-1116-01" in flood["detail"]       # merged: one row for many shipments
     assert sum(1 for i in items if i["kind"] == "DISRUPTION") == 1
 
 
@@ -159,7 +159,7 @@ def test_sync_stamp_is_stable_until_something_changes(client, auth):
     a = client.get("/api/sync/state", headers=co).json()
     b = client.get("/api/sync/state", headers=co).json()
     assert a["stamp"] == b["stamp"] and re.fullmatch(r"[0-9a-f]{12}", a["stamp"])
-    client.post("/api/transporter/shipments/SHP-G1/milestones", headers=auth("driver1"), json={"to_state": "AT_PLANT_GATE"})
+    client.post("/api/transporter/shipments/SHP-PTH-1116-01/milestones", headers=auth("driver1"), json={"to_state": "AT_PLANT_GATE"})
     assert client.get("/api/sync/state", headers=co).json()["stamp"] != a["stamp"]
     # everybody gets the same stamp (customers and drivers poll it too) and it exposes no counts
     assert client.get("/api/sync/state", headers=auth("customer_a")).json()["stamp"] == \
@@ -214,7 +214,7 @@ def test_position_events_are_throttled(client, auth, db):
 
     def count():
         db.expire_all()
-        return db.query(m.ShipmentEvent).filter(m.ShipmentEvent.shipment_id == "SHP-1003",
+        return db.query(m.ShipmentEvent).filter(m.ShipmentEvent.shipment_id == "SHP-AMV-1116-01",
                                                 m.ShipmentEvent.type == "POSITION").count()
     client.post("/api/simulation/clock/advance", headers=co, json={"minutes": 15})
     assert count() == 1
@@ -228,11 +228,11 @@ def test_position_events_are_throttled(client, auth, db):
 def test_customer_delay_explanation_progress_and_history_are_safe(client, auth, db):
     co, cu = auth("coordinator"), auth("customer_a")
     stage_g1(client, auth)
-    sh = next(s for s in client.get("/api/customer/me/shipments", headers=cu).json() if s["id"] == "SHP-G1")
+    sh = next(s for s in client.get("/api/customer/me/shipments", headers=cu).json() if s["id"] == "SHP-PTH-1116-01")
     assert "road closure" in sh["delay_explanation"] and sh["progress_pct"] == 0
     assert sh["pod_status"] == "Not yet delivered" and isinstance(sh["timeline"], list)
     text = json.dumps(sh)
-    for banned in ("Rs ", "penalt", "freight", "Swiftline", "stock-out", "P(late)"):
+    for banned in ("Rs ", "penalt", "freight", "Sai Krupa", "stock-out", "P(late)"):
         assert banned not in sh["delay_explanation"] and banned not in text
     hist = client.get("/api/customer/me/history", headers=cu).json()
     assert len(hist) >= 10 and all(isinstance(h["on_time"], bool) for h in hist)
@@ -240,7 +240,7 @@ def test_customer_delay_explanation_progress_and_history_are_safe(client, auth, 
     assert {h["order_id"] for h in hist} <= mine                      # never another customer's deliveries
     other = client.get("/api/customer/me/history", headers=auth("customer_b")).json()
     assert not ({h["order_id"] for h in other} & {h["order_id"] for h in hist})
-    client.post("/api/transporter/shipments/SHP-G1/milestones", headers=auth("driver1"), json={"to_state": "IN_TRANSIT"}) \
+    client.post("/api/transporter/shipments/SHP-PTH-1116-01/milestones", headers=auth("driver1"), json={"to_state": "IN_TRANSIT"}) \
         if False else None
 
 
@@ -259,9 +259,9 @@ def test_driver_history_lists_only_own_runs(client, auth, db):
 def test_driver_progress_and_milestone_chain(client, auth):
     dr = auth("driver1")
     s0 = client.get("/api/transporter/me/shipments", headers=dr).json()[0]
-    assert s0["progress_pct"] == 0 and s0["customer_name"].startswith("Northfield") and s0["can_report"] is False
+    assert s0["progress_pct"] == 0 and s0["customer_name"].startswith("Sharma") and s0["can_report"] is False
     for st in ("AT_PLANT_GATE", "IN_TRANSIT"):
-        assert client.post("/api/transporter/shipments/SHP-G1/milestones", headers=dr, json={"to_state": st}).status_code == 200
+        assert client.post("/api/transporter/shipments/SHP-PTH-1116-01/milestones", headers=dr, json={"to_state": st}).status_code == 200
     client.post("/api/simulation/clock/advance", headers=auth("coordinator"), json={"minutes": 120})
     s1 = client.get("/api/transporter/me/shipments", headers=dr).json()[0]
     assert s1["state"] == "IN_TRANSIT" and 5 <= s1["progress_pct"] <= 60 and s1["can_report"] is True

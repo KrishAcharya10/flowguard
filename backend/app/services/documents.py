@@ -213,7 +213,7 @@ def upload_invoice(db: Session, user: m.User, order_id: str, data: bytes, filena
 
 
 def upload_pod(db: Session, user: m.User, sh: m.Shipment, data: bytes, filename: str, recipient: str) -> m.Document:
-    """Driver proof of delivery. Allowed once the vehicle is at the customer gate (this completes the delivery) or
+    """Proof of delivery (by the driver, or by the coordinator on the driver's behalf). Allowed once the vehicle is at the customer gate (this completes the delivery) or
     after it (replace the document). The delivery timestamp comes from the simulation clock."""
     ext, ctype, name = validate_upload(data, filename)
     recipient = (recipient or "").strip()
@@ -231,7 +231,8 @@ def upload_pod(db: Session, user: m.User, sh: m.Shipment, data: bytes, filename:
             if sh.state == "ARRIVED_AT_CUSTOMER_GATE":
                 from .shipments import advance_state
                 sh.pod_recipient = recipient
-                advance_state(db, sh, "DELIVERED", now, "DRIVER", user, note=f"Proof of delivery signed by {recipient}")
+                advance_state(db, sh, "DELIVERED", now, "DRIVER" if user.role == "TRANSPORTER" else "COORDINATOR", user,
+                              note=f"Proof of delivery signed by {recipient}" + ("" if user.role == "TRANSPORTER" else " (uploaded by the control tower)"))
             else:
                 sh.pod_recipient = recipient
             d = m.Document(kind="POD", order_id=order.id, shipment_id=sh.id, version=(cur.version + 1) if cur else 1,
@@ -239,7 +240,7 @@ def upload_pod(db: Session, user: m.User, sh: m.Shipment, data: bytes, filename:
                            content_type=ctype, size_bytes=len(data), sha256=hashlib.sha256(data).hexdigest(),
                            recipient_name=recipient, uploaded_by=user.id, uploaded_sim_at=now,
                            delivered_sim_at=sh.delivered_at or now, replaces_document_id=cur.id if cur else None,
-                           replace_reason="Replaced by the driver" if cur else None)
+                           replace_reason=("Replaced by the driver" if user.role == "TRANSPORTER" else "Replaced by the control tower") if cur else None)
             if cur is not None:
                 cur.is_current, cur.status = False, "SUPERSEDED"
                 db.flush()

@@ -14,13 +14,13 @@ the table shows the defaults. Units: hours, km, tonnes, t/h, Rs.
 | Factor formula | exp(σZ − σ²/2) | Mean-one lognormal: adds spread without moving the average |
 | Road distance | haversine × 1.2 | Roads are ~20% longer than straight lines (circuity). Distances are computed, never typed in |
 | Segment speeds | 38–50 km/h | Loaded bulk trucks on mixed roads |
-| North Bypass speed | 42 km/h | **Tuned** (see `GOLDEN_BASELINE.md`): the only parameter tuned to meet G1 targets |
+| Dhule Bypass speed | 42 km/h | **Tuned** (see `GOLDEN_BASELINE.md`): the only parameter tuned to meet G1 targets |
 | Loading reference / distribution | 1.0 h; Triangular(0.8, 1.0, 1.5) | Bulk polymer loading |
 | Plant-gate queue | Triangular(0.2, 0.5, 1.0) h | Paperwork, weighbridge, gate-out |
 | Telemetry Fresh / Stale | ≤ 15 min / ≥ 45 min | Typical GPS ping interval is minutes; 45 min of silence is meaningful |
 | Stale widening | σ × (1 + min(age/45 min, 2)) | Up to 3× wider; staleness widens the range, it is not a separate risk term |
 | Overdue disruption residual | u × 0.5 h | If a closure outlasts its stated maximum, assume it ends soon |
-| Transporter variability factor | Swiftline 1.00, Meridian 1.15, Coastwise 1.30 | Scales spread only, never the mean |
+| Transporter variability factor | Sai Krupa 1.00, Deccan Bulk 1.15, Konkan Express 1.30 | Scales spread only, never the mean |
 
 ## Risk and alerts
 
@@ -53,10 +53,10 @@ the table shows the defaults. Units: hours, km, tonnes, t/h, Rs.
 
 | Customer / product | Inventory | Consumption | Unloading | Note |
 | --- | --- | --- | --- | --- |
-| Northfield / PP-H110 (G1) | 25 t | 2.0 t/h | 0.5 h | Runs out 12.5 h after start: 1.5 h after the promise (S − D = 1.5 h, S − u ≥ D) |
-| Northfield / HDPE-B52 (G2) | 120 t | 1.5 t/h | 0.5 h | 80 h of cover: late is not costly |
-| Eastgate / FILM-L30 | 60 t | 1.2 t/h | 0.75 h | |
-| Southbay / PACK-P40 | 18 t | 1.0 t/h | 0.5 h | |
+| Pithampur / PP-H110 (G1) | 25 t | 2.0 t/h | 0.5 h | Runs out 12.5 h after start: 1.5 h after the promise (S − D = 1.5 h, S − u ≥ D) |
+| Pithampur / HDPE-B52 (G2) | 120 t | 1.5 t/h | 0.5 h | 80 h of cover: late is not costly |
+| Amravati / FILM-L30 | 60 t | 1.2 t/h | 0.75 h | |
+| Satara / PACK-P40 | 18 t | 1.0 t/h | 0.5 h | |
 | Others | — | — | — | No stock data: risk uses P(late) only, labelled "Stock data unavailable" |
 
 A real deployment needs customer consent to share coarse stock-cover data.
@@ -81,7 +81,7 @@ A real deployment needs customer consent to share coarse stock-cover data.
 | Global seed | 20261116 | |
 | Active shipments | 14 (incl. G1, G2) | Spec: 12–14 |
 | History | 160 delivered shipments over 8 weeks, 4 routes, 3 customers, 3 transporters | Spec: ≥ 150 |
-| Deliberate patterns | Coastwise weak on South Coastal; East Corridor recurring congestion; Northfield often urgent | So the dashboard has something real to find |
+| Deliberate patterns | Konkan Express weak on Waluj to Satara; Waluj to Amravati recurring congestion; Pithampur often urgent | So the dashboard has something real to find |
 | Unexplained delay | Classed as ROUTE_CONGESTION | So attributed hours always sum to realised delay |
 | Planned arrival | Promise minus a buffer (0.25–3 h) | Spec 4.1 |
 | Baseline for warning lead time | Without FlowGuard, the customer learns at the breach (lead time 0) | Labelled assumption |

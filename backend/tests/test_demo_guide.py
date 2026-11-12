@@ -31,35 +31,35 @@ def test_start_mode_resets_to_the_seed(client, auth):
     co, out = _setup(client, "flood-reroute", "start")
     assert out["steps_done_automatically"] == 0
     assert client.get("/api/simulations/disruptions", headers=co).json()[0]["preset"] == "TELEMETRY_OUTAGE"
-    assert client.get("/api/shipments/SHP-G1", headers=co).json()["state"] == "LOADING"
+    assert client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()["state"] == "LOADING"
 
 
 def test_jump_flood_reroute(client):
     co, out = _setup(client, "flood-reroute")
     assert out["steps_done_automatically"] == 2
-    d = client.get("/api/shipments/SHP-G1", headers=co).json()
+    d = client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()
     assert d["state"] == "AT_PLANT_GATE" and d["prediction"]["risk_category"] == "HIGH"
     actions = [a["action"] for a in client.get("/api/audit-events", headers=co).json()]
     assert "MILESTONE_POSTED" in actions and "DISRUPTION_CREATED" in actions and "DEMO_SETUP" in actions
-    case = _case(client, co, "SHP-G1")
+    case = _case(client, co, "SHP-PTH-1116-01")
     assert case["recommendation"]["code"] == "REROUTE" and case["stability"]["label"] == "STABLE"
 
 
 def test_jump_late_not_costly(client):
     co, _ = _setup(client, "late-not-costly")
-    assert _case(client, co, "SHP-G2")["recommendation"]["code"] == "NO_JUSTIFIED_INTERVENTION"
+    assert _case(client, co, "SHP-PTH-1116-02")["recommendation"]["code"] == "NO_JUSTIFIED_INTERVENTION"
 
 
 def test_jump_no_feasible(client):
     co, _ = _setup(client, "no-feasible")
     assert client.get("/api/assumptions", headers=co).json()["values"]["alpha"] == 0.01
-    assert _case(client, co, "SHP-G1")["recommendation"]["code"] == "NO_FEASIBLE_OPTION"
+    assert _case(client, co, "SHP-PTH-1116-01")["recommendation"]["code"] == "NO_FEASIBLE_OPTION"
 
 
 def test_jump_split_recommends_split_and_remainder_keeps_the_late_truck_delay(client, db):
     from app import models as m
     co, _ = _setup(client, "split")
-    case = _case(client, co, "SHP-1013")
+    case = _case(client, co, "SHP-BHW-1116-03")
     assert case["recommendation"]["code"] == "SPLIT" and case["stability"]["label"] == "STABLE"
     assert scenario(case, "REROUTE")["eligible"] is False
     sp = scenario(case, "SPLIT")
@@ -69,39 +69,39 @@ def test_jump_split_recommends_split_and_remainder_keeps_the_late_truck_delay(cl
     r = client.post(f"/api/interventions/{case['id']}/approve", headers=co, json={"selected_scenario_id": sp["id"]})
     assert r.status_code == 200 and r.json()["status"] == "APPLIED"
     db.expire_all()
-    rem = db.get(m.Shipment, "SHP-1013-R")
+    rem = db.get(m.Shipment, "SHP-BHW-1116-03-R")
     # the 4 h late dispatch moved into the remainder's plan (not counted twice) and stays linked to it
-    p = client.get("/api/shipments/SHP-1013-R", headers=co).json()["prediction"]
+    p = client.get("/api/shipments/SHP-BHW-1116-03-R", headers=co).json()["prediction"]
     assert p["p50_at"] == lots["REMAINDER"]["p50_at"]
     late = db.query(m.Disruption).filter(m.Disruption.kind == "DEPARTURE_OFFSET").one()
     assert late.shipment_id == rem.id and late.status == "ENDED"
-    urgent = db.get(m.Shipment, "SHP-1013-U")
+    urgent = db.get(m.Shipment, "SHP-BHW-1116-03-U")
     relief = db.get(m.User, urgent.driver_user_id)
     assert relief.username == "relief_tr1"
-    assert [s["id"] for s in client.get("/api/transporter/me/shipments", headers=login(client, "relief_tr1")).json()] == ["SHP-1013-U"]
+    assert [s["id"] for s in client.get("/api/transporter/me/shipments", headers=login(client, "relief_tr1")).json()] == ["SHP-BHW-1116-03-U"]
 
 
 def test_jump_breakdown(client):
     co, _ = _setup(client, "breakdown")
-    chips = {c["key"]: c["hours"] for c in client.get("/api/shipments/SHP-1014", headers=co).json()["prediction"]["reasons"]["chips"]}
+    chips = {c["key"]: c["hours"] for c in client.get("/api/shipments/SHP-AMV-1116-05", headers=co).json()["prediction"]["reasons"]["chips"]}
     assert chips["repair_wait"] > 1.0 and chips["closure_wait"] == 0
-    assert _case(client, co, "SHP-1014")["recommendation"]["code"] == "NO_JUSTIFIED_INTERVENTION"
+    assert _case(client, co, "SHP-AMV-1116-05")["recommendation"]["code"] == "NO_JUSTIFIED_INTERVENTION"
 
 
 def test_jump_lost_signal(client):
     co, _ = _setup(client, "lost-signal")
-    v = next(v for v in client.get("/api/control-tower/map-data", headers=co).json()["vehicles"] if v["shipment_id"] == "SHP-1010")
+    v = next(v for v in client.get("/api/control-tower/map-data", headers=co).json()["vehicles"] if v["shipment_id"] == "SHP-AMV-1116-04")
     assert v["data_confidence"] == "STALE"
     assert any(a["kind"] == "STALE_HIGH_PRIORITY" for a in client.get("/api/alerts", headers=co).json())
 
 
 def test_jump_day_unfolds_then_pod(client):
     co, _ = _setup(client, "day-unfolds")
-    assert client.get("/api/shipments/SHP-1003", headers=co).json()["state"] == "ARRIVED_AT_CUSTOMER_GATE"
-    r = client.post("/api/transporter/shipments/SHP-1003/pod", headers=login(client, "driver3"), json={"recipient_name": "Gate desk"})
+    assert client.get("/api/shipments/SHP-AMV-1116-01", headers=co).json()["state"] == "ARRIVED_AT_CUSTOMER_GATE"
+    r = client.post("/api/transporter/shipments/SHP-AMV-1116-01/pod", headers=login(client, "driver3"), json={"recipient_name": "Gate desk"})
     assert r.json()["state"] == "DELIVERED"
     orders = client.get("/api/customer/me/orders", headers=login(client, "customer_b")).json()
-    assert next(o for o in orders if o["id"] == "ORD-1003")["status"] == "Delivered"
+    assert next(o for o in orders if o["id"] == "ORD-AMV-1116-01")["status"] == "Delivered"
 
 
 @pytest.mark.parametrize("who", ["customer_a", "driver1"])

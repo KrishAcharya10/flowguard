@@ -54,6 +54,7 @@ export default function ShipmentPanel({ id, onClose }: { id: string; onClose: ()
                   </div>
                 </div>
               ) : <p className="text-sm text-slate-600">{d.arrived_at ? `Arrived at the customer gate ${fmtTime(d.arrived_at)}.` : 'No prediction for this shipment.'}</p>}
+              {d.state === 'ARRIVED_AT_CUSTOMER_GATE' && <div className="text-sm rounded-md bg-amber-50 border-2 border-amber-400 text-amber-950 p-3"><strong>Arrived. Waiting for proof of delivery.</strong> The delivery is not finished until it is recorded.<div className="mt-2"><button className="btn-primary" onClick={() => nav(`/documents?order=${d.order_id}`)}>Complete the delivery</button></div></div>}
               {d.disruptions.length > 0 && <div className="text-sm rounded-md bg-amber-50 border border-amber-300 text-amber-900 p-2"><strong>Active disruptions:</strong> {d.disruptions.map((x) => x.label).join('; ')}</div>}
               <div className="flex flex-wrap gap-2">
                 {p && d.disposition === 'ACTIVE' && <button className="btn-primary" onClick={() => nav(`/shipments/${id}/war-room`)}>Open War Room</button>}

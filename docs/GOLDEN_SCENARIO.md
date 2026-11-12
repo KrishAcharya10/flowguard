@@ -9,16 +9,16 @@ Measured values: `GOLDEN_MEASURED.md` (generated) and `GOLDEN_BASELINE.md` (froz
 | Input | Value |
 | --- | --- |
 | Clock start (t₀) | 2026-11-16 00:30 UTC (06:00 IST) |
-| Route | R1 North Corridor, Plant X → Northfield, 5 segments, 354 km, base travel 7.9 h |
-| Alternative | R1A North Bypass: entry decision node R1-W1 (Junction N1), rejoin R1-W4 (Ridge Toll); reroute path 411 km |
+| Route | R1 Waluj to Pithampur, Plant X → Pithampur, 5 segments, 354 km, base travel 7.9 h |
+| Alternative | R1A Dhule Bypass: entry decision node R1-W1 (Chalisgaon Junction), rejoin R1-W4 (Sendhwa Toll Plaza); reroute path 411 km |
 | Disruption | FLOOD_R1: closure of segment R1-W2 → R1-W3 (river crossing), duration Triangular(7, 9, 12) h, starts at injection |
 | Quantity Q | 24 t |
 | Promise D | t₀ + 11 h (17:00 IST) |
-| Seed | `seed_pred = crc32("20261116|pred|SHP-G1")` (G2 uses SHP-G2) |
+| Seed | `seed_pred = crc32("20261116|pred|SHP-PTH-1116-01")` (G2 uses SHP-PTH-1116-02) |
 
 ## G1 — flooding + low stock (main demo; expected REROUTE, STABLE)
 
-Inputs: SHP-G1 seeded LOADING (0.8 h in); the driver advances it to AT_PLANT_GATE; flooding is injected
+Inputs: SHP-PTH-1116-01 seeded LOADING (0.8 h in); the driver advances it to AT_PLANT_GATE; flooding is injected
 while AT_PLANT_GATE. α = 10%. SLA p = Rs 20,000 per late hour, s = Rs 60,000 per stock-out hour.
 Stock: 25 t at 2 t/h → S = t₀ + 12.5 h; u = 0.5 h.
 
@@ -34,7 +34,7 @@ Stock: 25 t at 2 t/h → S = t₀ + 12.5 h; u = 0.5 h.
 
 ## G2 — same disruption, high stock cover (expected CONTINUE)
 
-Inputs: SHP-G2 (HDPE-B52), AT_PLANT_GATE, same flood. Stock 120 t at 1.5 t/h (80 h cover). SLA p = Rs 2,500.
+Inputs: SHP-PTH-1116-02 (HDPE-B52), AT_PLANT_GATE, same flood. Stock 120 t at 1.5 t/h (80 h cover). SLA p = Rs 2,500.
 
 | Target | Range |
 | --- | --- |

@@ -92,10 +92,21 @@ All accounts are fictional. Password for every account: **`PlantX-demo-2026`**
 | Username | Role | Sees |
 | --- | --- | --- |
 | `coordinator` (also `coordinator2`) | Logistics coordinator | Everything: Control Tower, War Room, Analytics |
-| `customer_a` | Customer: Northfield Mouldings | Their own orders only (incl. the demo orders G1, G2) |
-| `customer_b`, `customer_c` | Customers: Eastgate Films, Southbay Packaging | Their own orders only |
-| `driver1` | Driver of SHP-G1 (main demo truck) | Their assigned shipment only |
+| `customer_a` | Customer: Sharma Mouldings Pvt Ltd | Their own orders only (incl. the demo orders G1, G2) |
+| `customer_b`, `customer_c` | Customers: Vidarbha Flexi Films Pvt Ltd, Sahyadri Packaging Industries | Their own orders only |
+| `driver1` | Driver of SHP-PTH-1116-01 (main demo truck) | Their assigned shipment only |
 | `driver2` … `driver14` | Drivers of the other live shipments | Their assigned shipment only |
+
+**How names work.** The places are real Maharashtra towns on a fictional plant's network (Plant X, Waluj MIDC); the
+companies and people are invented. Orders and shipments are named by *where they go, the date and a number*:
+`ORD-PTH-1116-01` is order 1 to **P**i**TH**ampur on 16 Nov, and `SHP-PTH-1116-01` is its shipment. Codes:
+`PTH` Pithampur, `AMV` Amravati, `SAT` Satara, `BHW` Bhiwandi. Drivers have names (`driver1` is Ramesh Patil,
+`driver3` is Imran Shaikh, `driver11` is Santosh Bhosale); the login names stay `driver1`, `driver2` and so on.
+
+**Finishing a delivery.** When a truck reaches the customer, the driver's card opens with *"You have arrived. Hand
+over the delivery"*: type who received it, then upload a photo/signed note, or press *Complete delivery without a
+document*. If the driver cannot, the coordinator does it from **Documents** (or the *Add proof of delivery* button
+in the Control Tower table). It is recorded as done by the control tower, and the document can be added later.
 
 **Tip:** each browser tab keeps its own login. Open three windows (or one normal + two private windows) to be
 coordinator, customer and driver at the same time.
@@ -172,17 +183,17 @@ For a step-by-step real run of use cases 1 and 4 with screenshots, read **[FLOW.
 
 | # | Use case | Focus | What it proves | Answer FlowGuard gives |
 | --- | --- | --- | --- | --- |
-| 1 | Flood on the road, customer about to run out | SHP-G1 | O1–O5, D1–D4 (the main story) | **Reroute** via North Bypass, STABLE 16/16 |
-| 2 | Same flood, plenty of stock | SHP-G2 | Late is not the same as costly | **No justified intervention** (Continue Rs 7,175 < Reroute Rs 8,564) |
-| 3 | Every option breaks a rule | SHP-G1 + strict rules | Hard rules, escalation, human override | **No feasible option – escalate**; CRITICAL alert; override needs a reason |
-| 4 | Truck late at the plant, no alternative road | SHP-1013 | Split shipment | **Split**: 6 t urgent on a second truck; stock-out risk 100% → 4% |
-| 5 | Truck breaks down on the road | SHP-1014 | Breakdown = vehicle stoppage, not a road closure | "Vehicle repair wait" +2.3 h; other trucks unaffected; Continue |
-| 6 | Lost GPS signal | SHP-1010 | Honest uncertainty | Data **Stale**, faded marker at the last REPORTED position, wider range, alert |
+| 1 | Flood on the road, customer about to run out | SHP-PTH-1116-01 | O1–O5, D1–D4 (the main story) | **Reroute** via Dhule Bypass, STABLE 16/16 |
+| 2 | Same flood, plenty of stock | SHP-PTH-1116-02 | Late is not the same as costly | **No justified intervention** (Continue Rs 7,175 < Reroute Rs 8,564) |
+| 3 | Every option breaks a rule | SHP-PTH-1116-01 + strict rules | Hard rules, escalation, human override | **No feasible option – escalate**; CRITICAL alert; override needs a reason |
+| 4 | Truck late at the plant, no alternative road | SHP-BHW-1116-03 | Split shipment | **Split**: 6 t urgent on a second truck; stock-out risk 100% → 4% |
+| 5 | Truck breaks down on the road | SHP-AMV-1116-05 | Breakdown = vehicle stoppage, not a road closure | "Vehicle repair wait" +2.3 h; other trucks unaffected; Continue |
+| 6 | Lost GPS signal | SHP-AMV-1116-04 | Honest uncertainty | Data **Stale**, faded marker at the last REPORTED position, wider range, alert |
 | 7 | Watch the day unfold | Clock +6 h | Shared live view, proof of delivery | Trucks arrive; driver3 records POD; customer sees "Delivered"; KPIs update |
-| 8 | Dashboard insights + privacy | Analytics, customer_b | O5 and role-based privacy | East Corridor congestion; Coastwise weakest; customers see only their own data |
+| 8 | Dashboard insights + privacy | Analytics, customer_b | O5 and role-based privacy | Waluj to Amravati congestion; Konkan Express weakest; customers see only their own data |
 
 Extra accounts used by the use cases: `customer_b`, `customer_c`, `driver3`, `relief_tr1` (second-vehicle driver
-for Southbay's transporter) and `coordinator2`.
+for Sai Krupa Roadlines) and `coordinator2`.
 
 ### Navigation cheat-sheet
 
@@ -203,23 +214,23 @@ This is scenario **G1**: a flood plus a customer who is low on stock. Takes abou
 
 | Step | Tab | Do this | You should see |
 | --- | --- | --- | --- |
-| 1 | Coordinator | Log in as `coordinator`, press **Reset demo** | SHP-G1 "Loading at Plant X", risk **Low** |
-| 2 | Customer | Log in as `customer_a` | Order ORD-G1, original promise 16 Nov 17:00 IST, "Delay risk: Low" |
+| 1 | Coordinator | Log in as `coordinator`, press **Reset demo** | SHP-PTH-1116-01 "Loading at Plant X", risk **Low** |
+| 2 | Customer | Log in as `customer_a` | Order ORD-PTH-1116-01, original promise 16 Nov 17:00 IST, "Delay risk: Low" |
 | 3 | Driver | Log in as `driver1`, press **Confirm: Loaded, waiting at plant gate** | "Milestone recorded." |
-| 4 | Coordinator | Refresh. Simulation controls → **Flooding – North Corridor river crossing** → **Inject disruption** | SHP-G1 turns **High**, P(late) 100%, P(stock-out) 95% |
-| 5 | Coordinator | Click **SHP-G1** | "P50 moved +5.4 h … flooding event", reason "Road closure wait" |
+| 4 | Coordinator | Refresh. Simulation controls → **Flooding - Tapi River Bridge (Waluj to Pithampur road)** → **Inject disruption** | SHP-PTH-1116-01 turns **High**, P(late) 100%, P(stock-out) 95% |
+| 5 | Coordinator | Click **SHP-PTH-1116-01** | "P50 moved +5.4 h … flooding event", reason "Road closure wait" |
 | 6 | Coordinator | **Alerts** → **Open War Room** → **Run scenarios** | **RECOMMENDED: REROUTE**, "holds in 16 of 16 stress cases" |
 | 7 | Coordinator | **Approve Reroute** | "Reroute approved and applied" |
 | 8 | Customer | Refresh | Original promise beside the updated expected delivery; "Rerouting has been initiated"; no costs shown |
-| 9 | Driver | Refresh | "Route change approved: follow North Bypass" |
+| 9 | Driver | Refresh | "Route change approved: follow Dhule Bypass" |
 | 10 | Coordinator | Analytics → Business impact, then Audit trail | Modelled benefit (labelled MODELLED); the approval in the audit log |
 
 Two more stories to try:
 
-- **G2 "late is not the same as costly"**: after step 4, open the War Room for **SHP-G2**. Same flood, but this
+- **G2 "late is not the same as costly"**: after step 4, open the War Room for **SHP-PTH-1116-02**. Same flood, but this
   customer has 80 hours of stock → **NO JUSTIFIED INTERVENTION – CONTINUE CURRENT PLAN**.
 - **G3 "no feasible option"**: Analytics → Assumptions, set `alpha` to `0.01` and `max_incremental_freight_rs`
-  to `20000`, save, then run the SHP-G1 War Room → **NO FEASIBLE OPTION – ESCALATE**, and a CRITICAL alert.
+  to `20000`, save, then run the SHP-PTH-1116-01 War Room → **NO FEASIBLE OPTION – ESCALATE**, and a CRITICAL alert.
 
 The full presentation script, slides outline and Q&A drill: [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md).
 
@@ -396,6 +407,16 @@ Password for every account: `PlantX-demo-2026`. Spare drivers for new orders: `d
 
 ---
 
+### 7B. The redesigned Control Tower and map
+
+- **Map first.** The Control Tower puts the live map in the centre with a sidebar (high-risk shipments, alerts, gate slots, live activity). The simulation controls are one slim toolbar; the simulated time is shown once.
+- **Two map backgrounds.** *Map* uses OpenStreetMap tiles when you are online (free, no key, attribution shown at the bottom right). If tiles cannot load, or you are offline, it switches to *Network*: a local drawing of the routes, labelled **"Illustrative logistics network - not to scale"**. You can switch by hand and press *Retry online map*.
+- **Reading the map.** Truck discs are green (on track), amber (at risk), red (late), blue (arrived, POD pending) or grey with a dashed ring (stale position). The small dot on a truck shows how fresh its last report is. Numbered discs group trucks that are close together; click one to zoom in or fan them out. Solid navy lines are the main roads, dashed violet lines are alternatives, a solid violet line is an **approved reroute** that is now in use, and red marks a road disruption. The **Legend** button explains every symbol.
+- **Tools.** Zoom, fit all, centre on Plant X, centre on the selected shipment, full screen (Esc to leave), show/hide alternatives and disruptions, filter by status, risk and transporter, and search by shipment ID. Click a truck for its details and the buttons to open the shipment or its War Room.
+- **Offline demo.** Nothing else needs the internet. The browser tests block the map tiles on purpose to prove the whole workflow still works.
+
+---
+
 ## 8. How it is built
 
 ![Architecture](docs/architecture.svg)
@@ -408,7 +429,7 @@ Password for every account: `PlantX-demo-2026`. Spare drivers for new orders: `d
 | Auth | JWT (HS256, 60 min) + Argon2 password hashing | Three roles, checked on every request |
 | Frontend | React 18, Vite, TypeScript, Tailwind | Standard, fast; types generated from the API |
 | Charts / map | Recharts, Leaflet (vector shapes on an offline grid) | No map tiles needed |
-| Tests | pytest, Playwright | 212 backend tests, 12 browser tests (+ 3 live-site checks) |
+| Tests | pytest, Playwright | 217 backend tests, 15 browser tests (+ 3 live-site checks) |
 
 One server serves both the API and the built website, from the same address.
 More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -436,7 +457,7 @@ LYB/
 │   │   ├── schemas.py        API contracts (Pydantic)
 │   │   ├── security.py       Login, tokens, role and ownership checks
 │   │   └── assumptions.py    Every editable assumption with its limits
-│   ├── tests/                212 pytest tests
+│   ├── tests/                217 pytest tests
 │   └── requirements.lock.txt Pinned Python packages
 ├── frontend/
 │   ├── src/pages/            The 7 views + Demo guide
@@ -454,7 +475,7 @@ LYB/
 
 | What | Command | Result on 2026-11-12 |
 | --- | --- | --- |
-| Backend tests | `cd backend` → `.venv\Scripts\python -m pytest -q` | 212 passed |
+| Backend tests | `cd backend` → `.venv\Scripts\python -m pytest -q` | 217 passed |
 | Golden scenarios only | `.venv\Scripts\python -m pytest -q tests/test_golden.py` | 4 passed |
 | Phase 0 hand-check (no database) | `backend\.venv\Scripts\python scripts\phase0_handcheck.py` | ALL TARGETS COMPATIBLE – GO |
 | Frontend type-check + build | `cd frontend` → `npm run build` | OK |

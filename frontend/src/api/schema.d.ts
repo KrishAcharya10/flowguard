@@ -816,6 +816,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/shipments/{shipment_id}/complete-delivery": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Coordinator Complete Delivery
+         * @description Complete a delivery WITHOUT a document, on the driver's behalf (recipient name only).
+         */
+        post: operations["coordinator_complete_delivery_api_shipments__shipment_id__complete_delivery_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/shipments/{shipment_id}/events": {
         parameters: {
             query?: never;
@@ -827,6 +847,27 @@ export interface paths {
         get: operations["shipment_events_api_shipments__shipment_id__events_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/shipments/{shipment_id}/pod-document": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Coordinator Upload Pod
+         * @description The control tower uploads the proof of delivery on the driver's behalf (for example when the driver cannot).
+         *     Completes the delivery if the vehicle is at the customer gate. Audited as done by the coordinator.
+         */
+        post: operations["coordinator_upload_pod_api_shipments__shipment_id__pod_document_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1106,7 +1147,7 @@ export interface paths {
         put?: never;
         /**
          * Post Pod
-         * @description Proof of delivery: status + recipient name (v1). On-time is decided at gate arrival, not here.
+         * @description Complete the delivery without a document (status + recipient name). On-time is decided at gate arrival.
          */
         post: operations["post_pod_api_transporter_shipments__shipment_id__pod_post"];
         delete?: never;
@@ -1809,6 +1850,11 @@ export interface components {
             /** Speed */
             speed: number;
         };
+        /** CompleteDeliveryIn */
+        CompleteDeliveryIn: {
+            /** Recipient Name */
+            recipient_name: string;
+        };
         /** ControlOut */
         ControlOut: {
             clock: components["schemas"]["ClockOut"];
@@ -2082,10 +2128,20 @@ export interface components {
             code: string;
             /** Focus Shipment */
             focus_shipment: string;
+            /**
+             * Minutes
+             * @default 3
+             */
+            minutes: number;
             /** Number */
             number: number;
             /** Proves */
             proves: string[];
+            /**
+             * Question
+             * @default
+             */
+            question: string;
             /** Steps */
             steps: components["schemas"]["DemoStep"][];
             /** Story */
@@ -2542,6 +2598,15 @@ export interface components {
             risk_category?: string | null;
             /** Route Id */
             route_id: string;
+            /** Shipment Id */
+            shipment_id: string;
+            /** State */
+            state: string;
+        };
+        /** MessageOut */
+        MessageOut: {
+            /** Message */
+            message: string;
             /** Shipment Id */
             shipment_id: string;
             /** State */
@@ -4562,6 +4627,41 @@ export interface operations {
             };
         };
     };
+    coordinator_complete_delivery_api_shipments__shipment_id__complete_delivery_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                shipment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompleteDeliveryIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     shipment_events_api_shipments__shipment_id__events_get: {
         parameters: {
             query?: never;
@@ -4580,6 +4680,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EventOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    coordinator_upload_pod_api_shipments__shipment_id__pod_document_post: {
+        parameters: {
+            query: {
+                filename: string;
+                recipient_name: string;
+            };
+            header?: never;
+            path: {
+                shipment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadResultOut"];
                 };
             };
             /** @description Validation Error */

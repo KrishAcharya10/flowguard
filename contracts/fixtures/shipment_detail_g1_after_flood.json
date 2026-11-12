@@ -5,10 +5,10 @@
   "bucket": "AT_RISK",
   "child_shipment_ids": [],
   "customer_id": "CUST-A",
-  "customer_name": "Northfield Mouldings (fictional)",
+  "customer_name": "Sharma Mouldings Pvt Ltd (fictional)",
   "delivered_at": null,
   "departed_at": null,
-  "destination_name": "Northfield receiving gate",
+  "destination_name": "Sharma Mouldings gate, Pithampur",
   "disposition": "ACTIVE",
   "disruptions": [
     {
@@ -19,7 +19,7 @@
       "ended_at": null,
       "id": "DSR-001",
       "kind": "CLOSURE",
-      "label": "Flooding - North Corridor river crossing",
+      "label": "Flooding - Tapi River Bridge (Waluj to Pithampur road)",
       "multiplier": 1.0,
       "preset": "FLOOD_R1",
       "route_id": "R1",
@@ -29,8 +29,8 @@
       "status": "ACTIVE"
     }
   ],
-  "driver_name": "Driver 1 (fictional)",
-  "id": "SHP-G1",
+  "driver_name": "Ramesh Patil",
+  "id": "SHP-PTH-1116-01",
   "last_lat": null,
   "last_lon": null,
   "last_progress_km": 0.0,
@@ -81,7 +81,7 @@
     }
   ],
   "open_case_id": null,
-  "order_id": "ORD-G1",
+  "order_id": "ORD-PTH-1116-01",
   "parent_shipment_id": null,
   "planned_arrival_at": "2026-11-16T09:30:00Z",
   "planned_loading_at": "2026-11-15T22:42:00Z",
@@ -89,14 +89,14 @@
     "assumptions_version": 1,
     "created_sim_at": "2026-11-16T00:30:00Z",
     "data_confidence": "FRESH",
-    "id": 38,
+    "id": 34,
     "n": 500,
-    "p10_at": "2026-11-16T12:57:01Z",
-    "p50_at": "2026-11-16T14:24:59Z",
-    "p90_at": "2026-11-16T15:57:34Z",
+    "p10_at": "2026-11-16T12:50:26Z",
+    "p50_at": "2026-11-16T14:20:33Z",
+    "p90_at": "2026-11-16T15:53:37Z",
     "p_late": 1.0,
-    "p_stockout": 0.954,
-    "previous_p50_at": "2026-11-16T08:59:25Z",
+    "p_stockout": 0.952,
+    "previous_p50_at": "2026-11-16T08:52:56Z",
     "reasons": {
       "baseline_at": "2026-11-16T08:22:36Z",
       "chips": [
@@ -106,7 +106,7 @@
           "label": "Loading / handling vs reference"
         },
         {
-          "hours": 0.5696,
+          "hours": 0.5838,
           "key": "gate_queue",
           "label": "Plant gate queue"
         },
@@ -121,7 +121,7 @@
           "label": "Route slowdown"
         },
         {
-          "hours": 5.4526,
+          "hours": 5.4386,
           "key": "closure_wait",
           "label": "Road closure wait"
         },
@@ -131,21 +131,21 @@
           "label": "Vehicle repair wait"
         },
         {
-          "hours": 0.0466,
+          "hours": -0.0311,
           "key": "variability",
           "label": "Travel variability / interactions"
         }
       ],
-      "expected_late_hours": 2.9454,
-      "expected_stockout_hours": 1.9625,
+      "expected_late_hours": 2.8679,
+      "expected_stockout_hours": 1.8804,
       "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
-      "mean_at": "2026-11-16T14:26:43Z",
+      "mean_at": "2026-11-16T14:22:04Z",
       "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
       "notes": [
         "Data confidence: FRESH"
       ],
       "p50_change": {
-        "hours": 5.426,
+        "hours": 5.46,
         "since": "2026-11-16T00:30:00Z",
         "trigger": "flooding event DSR-001",
         "trigger_event_id": "DSR-001"
@@ -156,7 +156,7 @@
     },
     "risk_category": "HIGH",
     "risk_index": 98,
-    "shipment_id": "SHP-G1",
+    "shipment_id": "SHP-PTH-1116-01",
     "state_version": 3,
     "trigger": "flooding event DSR-001",
     "trigger_event_id": "DSR-001"
@@ -166,7 +166,7 @@
   "promised_at": "2026-11-16T11:30:00Z",
   "quantity_tonnes": 24.0,
   "route_id": "R1",
-  "route_name": "North Corridor",
+  "route_name": "Waluj to Pithampur",
   "sla_penalty_per_late_hour": 20000.0,
   "state": "AT_PLANT_GATE",
   "state_label": "Loaded, waiting at plant gate",
@@ -182,6 +182,6 @@
   },
   "total_km": 354.4489584788707,
   "transporter_id": "TR-1",
-  "transporter_name": "Swiftline Haulage (fictional)",
-  "vehicle_label": "VEH-101 (fictional)"
+  "transporter_name": "Sai Krupa Roadlines (fictional)",
+  "vehicle_label": "MH20 GH 4101"
 }

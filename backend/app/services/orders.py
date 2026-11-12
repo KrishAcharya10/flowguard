@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from .. import models as m
 from ..engine.eta import simulate_arrival
-from ..seed.network import PRODUCTS, ROUTE_CUSTOMER
+from ..seed.network import PRODUCTS, ROUTE_CODE, ROUTE_CUSTOMER
 from ..seeds import seed_pred
 from . import predictions as pred_svc
 from .core import add_event, audit, get_assumptions, hours, plus_hours, sim_state
@@ -49,13 +49,18 @@ def create_order(db: Session, user: m.User, *, route_id: str, transporter_id: st
     a, _ = get_assumptions(db)
     n = st.next_seq
     st.next_seq = n + 1
-    code = f"N-{n:03d}"
+    # Meaningful reference: where it goes (route code), the IST date, and the next free number for that day.
+    base = f"{ROUTE_CODE[route_id]}-{plus_hours(now, 5.5):%m%d}"
+    k = 1
+    while db.get(m.Order, f"ORD-{base}-{k:02d}") is not None:
+        k += 1
+    code = f"{base}-{k:02d}"
     sla = sla_penalty_per_late_hour if sla_penalty_per_late_hour is not None else (20000.0 if priority == "HIGH" else 5000.0)
     order = m.Order(id=f"ORD-{code}", customer_id=ROUTE_CUSTOMER[route_id], product_code=product_code,
                     quantity_tonnes=quantity_tonnes, promised_at=plus_hours(now, 48), sla_penalty_per_late_hour=sla,
                     priority=priority)
     sh = m.Shipment(id=f"SHP-{code}", order_id=order.id, transporter_id=transporter_id, driver_user_id=driver.id,
-                    vehicle_label=f"VEH-{200 + n} (fictional)", route_id=route_id, lot_type="SINGLE",
+                    vehicle_label=f"MH20 GH {4200 + n}", route_id=route_id, lot_type="SINGLE",
                     quantity_tonnes=quantity_tonnes, planned_loading_at=plus_hours(now, loading_in_h),
                     planned_arrival_at=plus_hours(now, 48), state="PLANNED", state_entered_at=now,
                     disposition="ACTIVE", state_version=1, last_progress_km=0.0)
@@ -69,7 +74,7 @@ def create_order(db: Session, user: m.User, *, route_id: str, transporter_id: st
     customer = db.get(m.Customer, order.customer_id)
     transporter = db.get(m.Transporter, transporter_id)
     add_event(db, sh.id, "ASSIGNED", now,
-              f"Order {order.id} for {customer.name.replace(' (fictional)', '')} assigned to {transporter.name}, "
+              f"Order {order.id} for {customer.name.replace(' (fictional)', '')} assigned to {transporter.name.replace(' (fictional)', '')}, "
               f"vehicle {sh.vehicle_label}, driver {driver.display_name}", state="PLANNED", user=user,
               source="COORDINATOR")
     add_event(db, sh.id, "MILESTONE", now, "Order created and planned", state="PLANNED", user=user, source="COORDINATOR")

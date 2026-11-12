@@ -54,7 +54,9 @@ Anonymous calls to any non-public endpoint return 401. A wrong role returns 403.
 | GET | `/api/reference-data` | 403 | yes | 403 | - |
 | GET | `/api/shipments` | 403 | yes | 403 | - |
 | GET | `/api/shipments/{shipment_id}` | 403 | yes | 403 | - |
+| POST | `/api/shipments/{shipment_id}/complete-delivery` | 403 | yes | 403 | - |
 | GET | `/api/shipments/{shipment_id}/events` | 403 | yes | 403 | - |
+| POST | `/api/shipments/{shipment_id}/pod-document` | 403 | yes | 403 | - |
 | GET | `/api/shipments/{shipment_id}/prediction` | 403 | yes | 403 | - |
 | POST | `/api/shipments/{shipment_id}/recalculate` | 403 | yes | 403 | - |
 | GET | `/api/shipments/{shipment_id}/scenarios` | 403 | yes | 403 | - |

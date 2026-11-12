@@ -133,21 +133,21 @@ def fixtures_and_golden():
         co, cu, dr = login("coordinator"), login("customer_a"), login("driver1")
         c.post("/api/admin/reset", headers=co)
         co, cu, dr = login("coordinator"), login("customer_a"), login("driver1")
-        pre = c.get("/api/shipments/SHP-G1", headers=co).json()["prediction"]
+        pre = c.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()["prediction"]
         save("control_tower_overview", c.get("/api/control-tower/overview", headers=co).json())
         save("map_data", c.get("/api/control-tower/map-data", headers=co).json())
         save("customer_orders_before", c.get("/api/customer/me/orders", headers=cu).json())
         save("driver_shipments", c.get("/api/transporter/me/shipments", headers=dr).json())
-        c.post("/api/transporter/shipments/SHP-G1/milestones", headers=dr, json={"to_state": "AT_PLANT_GATE"})
-        gate = c.get("/api/shipments/SHP-G1", headers=co).json()["prediction"]
+        c.post("/api/transporter/shipments/SHP-PTH-1116-01/milestones", headers=dr, json={"to_state": "AT_PLANT_GATE"})
+        gate = c.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()["prediction"]
         c.post("/api/simulations/disruptions", headers=co, json={"preset": "FLOOD_R1"})
-        detail = c.get("/api/shipments/SHP-G1", headers=co).json()
+        detail = c.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()
         save("shipment_detail_g1_after_flood", detail)
         save("coordinator_alerts", c.get("/api/alerts", headers=co).json())
         save("customer_alerts", c.get("/api/customer/me/alerts", headers=cu).json())
-        g1 = c.post("/api/shipments/SHP-G1/scenarios", headers=co).json()
+        g1 = c.post("/api/shipments/SHP-PTH-1116-01/scenarios", headers=co).json()
         save("war_room_g1", g1)
-        g2 = c.post("/api/shipments/SHP-G2/scenarios", headers=co).json()
+        g2 = c.post("/api/shipments/SHP-PTH-1116-02/scenarios", headers=co).json()
         save("war_room_g2", g2)
         for name, path in (("analytics_overview", "/api/analytics/overview"), ("analytics_routes", "/api/analytics/routes"),
                            ("analytics_transporters", "/api/analytics/transporters"),
@@ -177,7 +177,7 @@ def fixtures_and_golden():
         vals = c.get("/api/assumptions", headers=co).json()["values"]
         vals.update(alpha=0.01, max_incremental_freight_rs=20000)
         c.put("/api/assumptions", headers=co, json=vals)
-        g3 = c.post("/api/shipments/SHP-G1/scenarios", headers=co).json()
+        g3 = c.post("/api/shipments/SHP-PTH-1116-01/scenarios", headers=co).json()
         save("war_room_g3", g3)
         lines += ["## G3 no feasible option (alpha = 1%, freight cap Rs 20,000)", "",
                   f"- Recommendation: **{g3['recommendation']['banner']}**; least-violating (information only): "

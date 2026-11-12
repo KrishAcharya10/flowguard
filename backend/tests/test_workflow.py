@@ -15,7 +15,7 @@ from tests.conftest import scenario, stage_g1
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def _case(client, auth, sid="SHP-G1"):
+def _case(client, auth, sid="SHP-PTH-1116-01"):
     r = client.post(f"/api/shipments/{sid}/scenarios", headers=auth("coordinator"))
     assert r.status_code == 201, r.text
     return r.json()
@@ -31,18 +31,18 @@ def _approve(client, auth, case, code, reason=None):
 # ---------- vertical slice ----------
 def test_vertical_slice_end_to_end(client, auth):
     co, cu, dr = auth("coordinator"), auth("customer_a"), auth("driver1")
-    before = next(o for o in client.get("/api/customer/me/orders", headers=cu).json() if o["id"] == "ORD-G1")
+    before = next(o for o in client.get("/api/customer/me/orders", headers=cu).json() if o["id"] == "ORD-PTH-1116-01")
     assert before["shipments"][0]["state"] == "LOADING" and before["shipments"][0]["risk_level"] == "Low"
     # driver advances a milestone; coordinator sees it
-    assert client.post("/api/transporter/shipments/SHP-G1/milestones", headers=dr, json={"to_state": "AT_PLANT_GATE"}).status_code == 200
-    assert client.get("/api/shipments/SHP-G1", headers=co).json()["state"] == "AT_PLANT_GATE"
-    p0 = client.get("/api/shipments/SHP-G1", headers=co).json()["prediction"]
+    assert client.post("/api/transporter/shipments/SHP-PTH-1116-01/milestones", headers=dr, json={"to_state": "AT_PLANT_GATE"}).status_code == 200
+    assert client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()["state"] == "AT_PLANT_GATE"
+    p0 = client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()["prediction"]
     # disruption injected -> ETA and risk change -> alert with an actionable suggestion and reason
     d = client.post("/api/simulations/disruptions", headers=co, json={"preset": "FLOOD_R1"}).json()
-    p1 = client.get("/api/shipments/SHP-G1", headers=co).json()["prediction"]
+    p1 = client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()["prediction"]
     assert p1["p50_at"] > p0["p50_at"] and p1["risk_category"] == "HIGH" and p0["risk_category"] == "LOW"
     assert p1["reasons"]["p50_change"]["trigger_event_id"] == d["id"] and p1["reasons"]["p50_change"]["hours"] > 2
-    alert = next(a for a in client.get("/api/alerts", headers=co).json() if a["shipment_id"] == "SHP-G1")
+    alert = next(a for a in client.get("/api/alerts", headers=co).json() if a["shipment_id"] == "SHP-PTH-1116-01")
     assert alert["severity"] == "HIGH" and "REROUTE" in alert["suggested_action"] and "road closure" in alert["message"]
     cust_alert = client.get("/api/customer/me/alerts", headers=cu).json()[0]
     assert cust_alert["promised_at"] and cust_alert["updated_expected_delivery"] and cust_alert["risk_level"] == "High"
@@ -53,9 +53,9 @@ def test_vertical_slice_end_to_end(client, auth):
     r = _approve(client, auth, case, "REROUTE")
     assert r.status_code == 200 and r.json()["status"] == "APPLIED"
     # shipment updates; customer sees updated expected delivery beside the original promise
-    sh = client.get("/api/shipments/SHP-G1", headers=co).json()
+    sh = client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()
     assert sh["active_alternative_route_id"] == "R1A" and sh["prediction"]["p50_at"] < p1["p50_at"]
-    after = next(o for o in client.get("/api/customer/me/orders", headers=cu).json() if o["id"] == "ORD-G1")
+    after = next(o for o in client.get("/api/customer/me/orders", headers=cu).json() if o["id"] == "ORD-PTH-1116-01")
     assert after["promised_at"] == before["promised_at"]                 # promise is immutable
     assert after["updated_expected_delivery"] and after["shipments"][0]["action_note"]
     # panel A shows the modelled benefit; audit trail exists
@@ -106,7 +106,7 @@ def test_material_change_after_scenarios_makes_approve_409(client, auth):
     client.post("/api/simulations/disruptions", headers=auth("coordinator"), json={"preset": "GATE_CONGESTION"})
     r = _approve(client, auth, case, "REROUTE")
     assert r.status_code == 409 and "Re-run" in r.json()["detail"]
-    latest = client.get("/api/shipments/SHP-G1/scenarios", headers=auth("coordinator")).json()
+    latest = client.get("/api/shipments/SHP-PTH-1116-01/scenarios", headers=auth("coordinator")).json()
     assert latest["status"] == "SUPERSEDED"
 
 
@@ -135,7 +135,7 @@ def test_new_case_supersedes_the_old_one(client, auth, db):
     stage_g1(client, auth)
     a, b = _case(client, auth), _case(client, auth)
     assert db.get(m.Intervention, a["id"]).status == "SUPERSEDED"
-    assert db.query(m.Intervention).filter(m.Intervention.shipment_id == "SHP-G1",
+    assert db.query(m.Intervention).filter(m.Intervention.shipment_id == "SHP-PTH-1116-01",
                                            m.Intervention.status == "AWAITING_APPROVAL").count() == 1
     assert b["status"] == "AWAITING_APPROVAL"
 
@@ -146,8 +146,8 @@ def test_split_creates_two_children_and_excludes_the_parent(client, auth, db):
     case = _case(client, auth)
     r = _approve(client, auth, case, "SPLIT", "Customer asked for an urgent partial delivery")
     assert r.status_code == 200, r.text
-    parent = db.get(m.Shipment, "SHP-G1")
-    kids = db.query(m.Shipment).filter(m.Shipment.parent_shipment_id == "SHP-G1").order_by(m.Shipment.lot_type).all()
+    parent = db.get(m.Shipment, "SHP-PTH-1116-01")
+    kids = db.query(m.Shipment).filter(m.Shipment.parent_shipment_id == "SHP-PTH-1116-01").order_by(m.Shipment.lot_type).all()
     assert parent.disposition == "SPLIT_PARENT" and parent.state != "DELIVERED"
     assert sorted(k.lot_type for k in kids) == ["REMAINDER", "URGENT"]
     assert sum(k.quantity_tonnes for k in kids) == parent.quantity_tonnes
@@ -164,37 +164,37 @@ def test_split_creates_two_children_and_excludes_the_parent(client, auth, db):
     # KPI buckets exclude the parent and still sum to the active total
     a, _ = get_assumptions(db)
     counts = analytics.active_buckets(db, db.get(m.SimulationState, 1).sim_now, a)
-    assert "SHP-G1" not in counts["by_shipment"] and "SHP-G1-U" in counts["by_shipment"]
+    assert "SHP-PTH-1116-01" not in counts["by_shipment"] and "SHP-PTH-1116-01-U" in counts["by_shipment"]
     # customer sees two lots, never the parent
-    order = next(o for o in client.get("/api/customer/me/orders", headers=auth("customer_a")).json() if o["id"] == "ORD-G1")
-    assert sorted(s["id"] for s in order["shipments"]) == ["SHP-G1-R", "SHP-G1-U"]
+    order = next(o for o in client.get("/api/customer/me/orders", headers=auth("customer_a")).json() if o["id"] == "ORD-PTH-1116-01")
+    assert sorted(s["id"] for s in order["shipments"]) == ["SHP-PTH-1116-01-R", "SHP-PTH-1116-01-U"]
     # both lots must arrive on time for the order to count as on time
     client.post("/api/simulation/clock/advance", headers=co, json={"minutes": 720})
     client.post("/api/simulation/clock/advance", headers=co, json={"minutes": 600})
     db.expire_all()
     done = {o["order_id"]: o for o in analytics.completed_orders(db, db.get(m.SimulationState, 1).sim_now, a)}
-    kids = db.query(m.Shipment).filter(m.Shipment.parent_shipment_id == "SHP-G1").all()
+    kids = db.query(m.Shipment).filter(m.Shipment.parent_shipment_id == "SHP-PTH-1116-01").all()
     assert all(k.arrived_at for k in kids)
-    promised = db.get(m.Order, "ORD-G1").promised_at
-    assert done["ORD-G1"]["on_time"] == all(k.arrived_at <= promised for k in kids)
-    assert done["ORD-G1"]["shipment_ids"] == ["SHP-G1-R", "SHP-G1-U"] or sorted(done["ORD-G1"]["shipment_ids"]) == ["SHP-G1-R", "SHP-G1-U"]
+    promised = db.get(m.Order, "ORD-PTH-1116-01").promised_at
+    assert done["ORD-PTH-1116-01"]["on_time"] == all(k.arrived_at <= promised for k in kids)
+    assert done["ORD-PTH-1116-01"]["shipment_ids"] == ["SHP-PTH-1116-01-R", "SHP-PTH-1116-01-U"] or sorted(done["ORD-PTH-1116-01"]["shipment_ids"]) == ["SHP-PTH-1116-01-R", "SHP-PTH-1116-01-U"]
     assert db.get(m.Intervention, case["id"]).status == "COMPLETED"
 
 
 # ---------- driver milestones ----------
 def test_driver_milestones_next_state_only_idempotent_and_not_in_future(client, auth, db):
     dr = auth("driver1")
-    url = "/api/transporter/shipments/SHP-G1/milestones"
+    url = "/api/transporter/shipments/SHP-PTH-1116-01/milestones"
     assert client.post(url, headers=dr, json={"to_state": "IN_TRANSIT"}).status_code == 409     # skips a state
     assert client.post(url, headers=dr, json={"to_state": "AT_PLANT_GATE", "occurred_at": "2030-01-01T00:00:00Z"}).status_code == 422
-    v0 = db.get(m.Shipment, "SHP-G1").state_version
+    v0 = db.get(m.Shipment, "SHP-PTH-1116-01").state_version
     assert client.post(url, headers=dr, json={"to_state": "AT_PLANT_GATE"}).status_code == 200
     assert client.post(url, headers=dr, json={"to_state": "AT_PLANT_GATE"}).status_code == 200  # idempotent
     db.expire_all()
-    assert db.get(m.Shipment, "SHP-G1").state_version == v0 + 1
-    assert db.query(m.ShipmentEvent).filter(m.ShipmentEvent.shipment_id == "SHP-G1",
+    assert db.get(m.Shipment, "SHP-PTH-1116-01").state_version == v0 + 1
+    assert db.query(m.ShipmentEvent).filter(m.ShipmentEvent.shipment_id == "SHP-PTH-1116-01",
                                             m.ShipmentEvent.state == "AT_PLANT_GATE").count() == 1
-    assert client.post("/api/transporter/shipments/SHP-G1/pod", headers=dr, json={"recipient_name": "Desk"}).status_code == 409
+    assert client.post("/api/transporter/shipments/SHP-PTH-1116-01/pod", headers=dr, json={"recipient_name": "Desk"}).status_code == 409
 
 
 def test_pod_completes_delivery_but_on_time_is_decided_at_gate_arrival(client, auth, db):
@@ -202,8 +202,8 @@ def test_pod_completes_delivery_but_on_time_is_decided_at_gate_arrival(client, a
     a, _ = get_assumptions(db)
     now = db.get(m.SimulationState, 1).sim_now
     before = {o["order_id"]: o["on_time"] for o in analytics.completed_orders(db, now, a)}
-    assert before["ORD-1011"] is True                         # counted at gate arrival, POD still pending
-    r = client.post("/api/transporter/shipments/SHP-1011/pod", headers=dr, json={"recipient_name": "Receiving desk"})
+    assert before["ORD-BHW-1116-02"] is True                         # counted at gate arrival, POD still pending
+    r = client.post("/api/transporter/shipments/SHP-BHW-1116-02/pod", headers=dr, json={"recipient_name": "Receiving desk"})
     assert r.status_code == 200 and r.json()["state"] == "DELIVERED"
     db.expire_all()
     after = {o["order_id"]: o["on_time"] for o in analytics.completed_orders(db, now, a)}
@@ -214,8 +214,8 @@ def test_pod_completes_delivery_but_on_time_is_decided_at_gate_arrival(client, a
 def test_get_endpoints_never_run_monte_carlo(client, auth, db):
     co = auth("coordinator")
     n = db.query(m.Prediction).count()
-    for p in ("/api/control-tower/overview", "/api/shipments", "/api/shipments/SHP-G1", "/api/control-tower/map-data",
-              "/api/shipments/SHP-G1/prediction?history=true", "/api/analytics/overview", "/api/customer/me/orders"):
+    for p in ("/api/control-tower/overview", "/api/shipments", "/api/shipments/SHP-PTH-1116-01", "/api/control-tower/map-data",
+              "/api/shipments/SHP-PTH-1116-01/prediction?history=true", "/api/analytics/overview", "/api/customer/me/orders"):
         client.get(p, headers=co if "customer" not in p else auth("customer_a"))
     db.expire_all()
     assert db.query(m.Prediction).count() == n
@@ -226,14 +226,14 @@ def test_get_endpoints_never_run_monte_carlo(client, auth, db):
 def test_alerts_are_deduplicated(client, auth, db):
     stage_g1(client, auth)
     n = db.query(m.Alert).count()
-    client.post("/api/shipments/SHP-G1/recalculate", headers=auth("coordinator"))
-    client.post("/api/shipments/SHP-G1/recalculate", headers=auth("coordinator"))
+    client.post("/api/shipments/SHP-PTH-1116-01/recalculate", headers=auth("coordinator"))
+    client.post("/api/shipments/SHP-PTH-1116-01/recalculate", headers=auth("coordinator"))
     db.expire_all()
     assert db.query(m.Alert).count() == n
 
 
 def test_no_stock_data_uses_p_late_only(client, auth):
-    d = client.get("/api/shipments/SHP-1007", headers=auth("coordinator")).json()
+    d = client.get("/api/shipments/SHP-PTH-1116-03", headers=auth("coordinator")).json()
     assert d["stock"]["available"] is False and "unavailable" in d["stock"]["note"]
     assert d["prediction"]["p_stockout"] is None
     assert d["prediction"]["risk_index"] == round(100 * d["prediction"]["p_late"])
@@ -242,17 +242,17 @@ def test_no_stock_data_uses_p_late_only(client, auth):
 # ---------- simulator: truth vs belief ----------
 def test_stale_telemetry_widens_range_and_never_fabricates_a_position(client, auth, db):
     co = auth("coordinator")
-    sh = db.get(m.Shipment, "SHP-1010")
+    sh = db.get(m.Shipment, "SHP-AMV-1116-04")
     pos0, seen0 = (sh.last_lat, sh.last_lon, sh.last_progress_km), sh.last_telemetry_at
-    other0 = db.get(m.Shipment, "SHP-1014").last_progress_km
-    p0 = client.get("/api/shipments/SHP-1010", headers=co).json()["prediction"]
+    other0 = db.get(m.Shipment, "SHP-AMV-1116-05").last_progress_km
+    p0 = client.get("/api/shipments/SHP-AMV-1116-04", headers=co).json()["prediction"]
     assert p0["data_confidence"] == "STALE"
     client.post("/api/simulation/clock/advance", headers=co, json={"minutes": 30})
     db.expire_all()
-    sh = db.get(m.Shipment, "SHP-1010")
+    sh = db.get(m.Shipment, "SHP-AMV-1116-04")
     assert (sh.last_lat, sh.last_lon, sh.last_progress_km) == pos0 and sh.last_telemetry_at == seen0
-    assert db.get(m.Shipment, "SHP-1014").last_progress_km > other0        # others keep reporting
-    v = next(v for v in client.get("/api/control-tower/map-data", headers=co).json()["vehicles"] if v["shipment_id"] == "SHP-1010")
+    assert db.get(m.Shipment, "SHP-AMV-1116-05").last_progress_km > other0        # others keep reporting
+    v = next(v for v in client.get("/api/control-tower/map-data", headers=co).json()["vehicles"] if v["shipment_id"] == "SHP-AMV-1116-04")
     assert v["data_confidence"] == "STALE" and v["age_min"] >= 120
     # compare with a fresh shipment of similar remaining distance: the stale range is wider per hour of travel
     assert any("uncertainty widened" in n for n in p0["reasons"]["notes"])
@@ -260,11 +260,11 @@ def test_stale_telemetry_widens_range_and_never_fabricates_a_position(client, au
 
 def test_clock_advance_moves_shipments_and_bumps_only_clock_version(client, auth, db):
     co = auth("coordinator")
-    sv = db.get(m.Shipment, "SHP-1003").state_version
+    sv = db.get(m.Shipment, "SHP-AMV-1116-01").state_version
     r = client.post("/api/simulation/clock/advance", headers=co, json={"minutes": 10}).json()
     assert r["clock"]["clock_version"] == 2 and r["clock"]["paused"] is True
     db.expire_all()
-    assert db.get(m.Shipment, "SHP-1003").state_version == sv              # ticks are not material events
+    assert db.get(m.Shipment, "SHP-AMV-1116-01").state_version == sv              # ticks are not material events
     client.post("/api/simulation/clock/advance", headers=co, json={"minutes": 720})
     db.expire_all()
     arrived = db.query(m.Shipment).filter(m.Shipment.is_historical.is_(False),
@@ -274,24 +274,24 @@ def test_clock_advance_moves_shipments_and_bumps_only_clock_version(client, auth
 
 def test_breakdown_is_a_vehicle_stoppage_not_a_route_closure(client, auth):
     co = auth("coordinator")
-    p0 = client.get("/api/shipments/SHP-1014", headers=co).json()["prediction"]
-    other0 = client.get("/api/shipments/SHP-1003", headers=co).json()["prediction"]
-    r = client.post("/api/simulations/disruptions", headers=co, json={"preset": "BREAKDOWN", "shipment_id": "SHP-1014"})
+    p0 = client.get("/api/shipments/SHP-AMV-1116-05", headers=co).json()["prediction"]
+    other0 = client.get("/api/shipments/SHP-AMV-1116-01", headers=co).json()["prediction"]
+    r = client.post("/api/simulations/disruptions", headers=co, json={"preset": "BREAKDOWN", "shipment_id": "SHP-AMV-1116-05"})
     assert r.status_code == 201 and r.json()["kind"] == "VEHICLE_STOPPAGE" and r.json()["segment_waypoint_id"] is None
-    p1 = client.get("/api/shipments/SHP-1014", headers=co).json()["prediction"]
+    p1 = client.get("/api/shipments/SHP-AMV-1116-05", headers=co).json()["prediction"]
     chips = {c["key"]: c["hours"] for c in p1["reasons"]["chips"]}
     assert chips["repair_wait"] > 0.9 and chips["closure_wait"] == 0 and p1["p50_at"] > p0["p50_at"]
-    assert client.get("/api/shipments/SHP-1003", headers=co).json()["prediction"]["id"] != other0["id"]
-    assert client.get("/api/shipments/SHP-1003", headers=co).json()["prediction"]["p50_at"] == other0["p50_at"]
+    assert client.get("/api/shipments/SHP-AMV-1116-01", headers=co).json()["prediction"]["id"] != other0["id"]
+    assert client.get("/api/shipments/SHP-AMV-1116-01", headers=co).json()["prediction"]["p50_at"] == other0["p50_at"]
     assert client.post("/api/simulations/disruptions", headers=co,
-                       json={"preset": "BREAKDOWN", "shipment_id": "SHP-G1"}).status_code == 409   # not in transit
+                       json={"preset": "BREAKDOWN", "shipment_id": "SHP-PTH-1116-01"}).status_code == 409   # not in transit
 
 
 def test_reroute_ineligible_after_decision_node_and_split_after_departure(client, auth):
-    case = _case(client, auth, "SHP-1007")                     # in transit, past Junction N1
+    case = _case(client, auth, "SHP-PTH-1116-03")                     # in transit, past Chalisgaon Junction
     assert scenario(case, "REROUTE")["eligible"] is False and "decision node" in scenario(case, "REROUTE")["ineligible_reason"]
     assert scenario(case, "SPLIT")["eligible"] is False and scenario(case, "SPLIT")["metrics"] is None
-    case = _case(client, auth, "SHP-1005")                     # route R3 has no alternative
+    case = _case(client, auth, "SHP-SAT-1116-01")                     # route R3 has no alternative
     assert "No alternative route" in scenario(case, "REROUTE")["ineligible_reason"]
 
 
@@ -338,9 +338,9 @@ def test_delay_attribution_for_a_live_arrival(client, auth, db):
     client.post("/api/simulation/clock/advance", headers=co, json={"minutes": 720})
     client.post("/api/simulation/clock/advance", headers=co, json={"minutes": 600})
     db.expire_all()
-    g2 = db.get(m.Shipment, "SHP-G2")
+    g2 = db.get(m.Shipment, "SHP-PTH-1116-02")
     assert g2.arrived_at is not None
-    evs = db.query(m.DelayEvent).filter(m.DelayEvent.shipment_id == "SHP-G2").all()
+    evs = db.query(m.DelayEvent).filter(m.DelayEvent.shipment_id == "SHP-PTH-1116-02").all()
     assert sum(e.hours for e in evs) == pytest.approx(hours(g2.arrived_at - g2.planned_arrival_at), abs=1e-3)
     assert "FLOODING" in {e.cause for e in evs}
 
@@ -386,7 +386,7 @@ def test_performance_targets(client, auth):
     assert client.get("/api/control-tower/overview", headers=co).status_code == 200
     overview_ms = (time.perf_counter() - t) * 1000
     t = time.perf_counter()
-    assert client.post("/api/shipments/SHP-G1/scenarios", headers=co).status_code == 201
+    assert client.post("/api/shipments/SHP-PTH-1116-01/scenarios", headers=co).status_code == 201
     scenario_s = time.perf_counter() - t
     print(f"overview {overview_ms:.0f} ms (14 live shipments), scenario creation {scenario_s * 1000:.0f} ms")
     assert overview_ms < 1000 and scenario_s < 2.0
@@ -399,7 +399,7 @@ def test_reset_endpoint_restores_the_seed(client, auth):
     assert r.status_code == 200 and r.json()["historical_shipments"] >= 150
     from tests.conftest import login
     co = login(client, "coordinator")
-    assert client.get("/api/shipments/SHP-G1", headers=co).json()["state"] == "LOADING"
+    assert client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()["state"] == "LOADING"
     assert client.get("/api/simulations/disruptions", headers=co).json()[0]["preset"] == "TELEMETRY_OUTAGE"
 
 

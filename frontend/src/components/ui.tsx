@@ -55,6 +55,19 @@ export function Card({ title, right, children, className = '' }: { title?: React
   )
 }
 
+export function PageHeader({ icon, title, children, right }: { icon?: ReactNode; title: string; children?: ReactNode; right?: ReactNode }) {
+  return (
+    <header className="flex flex-wrap items-center gap-x-4 gap-y-2">
+      {icon && <span className="h-10 w-10 rounded-lg bg-navy-900 text-white flex items-center justify-center shrink-0">{icon}</span>}
+      <div className="min-w-0">
+        <h1 className="text-[22px] font-bold leading-tight text-navy-900">{title}</h1>
+        {children && <p className="text-[13px] text-slate-600 max-w-3xl">{children}</p>}
+      </div>
+      {right && <div className="ml-auto">{right}</div>}
+    </header>
+  )
+}
+
 export function Kpi({ label, value, sub }: { label: string; value: ReactNode; sub?: ReactNode }) {
   return (
     <div className="card p-3">

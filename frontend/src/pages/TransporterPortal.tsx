@@ -87,12 +87,14 @@ function PodUpload({ s, replace = false }: { s: DriverShipment; replace?: boolea
   const [recipient, setRecipient] = useState(s.pod_recipient ?? '')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null)
+  const name = recipient.trim()
+  const missing = name.length < 2 ? "Step 1 is missing: enter the receiver's name." : !file ? 'Step 2 is missing: add a photo or signed note, or complete the delivery without a document.' : ''
   const submit = async () => {
     if (!file) return
     setBusy(true)
     setMsg(null)
     try {
-      const q = new URLSearchParams({ filename: file.name, recipient_name: recipient.trim() })
+      const q = new URLSearchParams({ filename: file.name, recipient_name: name })
       const r = await uploadFile<{ message: string }>(`/api/transporter/shipments/${s.id}/pod-document?${q}`, file)
       setMsg({ kind: 'ok', text: r.message })
       setFile(null)
@@ -102,17 +104,28 @@ function PodUpload({ s, replace = false }: { s: DriverShipment; replace?: boolea
   const noDoc = async () => {
     setBusy(true)
     setMsg(null)
-    try { await api(`/api/transporter/shipments/${s.id}/pod`, { method: 'POST', body: { recipient_name: recipient } }); setMsg({ kind: 'ok', text: 'Proof of delivery recorded.' }); refreshAll() } catch (e) { setMsg({ kind: 'error', text: (e as Error).message }) } finally { setBusy(false) }
+    try { await api(`/api/transporter/shipments/${s.id}/pod`, { method: 'POST', body: { recipient_name: name } }); setMsg({ kind: 'ok', text: 'Delivery completed.' }); refreshAll() } catch (e) { setMsg({ kind: 'error', text: (e as Error).message }) } finally { setBusy(false) }
   }
+  const step = (n: number, text: string) => <div className="flex items-center gap-2 text-sm font-bold text-navy-900"><span className="h-6 w-6 rounded-full bg-navy-800 text-white text-xs flex items-center justify-center">{n}</span>{text}</div>
   return (
-    <div className="space-y-2.5">
-      <div className="text-xs font-semibold uppercase text-slate-500">{replace ? 'Replace the proof of delivery document' : 'Proof of delivery'}</div>
-      <label className="block text-sm font-medium">Received by (name)
-        <input className="input mt-1 !py-3 !text-base" value={recipient} onChange={(e) => setRecipient(e.target.value)} minLength={2} maxLength={80} />
-      </label>
-      <FileDrop file={file} onFile={setFile} label="Photo or signed delivery note" />
-      <button className="btn-primary w-full !min-h-[60px] !text-base !rounded-xl" disabled={busy || !file || recipient.trim().length < 2} onClick={submit}><Icon name="upload" size={18} />{replace ? 'Upload replacement' : 'Upload proof of delivery'}</button>
-      {!replace && <button className="w-full text-sm underline text-slate-600" disabled={busy || recipient.trim().length < 2} onClick={noDoc}>No document? Record the delivery without one</button>}
+    <div className="space-y-3">
+      {replace && <div className="text-xs font-semibold uppercase text-slate-500">Replace the proof of delivery document</div>}
+      <div className="space-y-1.5">
+        {step(1, 'Who received the delivery?')}
+        <label className="block text-sm font-medium"><span className="sr-only">Received by (name)</span>
+          <input aria-label="Received by (name)" className="input !py-3 !text-base" value={recipient} onChange={(e) => setRecipient(e.target.value)} maxLength={80} placeholder="Receiver's full name" />
+        </label>
+      </div>
+      <div className="space-y-1.5">
+        {step(2, 'Add proof (photo or signed delivery note)')}
+        <FileDrop file={file} onFile={setFile} label="Tap to take a photo or choose a file" />
+      </div>
+      <div className="space-y-1.5">
+        {step(3, replace ? 'Send it' : 'Finish')}
+        <button className="btn-primary w-full !min-h-[60px] !text-base !rounded-xl" disabled={busy || !file || name.length < 2} onClick={submit}><Icon name="upload" size={18} />{replace ? 'Upload replacement' : 'Upload proof of delivery'}</button>
+        {missing && <p className="text-xs text-amber-800" role="status">{missing}</p>}
+        {!replace && <button className="btn-secondary w-full !min-h-[48px]" disabled={busy || name.length < 2} onClick={noDoc}>Complete delivery without a document</button>}
+      </div>
       {msg && <Notice kind={msg.kind}>{msg.text}</Notice>}
     </div>
   )
@@ -121,7 +134,6 @@ function PodUpload({ s, replace = false }: { s: DriverShipment; replace?: boolea
 function ShipmentCard({ s, booking }: { s: DriverShipment; booking?: DriverBooking }) {
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null)
-  const [recipient, setRecipient] = useState('')
   const run = async (fn: () => Promise<unknown>, ok: string) => {
     setBusy(true)
     setMsg(null)
@@ -144,7 +156,23 @@ function ShipmentCard({ s, booking }: { s: DriverShipment; booking?: DriverBooki
       </div>
 
       <div className="p-4 space-y-4">
-        {booking && <GateAppointment b={booking} />}
+        {isPod && (
+          <div className="rounded-xl border-2 border-amber-400 bg-amber-50 p-3 space-y-3" data-testid="handover">
+            <div className="font-bold text-amber-950 flex items-center gap-2"><Icon name="flag" />You have arrived. Hand over the delivery</div>
+            <p className="text-sm text-amber-950">The delivery is not finished until you record who received it.</p>
+            <PodUpload s={s} />
+          </div>
+        )}
+        {s.next_state && !isPod && (
+          <div className="rounded-xl border-2 border-navy-800 bg-navy-50 p-3" data-testid="next-step">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-navy-700 mb-1.5">Your next step</div>
+            <button className="btn-primary w-full !min-h-[64px] !text-[17px] !rounded-xl" disabled={busy}
+              onClick={() => run(() => api(`/api/transporter/shipments/${s.id}/milestones`, { method: 'POST', body: { to_state: s.next_state } }), 'Milestone recorded.')}>
+              Confirm: {s.next_state_label}
+            </button>
+          </div>
+        )}
+        {booking && !isPod && <GateAppointment b={booking} />}
         <div>
           <div className="flex justify-between text-sm"><span className="font-semibold">Route progress · {s.route_name}{s.alternative_route_name ? ` via ${s.alternative_route_name}` : ''}</span><span className="font-bold">{s.progress_pct}%</span></div>
           <div className="relative h-3 rounded-full bg-slate-200 mt-1.5" role="progressbar" aria-valuenow={s.progress_pct} aria-valuemin={0} aria-valuemax={100} aria-label="Route progress">
@@ -156,6 +184,8 @@ function ShipmentCard({ s, booking }: { s: DriverShipment; booking?: DriverBooki
         {s.instruction && <Notice kind="warn"><strong>From the control tower:</strong> {s.instruction}</Notice>}
         {s.active_report && <Notice kind="error"><strong>{s.active_report}.</strong> The control tower knows. Keep them updated.</Notice>}
 
+        <details>
+        <summary className="text-sm font-semibold text-slate-700 cursor-pointer mb-1.5">Show all progress steps</summary>
         <ol className="space-y-1.5" aria-label="Milestones">
           {s.milestones.map((m, i) => (
             <li key={m.state} className={`flex items-center gap-3 rounded-lg px-2 py-1.5 ${m.current ? 'bg-navy-50 border border-navy-700' : ''}`}>
@@ -165,17 +195,8 @@ function ShipmentCard({ s, booking }: { s: DriverShipment; booking?: DriverBooki
             </li>
           ))}
         </ol>
+        </details>
 
-        {s.next_state && !isPod && (
-          <div>
-            <div className="text-xs font-semibold uppercase text-slate-500 mb-1">Next milestone</div>
-            <button className="btn-primary w-full !min-h-[60px] !text-base !rounded-xl" disabled={busy}
-              onClick={() => run(() => api(`/api/transporter/shipments/${s.id}/milestones`, { method: 'POST', body: { to_state: s.next_state } }), 'Milestone recorded.')}>
-              Confirm: {s.next_state_label}
-            </button>
-          </div>
-        )}
-        {isPod && <PodUpload s={s} />}
         {s.state === 'DELIVERED' && (
           <div className="space-y-3">
             <Notice kind="ok">Delivered. Received by {s.pod_recipient}. Thank you.</Notice>

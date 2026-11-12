@@ -147,6 +147,34 @@ async def upload_pod_document(shipment_id: str, request: Request, filename: str 
                           message="Proof of delivery uploaded. The delivery is complete.")
 
 
+@router.post("/shipments/{shipment_id}/pod-document", response_model=s.UploadResultOut, status_code=201, tags=["documents"])
+async def coordinator_upload_pod(shipment_id: str, request: Request, filename: str = Query(..., min_length=1, max_length=200),
+                                 recipient_name: str = Query(..., min_length=2, max_length=80),
+                                 user: m.User = Depends(COORD), db: Session = Depends(get_db)):
+    """The control tower uploads the proof of delivery on the driver's behalf (for example when the driver cannot).
+    Completes the delivery if the vehicle is at the customer gate. Audited as done by the coordinator."""
+    sh = db.get(m.Shipment, shipment_id)
+    if sh is None or sh.is_historical:
+        raise HTTPException(404, "Shipment not found")
+    data = await _read_body(request)
+    d = doc_svc.upload_pod(db, user, sh, data, filename, recipient_name)
+    return s.UploadResultOut(document=doc_svc.doc_out(db, d), message=f"Proof of delivery uploaded for {shipment_id}. The delivery is complete.")
+
+
+@router.post("/shipments/{shipment_id}/complete-delivery", response_model=s.MessageOut, tags=["documents"])
+def coordinator_complete_delivery(shipment_id: str, body: s.CompleteDeliveryIn, user: m.User = Depends(COORD),
+                                  db: Session = Depends(get_db)):
+    """Complete a delivery WITHOUT a document, on the driver's behalf (recipient name only)."""
+    from ..services.shipments import record_delivery
+    sh = db.get(m.Shipment, shipment_id)
+    if sh is None or sh.is_historical:
+        raise HTTPException(404, "Shipment not found")
+    if sh.state != "DELIVERED":
+        record_delivery(db, user, sh, body.recipient_name)
+        db.commit()
+    return s.MessageOut(message=f"Delivery of {shipment_id} recorded.", shipment_id=shipment_id, state=sh.state)
+
+
 @router.get("/customer/me/documents", response_model=list[s.CustomerDocumentOut], tags=["documents"])
 def customer_documents(user: m.User = Depends(CUST), db: Session = Depends(get_db)):
     """The customer's own current invoices and proof-of-delivery documents."""

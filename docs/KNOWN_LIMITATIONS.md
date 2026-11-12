@@ -52,3 +52,14 @@ Honest list for judges and for a pilot plan. None of these affects the official 
 - Auto-advancing clock, alert escalation timers, driver-reported hazards (scope class E). Custom disruption
   durations are available (Control Tower → Custom duration); custom multipliers only through the API.
 - Performance was tested to 80 live shipments (≈ 150–210 ms for the Control Tower overview); not load-tested beyond.
+
+## Map
+
+- The geographic background uses OpenStreetMap tiles when the browser is online. This is the only external network
+  call in the app. It needs no key and shows attribution, but it follows the public tile servers' usage policy
+  (light demo use only), and the tiles are not cached by the app. Offline, the map switches automatically to the
+  local "Illustrative logistics network - not to scale" drawing.
+- Routes and positions are simulated. On the geographic map they are drawn over real roads' surroundings but do
+  not follow real road geometry; the route lines are straight segments between named waypoints.
+- Vehicle clustering is by screen distance (no extra library). With several trucks at exactly the same point (for
+  example all waiting at Plant X) they are fanned out on click.

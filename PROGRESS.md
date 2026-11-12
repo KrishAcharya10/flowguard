@@ -20,7 +20,14 @@ Last updated: 2026-11-12.
       breakdown/hazard reports, activity feed, redesigned coordinator / driver / customer portals.
 - [x] Bonus features: gate slot booking (+ driver check-in), "Where is my order?" chatbot, invoice and proof-of-delivery
       upload / download with private storage, versions, verification and audit.
-- [x] Tests: 212 backend, 12 browser (incl. all three bonus workflows), 3 live-site checks (`playwright.live.config.ts`).
+- [x] Delivery completion fix: the driver's arrived card opens with the hand-over form (receiver name + photo, or "Complete
+      delivery without a document"); the coordinator can complete a delivery for the driver (Documents, Control Tower row).
+- [x] Realistic names: Maharashtra places (Waluj to Pithampur / Amravati / Satara / Bhiwandi), invented companies and people,
+      meaningful ids (`ORD-PTH-1116-01`), clearer demo guide (question, minutes, quick-start).
+- [x] Visual redesign: design tokens, map-first Control Tower, new map (OpenStreetMap tiles by default, automatic offline
+      "Illustrative logistics network", custom truck markers, clustering, active-reroute and disruption overlays, legend,
+      full screen, filters, vehicle panel), War Room scenario cards, shipment-detail map, login, driver next-step-first.
+- [x] Tests: 217 backend, 20 browser (incl. map online/offline, reroute, layouts, POD completion), 3 live-site checks.
 
 ## Next (humans)
 1. Each developer reads `docs/walkthroughs/` and their `docs/DEFENCE_BRIEF_DEVn.md`, then signs `docs/AI_DISCLOSURE.md`.
@@ -33,10 +40,12 @@ Last updated: 2026-11-12.
 None.
 
 ## Test status
-Backend 212 passed · hand-check GO · frontend build OK · browser tests 12 passed · live-site check 3 passed.
+Backend 217 passed · hand-check GO · frontend build OK · lint 0 errors · browser tests 20 passed · live-site check 3 passed.
 
 ## Open decisions / notes
+- The only external call is the optional OpenStreetMap tile request (user decision, replaces the old "no external service"
+  rule; see `CLAUDE.md`, `docs/KNOWN_LIMITATIONS.md`). Offline, the map falls back to a local drawing automatically.
 - The master prompt asked to stop after Phase 0 for approval. The user instructed "start now and complete", so the
   build continued; Phase 0 outputs remain for review.
-- One parameter tuned (North Bypass speed 44 → 42 km/h), logged in `docs/GOLDEN_BASELINE.md`.
+- One parameter tuned (Dhule Bypass speed 44 → 42 km/h), logged in `docs/GOLDEN_BASELINE.md`.
 - Not built: gate slot booking, chatbot, POD file upload, scope class E features.

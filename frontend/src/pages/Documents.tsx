@@ -1,14 +1,19 @@
 // Coordinator documents: invoice and proof-of-delivery status for every live order, with upload and verification.
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useApi, type DocumentsOverviewRow } from '../api/client'
 import DocumentsPanel, { Chip, DownloadButton } from '../components/Documents'
 import Icon from '../components/Icons'
-import { Card, State } from '../components/ui'
+import { Card, PageHeader, State } from '../components/ui'
 
 export default function Documents() {
   const { data, error, loading, reload } = useApi<DocumentsOverviewRow[]>('/api/documents/overview')
-  const [sel, setSel] = useState<string | null>(null)
-  const rows = data ?? []
+  const [params] = useSearchParams()
+  const [sel, setSel] = useState<string | null>(params.get('order'))
+  const [onlyAwaiting, setOnlyAwaiting] = useState(false)
+  const all = data ?? []
+  const awaiting = all.filter((r) => r.shipment_states.includes('ARRIVED_AT_CUSTOMER_GATE'))
+  const rows = onlyAwaiting ? awaiting : all
   const current = sel ?? rows[0]?.order_id ?? null
   const withInvoice = rows.filter((r) => r.invoice).length
   const podDone = rows.reduce((n, r) => n + r.pods_uploaded, 0)
@@ -16,19 +21,17 @@ export default function Documents() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-gradient-to-r from-navy-900 via-navy-800 to-teal-800 text-white p-5 flex flex-wrap items-center gap-4">
-        <span className="h-12 w-12 rounded-xl bg-white/15 flex items-center justify-center"><Icon name="file" size={26} /></span>
-        <div><h1 className="text-2xl font-bold">Invoices and proof of delivery</h1>
-          <p className="text-sm text-slate-200">Upload invoices against orders, review driver proof-of-delivery documents and verify them. Files are kept in private storage and every download is checked and logged.</p></div>
-        <div className="ml-auto flex gap-5 text-center">
-          <div><div className="text-2xl font-bold">{withInvoice}/{rows.length}</div><div className="text-[11px] uppercase tracking-wide text-slate-300">orders invoiced</div></div>
-          <div><div className="text-2xl font-bold">{podDone}/{podDue}</div><div className="text-[11px] uppercase tracking-wide text-slate-300">delivered with POD</div></div>
+      <PageHeader icon={<Icon name="file" size={22} />} title="Invoices and proof of delivery" right={<div className="flex gap-6 text-right"><div><div className="text-xl font-bold text-navy-900 tabular-nums">{withInvoice}/{rows.length}</div><div className="label !text-[10px]">orders invoiced</div></div><div><div className="text-xl font-bold text-navy-900 tabular-nums">{podDone}/{podDue}</div><div className="label !text-[10px]">delivered with POD</div></div></div>}>Upload invoices against orders, review driver proof-of-delivery documents and verify them. Files are kept in private storage and every download is checked and logged.</PageHeader>
+      {awaiting.length > 0 && (
+        <div className="rounded-xl border-2 border-amber-400 bg-amber-50 p-3 flex flex-wrap items-center gap-3">
+          <span className="text-sm text-amber-950"><strong>{awaiting.length} delivered load{awaiting.length > 1 ? 's are' : ' is'} waiting for proof of delivery.</strong> The vehicle has arrived but the delivery is not finished. Open the order and complete it for the driver, or ask the driver to do it in the driver app.</span>
+          <button className="btn-primary ml-auto" onClick={() => { setOnlyAwaiting(!onlyAwaiting); setSel(null) }}>{onlyAwaiting ? 'Show all orders' : 'Show only these'}</button>
         </div>
-      </div>
+      )}
       <State loading={loading && !data} error={error} empty={!!data && rows.length === 0} onRetry={reload} />
       {data && (
         <div className="grid xl:grid-cols-5 gap-4 items-start">
-          <Card title={`Orders (${rows.length})`} className="xl:col-span-3">
+          <Card title={`Orders (${rows.length}${onlyAwaiting ? ', awaiting proof of delivery' : ''})`} className="xl:col-span-3">
             <div className="overflow-x-auto"><table className="w-full">
               <thead><tr className="border-b border-slate-200"><th>Order</th><th>Customer</th><th>Invoice</th><th>Proof of delivery</th><th></th></tr></thead>
               <tbody>{rows.map((r) => (

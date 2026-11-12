@@ -73,11 +73,11 @@ class Assumptions(BaseModel):
 
 # Disruption presets: parameterised events with validated bounds (spec 4.5).
 PRESETS = {
-    "FLOOD_R1": {"label": "Flooding - North Corridor river crossing", "cause": "FLOODING", "kind": "CLOSURE",
+    "FLOOD_R1": {"label": "Flooding - Tapi River Bridge (Waluj to Pithampur road)", "cause": "FLOODING", "kind": "CLOSURE",
                  "route_id": "R1", "segment_waypoint_id": "R1-W2", "duration": (7.0, 9.0, 12.0)},
-    "FLOOD_R2": {"label": "Flooding - East Corridor market town", "cause": "FLOODING", "kind": "CLOSURE",
+    "FLOOD_R2": {"label": "Flooding - Buldhana market town (Waluj to Amravati road)", "cause": "FLOODING", "kind": "CLOSURE",
                  "route_id": "R2", "segment_waypoint_id": "R2-W2", "duration": (4.0, 6.0, 9.0)},
-    "CONGESTION_R3": {"label": "Route congestion - South Coastal coast road", "cause": "ROUTE_CONGESTION",
+    "CONGESTION_R3": {"label": "Route congestion - Supa Toll Plaza (Waluj to Satara road)", "cause": "ROUTE_CONGESTION",
                       "kind": "SLOWDOWN", "route_id": "R3", "segment_waypoint_id": "R3-W2",
                       "duration": (3.0, 5.0, 8.0), "multiplier": 1.6},
     "GATE_CONGESTION": {"label": "Plant gate congestion", "cause": "GATE_CONGESTION", "kind": "GATE_QUEUE_SHIFT",

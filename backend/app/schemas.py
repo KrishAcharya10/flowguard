@@ -716,6 +716,8 @@ class DemoUseCase(BaseModel):
     number: int
     title: str
     tagline: str
+    question: str = ""
+    minutes: int = 3
     proves: list[str]
     focus_shipment: str
     story: str
@@ -1032,3 +1034,13 @@ class ChatReplyOut(BaseModel):
 PodUploadOut.model_rebuild()
 
 ReferenceDataOut.model_rebuild()
+
+
+class CompleteDeliveryIn(BaseModel):
+    recipient_name: str = Field(min_length=2, max_length=80)
+
+
+class MessageOut(BaseModel):
+    message: str
+    shipment_id: str
+    state: str

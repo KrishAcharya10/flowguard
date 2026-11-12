@@ -24,7 +24,7 @@ from app.seeds import seed_pred  # noqa: E402
 
 A = Assumptions()
 GLOBAL_SEED = 20261116
-SEED = seed_pred(GLOBAL_SEED, "SHP-G1")
+SEED = seed_pred(GLOBAL_SEED, "SHP-PTH-1116-01")
 N = A.n_samples
 FAILS = []
 

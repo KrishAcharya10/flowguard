@@ -18,6 +18,7 @@ async function login(browser: Browser, username: string, mobile = false): Promis
   await ctx.route('**/*', (route) => {
     const host = new URL(route.request().url()).hostname
     if (host === '127.0.0.1' || host === 'localhost') return route.continue()
+    if (host === 'tile.openstreetmap.org') return route.abort()      // optional map tiles; blocked here to prove the offline fallback
     external.push(route.request().url())
     return route.abort()
   })
@@ -40,36 +41,36 @@ test('customer -> driver -> coordinator -> disruption -> war room -> approve -> 
   const driver = await login(browser, 'driver1', true)
 
   // 1 customer views the order: original promise visible, risk low
-  await customer.getByRole('button', { name: /ORD-G1/ }).click()
+  await customer.getByRole('button', { name: /ORD-PTH-1116-01/ }).click()
   const detail = customer.getByTestId('order-detail')
   await expect(detail.getByText('Original promise', { exact: true })).toBeVisible()
   await expect(detail.getByText('Delay risk: Low')).toBeVisible()
   await customer.screenshot({ path: `${SHOTS}/01-customer-before.png`, fullPage: true })
 
   // 2 driver advances a milestone
-  await expect(driver.getByText('SHP-G1')).toBeVisible()
+  await expect(driver.getByText('SHP-PTH-1116-01')).toBeVisible()
   await driver.getByRole('button', { name: /Confirm: Loaded, waiting at plant gate/ }).click()
   await expect(driver.getByText('Milestone recorded.')).toBeVisible()
   await driver.screenshot({ path: `${SHOTS}/02-driver.png`, fullPage: true })
 
   // 3 the coordinator sees it WITHOUT a reload (live sync), on the table and the map
-  const row = coordinator.locator('tr', { hasText: 'SHP-G1' })
+  const row = coordinator.locator('tr', { hasText: 'SHP-PTH-1116-01' })
   await expect(row.getByText('Loaded, waiting at plant gate')).toBeVisible({ timeout: 10_000 })
   await expect(coordinator.locator('.leaflet-container')).toBeVisible()
   await expect(coordinator.getByText('Illustrative routes. Positions are simulated.')).toBeVisible()
-  await expect(coordinator.getByText('SHP-G1 loaded and waiting at the plant gate')).toBeVisible()
+  await expect(coordinator.getByText('SHP-PTH-1116-01 loaded and waiting at the plant gate')).toBeVisible()
 
   // 4 disruption injected -> ETA and risk change -> alert
   await coordinator.getByLabel('Disruption preset').selectOption('FLOOD_R1')
   await coordinator.getByRole('button', { name: 'Inject disruption' }).click()
   await expect(coordinator.getByText('Disruption injected. Predictions recalculated.')).toBeVisible()
   await expect(row.getByText('High')).toBeVisible()
-  await expect(coordinator.getByText('Risk changed from LOW to HIGH: SHP-G1')).toBeVisible()
+  await expect(coordinator.getByText('Risk changed from LOW to HIGH: SHP-PTH-1116-01')).toBeVisible()
   await coordinator.screenshot({ path: `${SHOTS}/03-control-tower.png`, fullPage: true })
   await coordinator.getByRole('button', { name: /Open alerts/ }).click()
   const drawer = coordinator.getByRole('dialog', { name: 'Alerts' })
-  const alert = drawer.locator('li', { hasText: 'Delay risk HIGH: SHP-G1' })
-  await expect(alert.getByText(/REROUTE via North Bypass/)).toBeVisible()
+  const alert = drawer.locator('li', { hasText: 'Delay risk HIGH: SHP-PTH-1116-01' })
+  await expect(alert.getByText(/REROUTE via Dhule Bypass/)).toBeVisible()
   await coordinator.screenshot({ path: `${SHOTS}/04-alerts.png` })
   await alert.getByRole('button', { name: 'Shipment' }).click()
 
@@ -83,7 +84,7 @@ test('customer -> driver -> coordinator -> disruption -> war room -> approve -> 
   await coordinator.getByRole('button', { name: 'Run scenarios' }).click()
   await expect(coordinator.getByText('RECOMMENDED: REROUTE')).toBeVisible()
   for (const name of ['Continue', 'Reroute', 'Split shipment']) {
-    await expect(coordinator.getByRole('columnheader', { name: new RegExp(name) })).toBeVisible()
+    await expect(coordinator.getByRole('article', { name: `${name} scenario` })).toBeVisible()
   }
   await expect(coordinator.getByText('holds in 16 of 16 stress cases')).toBeVisible()
   await coordinator.screenshot({ path: `${SHOTS}/06-war-room.png`, fullPage: true })
@@ -102,10 +103,10 @@ test('customer -> driver -> coordinator -> disruption -> war room -> approve -> 
   await customer.screenshot({ path: `${SHOTS}/07-customer-after.png`, fullPage: true })
 
   // 8 the driver sees the route instruction, no reload
-  await expect(driver.getByText(/follow North Bypass/)).toBeVisible({ timeout: 10_000 })
+  await expect(driver.getByText(/follow Dhule Bypass/)).toBeVisible({ timeout: 10_000 })
 
   // 9 analytics: O5 dashboard, Panel A modelled benefit and the audit trail
-  await coordinator.getByRole('link', { name: 'Analytics' }).click()
+  await coordinator.getByRole('link', { name: 'Analytics', exact: true }).click()
   await expect(coordinator.getByText('On-time performance by route')).toBeVisible()
   await expect(coordinator.getByText('Delay causes by transporter company (attributed hours)')).toBeVisible()
   await expect(coordinator.getByText('Delay causes: totals')).toBeVisible()
@@ -113,7 +114,7 @@ test('customer -> driver -> coordinator -> disruption -> war room -> approve -> 
   await coordinator.screenshot({ path: `${SHOTS}/08-analytics.png`, fullPage: true })
   await coordinator.getByRole('tab', { name: 'Business impact' }).click()
   await expect(coordinator.getByText(/MODELLED - ILLUSTRATIVE SCENARIO/)).toBeVisible()
-  await expect(coordinator.locator('tr', { hasText: 'SHP-G1' }).getByText('REROUTE')).toBeVisible()
+  await expect(coordinator.locator('tr', { hasText: 'SHP-PTH-1116-01' }).getByText('REROUTE')).toBeVisible()
   await coordinator.screenshot({ path: `${SHOTS}/09-business-impact.png`, fullPage: true })
   await coordinator.getByRole('tab', { name: 'Audit trail' }).click()
   await expect(coordinator.getByText('INTERVENTION_APPROVED')).toBeVisible()
@@ -122,6 +123,6 @@ test('customer -> driver -> coordinator -> disruption -> war room -> approve -> 
   await customer.goto('/tower')
   await expect(customer).toHaveURL(/\/customer$/)
 
-  // the whole demo ran without a single request to the internet
+  // the whole demo ran without any request to the internet except the optional (here blocked) map tiles
   expect(external).toEqual([])
 })

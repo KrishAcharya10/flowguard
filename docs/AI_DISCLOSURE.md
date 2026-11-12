@@ -16,7 +16,7 @@ Undeclared use costs 10 points. You must be able to explain every part of your c
 
 | Tool (as shown in the product) | Where | What it produced | How humans verified it |
 | --- | --- | --- | --- |
-| Claude Code (VS Code extension), models **Claude Fable 5.2**, **Claude Opus 5.5** and **Claude Sonnet 5.5** (switched within the same project session) | Whole repository | Backend (engine, services, API, seed, tests), frontend (all views), scripts, and the docs in `docs/` and `README.md`. It also tuned one parameter (North Bypass speed, see `GOLDEN_BASELINE.md`) | 212 automated backend tests, 12 Playwright browser tests (3 role windows), 3 live-site checks, the Phase 0 hand-check script; **team review of each walkthrough in `docs/walkthroughs/` (to be signed off below)** |
+| Claude Code (VS Code extension), models **Claude Fable 5.2**, **Claude Opus 5.5** and **Claude Sonnet 5.5** (switched within the same project session) | Whole repository | Backend (engine, services, API, seed, tests), frontend (all views), scripts, and the docs in `docs/` and `README.md`. It also tuned one parameter (Dhule Bypass speed, see `GOLDEN_BASELINE.md`) | 212 automated backend tests, 12 Playwright browser tests (3 role windows), 3 live-site checks, the Phase 0 hand-check script; **team review of each walkthrough in `docs/walkthroughs/` (to be signed off below)** |
 | Claude Code plugins installed for the project (`code-review`, `feature-dev`, `pr-review-toolkit`, `skill-creator`, `hookify`, `claude-code-setup`, `ralph-loop`) | `.claude/settings.json` | Installed; **not used** to produce the current code. If the team uses them later, add a row here | — |
 
 ## To complete before presenting (team)

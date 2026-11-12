@@ -28,24 +28,28 @@ from .network import CIRCUITY, CUSTOMERS, ROUTES, TRANSPORTERS
 SIM_START = datetime(2026, 11, 16, 0, 30)        # 06:00 Asia/Kolkata, stored as UTC
 HISTORY_COUNT = 160
 ROUTE_CUSTOMER = {"R1": "CUST-A", "R2": "CUST-B", "R3": "CUST-C", "R4": "CUST-C"}
+DRIVER_NAMES = ["Ramesh Patil", "Suresh Jadhav", "Imran Shaikh", "Vijay Kale", "Anil Pawar", "Sanjay More", "Prakash Chavan",
+                "Deepak Shinde", "Mahesh Gaikwad", "Rajesh Kulkarni", "Santosh Bhosale", "Ganesh Salunkhe", "Nitin Deshmukh",
+                "Farooq Khan", "Dilip Wagh", "Amit Kadam", "Yusuf Ansari"]
+RELIEF_NAMES = {"TR-1": "Sunil Mane (relief)", "TR-2": "Pramod Thorat (relief)", "TR-3": "Ashok Nikam (relief)"}
 ROUTE_PRODUCT = {"R1": "PP-H110", "R2": "FILM-L30", "R3": "PACK-P40", "R4": "CAP-H08"}
 
 # id, customer, product, qty, route, transporter, state, spec
 ACTIVE = [
-    ("G1", "CUST-A", "PP-H110", 24, "R1", "TR-1", "LOADING", {"entered_h": -0.8, "promised_h": 11.0, "planned_h": 9.0, "sla": 20000, "prio": "HIGH"}),
-    ("G2", "CUST-A", "HDPE-B52", 24, "R1", "TR-2", "AT_PLANT_GATE", {"entered_h": -0.1, "promised_h": 11.0, "planned_h": 9.0, "sla": 2500, "prio": "NORMAL"}),
-    ("1003", "CUST-B", "FILM-L30", 22, "R2", "TR-2", "IN_TRANSIT", {"departed_h": -1.3, "buffer_h": 2.0, "sla": 8000}),
-    ("1004", "CUST-B", "FILM-L30", 20, "R2", "TR-1", "PLANNED", {"loading_h": 2.0, "buffer_h": 2.5, "sla": 5000}),
-    ("1005", "CUST-C", "PACK-P40", 18, "R3", "TR-3", "IN_TRANSIT", {"departed_h": -3.0, "buffer_h": 0.25, "sla": 12000, "prio": "HIGH"}),
-    ("1006", "CUST-C", "CAP-H08", 20, "R4", "TR-3", "IN_TRANSIT", {"departed_h": -3.0, "promised_h": -0.5, "planned_h": -2.5, "sla": 5000}),
-    ("1007", "CUST-A", "LDPE-F20", 26, "R1", "TR-1", "IN_TRANSIT", {"departed_h": -4.4, "buffer_h": 2.0, "sla": 8000}),
-    ("1008", "CUST-B", "FILM-L30", 24, "R2", "TR-2", "LOADING", {"entered_h": -0.3, "buffer_h": 2.5, "sla": 5000}),
-    ("1009", "CUST-C", "PACK-P40", 18, "R3", "TR-1", "AT_PLANT_GATE", {"entered_h": -0.2, "buffer_h": 2.0, "sla": 8000}),
-    ("1010", "CUST-B", "FILM-L30", 22, "R2", "TR-3", "IN_TRANSIT", {"departed_h": -2.5, "buffer_h": 1.5, "sla": 15000, "prio": "HIGH", "outage_h": -1.5}),
-    ("1011", "CUST-C", "CAP-H08", 20, "R4", "TR-2", "ARRIVED_AT_CUSTOMER_GATE", {"departed_h": -6.0, "arrived_h": -0.4, "promised_h": 0.5, "planned_h": -0.6, "sla": 5000}),
-    ("1012", "CUST-A", "HDPE-B52", 24, "R1", "TR-3", "PLANNED", {"loading_h": 4.0, "buffer_h": 3.0, "sla": 2500}),
-    ("1013", "CUST-C", "CAP-H08", 20, "R4", "TR-1", "PLANNED", {"loading_h": 1.0, "buffer_h": 3.0, "sla": 5000}),
-    ("1014", "CUST-B", "FILM-L30", 22, "R2", "TR-1", "IN_TRANSIT", {"departed_h": -0.4, "buffer_h": 1.5, "sla": 8000}),
+    ("PTH-1116-01", "CUST-A", "PP-H110", 24, "R1", "TR-1", "LOADING", {"entered_h": -0.8, "promised_h": 11.0, "planned_h": 9.0, "sla": 20000, "prio": "HIGH"}),
+    ("PTH-1116-02", "CUST-A", "HDPE-B52", 24, "R1", "TR-2", "AT_PLANT_GATE", {"entered_h": -0.1, "promised_h": 11.0, "planned_h": 9.0, "sla": 2500, "prio": "NORMAL"}),
+    ("AMV-1116-01", "CUST-B", "FILM-L30", 22, "R2", "TR-2", "IN_TRANSIT", {"departed_h": -1.3, "buffer_h": 2.0, "sla": 8000}),
+    ("AMV-1116-02", "CUST-B", "FILM-L30", 20, "R2", "TR-1", "PLANNED", {"loading_h": 2.0, "buffer_h": 2.5, "sla": 5000}),
+    ("SAT-1116-01", "CUST-C", "PACK-P40", 18, "R3", "TR-3", "IN_TRANSIT", {"departed_h": -3.0, "buffer_h": 0.25, "sla": 12000, "prio": "HIGH"}),
+    ("BHW-1116-01", "CUST-C", "CAP-H08", 20, "R4", "TR-3", "IN_TRANSIT", {"departed_h": -3.0, "promised_h": -0.5, "planned_h": -2.5, "sla": 5000}),
+    ("PTH-1116-03", "CUST-A", "LDPE-F20", 26, "R1", "TR-1", "IN_TRANSIT", {"departed_h": -4.4, "buffer_h": 2.0, "sla": 8000}),
+    ("AMV-1116-03", "CUST-B", "FILM-L30", 24, "R2", "TR-2", "LOADING", {"entered_h": -0.3, "buffer_h": 2.5, "sla": 5000}),
+    ("SAT-1116-02", "CUST-C", "PACK-P40", 18, "R3", "TR-1", "AT_PLANT_GATE", {"entered_h": -0.2, "buffer_h": 2.0, "sla": 8000}),
+    ("AMV-1116-04", "CUST-B", "FILM-L30", 22, "R2", "TR-3", "IN_TRANSIT", {"departed_h": -2.5, "buffer_h": 1.5, "sla": 15000, "prio": "HIGH", "outage_h": -1.5}),
+    ("BHW-1116-02", "CUST-C", "CAP-H08", 20, "R4", "TR-2", "ARRIVED_AT_CUSTOMER_GATE", {"departed_h": -6.0, "arrived_h": -0.4, "promised_h": 0.5, "planned_h": -0.6, "sla": 5000}),
+    ("PTH-1116-04", "CUST-A", "HDPE-B52", 24, "R1", "TR-3", "PLANNED", {"loading_h": 4.0, "buffer_h": 3.0, "sla": 2500}),
+    ("BHW-1116-03", "CUST-C", "CAP-H08", 20, "R4", "TR-1", "PLANNED", {"loading_h": 1.0, "buffer_h": 3.0, "sla": 5000}),
+    ("AMV-1116-05", "CUST-B", "FILM-L30", 22, "R2", "TR-1", "IN_TRANSIT", {"departed_h": -0.4, "buffer_h": 1.5, "sla": 8000}),
 ]
 INVENTORY = [  # customer, product, tonnes at SIM_START, t/h, unloading h, min priority qty
     ("CUST-A", "PP-H110", 25.0, 2.0, 0.5, 6.0),
@@ -94,17 +98,17 @@ def _users(db) -> dict:
         db.add(u)
         users[username] = u
 
-    add("coordinator", "COORDINATOR", "Coordinator One (fictional)")
-    add("coordinator2", "COORDINATOR", "Coordinator Two (fictional)")
-    add("customer_a", "CUSTOMER", "Northfield buyer (fictional)", customer="CUST-A")
-    add("customer_b", "CUSTOMER", "Eastgate buyer (fictional)", customer="CUST-B")
-    add("customer_c", "CUSTOMER", "Southbay buyer (fictional)", customer="CUST-C")
+    add("coordinator", "COORDINATOR", "Priya Deshmukh")
+    add("coordinator2", "COORDINATOR", "Arjun Mehta")
+    add("customer_a", "CUSTOMER", "Meera Sharma", customer="CUST-A")
+    add("customer_b", "CUSTOMER", "Rohit Deshmukh", customer="CUST-B")
+    add("customer_c", "CUSTOMER", "Kavita Jadhav", customer="CUST-C")
     for i, row in enumerate(ACTIVE, start=1):
-        add(f"driver{i}", "TRANSPORTER", f"Driver {i} (fictional)", transporter=row[5])
+        add(f"driver{i}", "TRANSPORTER", DRIVER_NAMES[i - 1], transporter=row[5])
     for j, tid in enumerate(TRANSPORTERS, start=len(ACTIVE) + 1):     # spare drivers: free for newly created orders
-        add(f"driver{j}", "TRANSPORTER", f"Driver {j} (fictional)", transporter=tid)
+        add(f"driver{j}", "TRANSPORTER", DRIVER_NAMES[j - 1], transporter=tid)
     for tid in TRANSPORTERS:                                          # reserved for the urgent lot of a split
-        add(f"relief_{tid.lower().replace('-', '')}", "TRANSPORTER", f"Relief driver {tid} (fictional)", transporter=tid)
+        add(f"relief_{tid.lower().replace('-', '')}", "TRANSPORTER", RELIEF_NAMES[tid], transporter=tid)
     db.flush()
     return users
 
@@ -116,7 +120,7 @@ def _active(db, users, a: Assumptions) -> None:
                         priority=s.get("prio", "NORMAL"))
         entered = s.get("entered_h", s.get("departed_h", 0.0))
         sh = m.Shipment(id=f"SHP-{sid}", order_id=order.id, transporter_id=trans, driver_user_id=users[f"driver{i}"].id,
-                        vehicle_label=f"VEH-{100 + i} (fictional)", route_id=route, lot_type="SINGLE",
+                        vehicle_label=f"MH20 GH {4100 + i}", route_id=route, lot_type="SINGLE",
                         quantity_tonnes=qty, planned_loading_at=_h(s.get("loading_h", entered - 1.0)),
                         planned_arrival_at=_h(s.get("planned_h", 22.0)), state=state,
                         state_entered_at=_h(entered if state != "PLANNED" else 0.0), disposition="ACTIVE",
@@ -221,14 +225,14 @@ def _history(db, users) -> None:
 
 
 GATE_BOOKINGS = [  # shipment, IST hour of the slot, status
-    ("SHP-G1", 7, "BOOKED"), ("SHP-1008", 7, "BOOKED"), ("SHP-1013", 7, "BOOKED"),          # 07:00 is full (capacity 3)
-    ("SHP-G2", 6, "CHECKED_IN"), ("SHP-1009", 6, "CHECKED_IN"),
-    ("SHP-1004", 9, "BOOKED"), ("SHP-1012", 11, "BOOKED"),
-    ("SHP-1011", 0, "COMPLETED"), ("SHP-1007", 1, "COMPLETED"), ("SHP-1005", 3, "COMPLETED"),
-    ("SHP-1006", 3, "COMPLETED"), ("SHP-1010", 3, "COMPLETED"), ("SHP-1003", 4, "COMPLETED"), ("SHP-1014", 5, "COMPLETED"),
+    ("SHP-PTH-1116-01", 7, "BOOKED"), ("SHP-AMV-1116-03", 7, "BOOKED"), ("SHP-BHW-1116-03", 7, "BOOKED"),          # 07:00 is full (capacity 3)
+    ("SHP-PTH-1116-02", 6, "CHECKED_IN"), ("SHP-SAT-1116-02", 6, "CHECKED_IN"),
+    ("SHP-AMV-1116-02", 9, "BOOKED"), ("SHP-PTH-1116-04", 11, "BOOKED"),
+    ("SHP-BHW-1116-02", 0, "COMPLETED"), ("SHP-PTH-1116-03", 1, "COMPLETED"), ("SHP-SAT-1116-01", 3, "COMPLETED"),
+    ("SHP-BHW-1116-01", 3, "COMPLETED"), ("SHP-AMV-1116-04", 3, "COMPLETED"), ("SHP-AMV-1116-01", 4, "COMPLETED"), ("SHP-AMV-1116-05", 5, "COMPLETED"),
 ]
-SAMPLE_INVOICES = [("ORD-1003", "INV-2026-1003"), ("ORD-1007", "INV-2026-1007"), ("ORD-1010", "INV-2026-1010"),
-                   ("ORD-1011", "INV-2026-1011")]
+SAMPLE_INVOICES = [("ORD-AMV-1116-01", "INV-2026-1003"), ("ORD-PTH-1116-03", "INV-2026-1007"), ("ORD-AMV-1116-04", "INV-2026-1010"),
+                   ("ORD-BHW-1116-02", "INV-2026-1011")]
 
 
 def _gate(db) -> None:

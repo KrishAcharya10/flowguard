@@ -2,33 +2,33 @@
   {
     "acknowledged": false,
     "created_sim_at": "2026-11-16T00:30:00Z",
-    "eta_from": "2026-11-16T12:53:46Z",
-    "eta_to": "2026-11-16T15:57:06Z",
+    "eta_from": "2026-11-16T12:55:12Z",
+    "eta_to": "2026-11-16T15:50:11Z",
     "id": 11,
     "message": "A road closure on the planned route may delay your delivery.",
-    "order_id": "ORD-G2",
+    "order_id": "ORD-PTH-1116-02",
     "promised_at": "2026-11-16T11:30:00Z",
     "risk_level": "High",
     "severity": "HIGH",
-    "shipment_id": "SHP-G2",
+    "shipment_id": "SHP-PTH-1116-02",
     "suggested_action": "Our logistics team is monitoring the shipment closely; no action is required from you.",
-    "title": "Delivery update for order ORD-G2",
-    "updated_expected_delivery": "2026-11-16T14:17:35Z"
+    "title": "Delivery update for order ORD-PTH-1116-02",
+    "updated_expected_delivery": "2026-11-16T14:17:12Z"
   },
   {
     "acknowledged": false,
     "created_sim_at": "2026-11-16T00:30:00Z",
-    "eta_from": "2026-11-16T12:57:01Z",
-    "eta_to": "2026-11-16T15:57:34Z",
+    "eta_from": "2026-11-16T12:50:26Z",
+    "eta_to": "2026-11-16T15:53:37Z",
     "id": 9,
     "message": "A road closure on the planned route may delay your delivery.",
-    "order_id": "ORD-G1",
+    "order_id": "ORD-PTH-1116-01",
     "promised_at": "2026-11-16T11:30:00Z",
     "risk_level": "High",
     "severity": "HIGH",
-    "shipment_id": "SHP-G1",
+    "shipment_id": "SHP-PTH-1116-01",
     "suggested_action": "Our logistics team is evaluating an alternate route; no action is required from you.",
-    "title": "Delivery update for order ORD-G1",
-    "updated_expected_delivery": "2026-11-16T14:24:59Z"
+    "title": "Delivery update for order ORD-PTH-1116-01",
+    "updated_expected_delivery": "2026-11-16T14:20:33Z"
   }
 ]

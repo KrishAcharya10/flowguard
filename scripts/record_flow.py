@@ -79,29 +79,29 @@ with TestClient(app) as c:
     log("## Example 1 — flood + low stock → Reroute (use case 1)")
     log("")
     call(c, "POST", "/api/demo/use-cases/flood-reroute/setup", "coordinator", {"mode": "start"})
-    o = next(x for x in call(c, "GET", "/api/customer/me/orders", "customer_a") if x["id"] == "ORD-G1")
-    log(f"- Customer sees ORD-G1: status '{o['status']}', original promise {ist(o['promised_at'])}, "
+    o = next(x for x in call(c, "GET", "/api/customer/me/orders", "customer_a") if x["id"] == "ORD-PTH-1116-01")
+    log(f"- Customer sees ORD-PTH-1116-01: status '{o['status']}', original promise {ist(o['promised_at'])}, "
         f"updated expected delivery {ist(o['updated_expected_delivery'])}, risk {o['shipments'][0]['risk_level']}")
-    d = call(c, "GET", "/api/shipments/SHP-G1", "coordinator")
-    log(f"- SHP-G1 '{d['state_label']}': {pred_line(d['prediction'])}")
+    d = call(c, "GET", "/api/shipments/SHP-PTH-1116-01", "coordinator")
+    log(f"- SHP-PTH-1116-01 '{d['state_label']}': {pred_line(d['prediction'])}")
     log(f"- Customer stock runs out {ist(d['stock']['depletion_at'])}")
-    r = call(c, "POST", "/api/transporter/shipments/SHP-G1/milestones", "driver1", {"to_state": "AT_PLANT_GATE"})
+    r = call(c, "POST", "/api/transporter/shipments/SHP-PTH-1116-01/milestones", "driver1", {"to_state": "AT_PLANT_GATE"})
     log(f"- Driver: state is now '{r['state_label']}'")
     dis = call(c, "POST", "/api/simulations/disruptions", "coordinator", {"preset": "FLOOD_R1"})
     log(f"- Disruption {dis['id']}: {dis['label']}, closure expected {dis['dur_min_h']:g}–{dis['dur_max_h']:g} h")
-    d = call(c, "GET", "/api/shipments/SHP-G1", "coordinator")
+    d = call(c, "GET", "/api/shipments/SHP-PTH-1116-01", "coordinator")
     p = d["prediction"]
-    log(f"- SHP-G1 now: {pred_line(p)}")
+    log(f"- SHP-PTH-1116-01 now: {pred_line(p)}")
     ch = p["reasons"]["p50_change"]
     log(f"- \"P50 moved {ch['hours']:+.1f} h: {ch['trigger']}\"")
     log("- Reason chips (mean hours vs the undisturbed baseline): " + ", ".join(
         f"{x['label']} {x['hours']:+.2f}" for x in p["reasons"]["chips"] if abs(x["hours"]) >= 0.01))
-    a = next(x for x in call(c, "GET", "/api/alerts", "coordinator") if x["shipment_id"] == "SHP-G1")
+    a = next(x for x in call(c, "GET", "/api/alerts", "coordinator") if x["shipment_id"] == "SHP-PTH-1116-01")
     log(f"- Coordinator alert [{a['severity']}] {a['title']}: {a['message']}")
     log(f"  - {a['suggested_action']}")
-    ca = next(x for x in call(c, "GET", "/api/customer/me/alerts", "customer_a") if x["order_id"] == "ORD-G1")
+    ca = next(x for x in call(c, "GET", "/api/customer/me/alerts", "customer_a") if x["order_id"] == "ORD-PTH-1116-01")
     log(f"- Customer alert: \"{ca['message']} {ca['suggested_action']}\"")
-    case = call(c, "POST", "/api/shipments/SHP-G1/scenarios", "coordinator")
+    case = call(c, "POST", "/api/shipments/SHP-PTH-1116-01/scenarios", "coordinator")
     case_table(case)
     rr = next(s for s in case["scenarios"] if s["code"] == "REROUTE")
     ap = call(c, "POST", f"/api/interventions/{case['id']}/approve", "coordinator", {"selected_scenario_id": rr["id"]})
@@ -109,9 +109,9 @@ with TestClient(app) as c:
         f"{ap['impact']['modelled_late_hours_avoided']:.2f} late hours avoided, "
         f"Rs {ap['impact']['modelled_cost_difference_rs']:,.0f} modelled cost difference, "
         f"Rs {ap['impact']['incremental_freight_rs']:,.0f} extra freight")
-    d = call(c, "GET", "/api/shipments/SHP-G1", "coordinator")
-    log(f"- SHP-G1 route: {d['route_name']} → via {d['alternative_route_name']}; {pred_line(d['prediction'])}")
-    o = next(x for x in call(c, "GET", "/api/customer/me/orders", "customer_a") if x["id"] == "ORD-G1")
+    d = call(c, "GET", "/api/shipments/SHP-PTH-1116-01", "coordinator")
+    log(f"- SHP-PTH-1116-01 route: {d['route_name']} → via {d['alternative_route_name']}; {pred_line(d['prediction'])}")
+    o = next(x for x in call(c, "GET", "/api/customer/me/orders", "customer_a") if x["id"] == "ORD-PTH-1116-01")
     log(f"- Customer: original promise {ist(o['promised_at'])} · updated expected delivery "
         f"{ist(o['updated_expected_delivery'])} · note: \"{o['shipments'][0]['action_note']}\"")
     ca = call(c, "GET", "/api/customer/me/alerts", "customer_a")[0]
@@ -125,30 +125,30 @@ with TestClient(app) as c:
     log("## Example 2 — truck delayed at the plant, no alternative road → Split (use case 4)")
     log("")
     call(c, "POST", "/api/demo/use-cases/split/setup", "coordinator", {"mode": "start"})
-    d = call(c, "GET", "/api/shipments/SHP-1013", "coordinator")
-    log(f"- SHP-1013 '{d['state_label']}', {d['quantity_tonnes']:g} t to {d['customer_name']}, route {d['route_name']}: "
+    d = call(c, "GET", "/api/shipments/SHP-BHW-1116-03", "coordinator")
+    log(f"- SHP-BHW-1116-03 '{d['state_label']}', {d['quantity_tonnes']:g} t to {d['customer_name']}, route {d['route_name']}: "
         f"{pred_line(d['prediction'])}")
     log(f"- Original promise {ist(d['promised_at'])}; stock runs out {ist(d['stock']['depletion_at'])}")
     dis = call(c, "POST", "/api/simulations/disruptions", "coordinator",
-               {"preset": "LATE_DISPATCH", "shipment_id": "SHP-1013", "dur_min_h": 4, "dur_mode_h": 4, "dur_max_h": 4})
+               {"preset": "LATE_DISPATCH", "shipment_id": "SHP-BHW-1116-03", "dur_min_h": 4, "dur_mode_h": 4, "dur_max_h": 4})
     log(f"- Disruption {dis['id']}: {dis['label']}, {dis['dur_mode_h']:g} h")
-    d = call(c, "GET", "/api/shipments/SHP-1013", "coordinator")
-    log(f"- SHP-1013 now: {pred_line(d['prediction'])}")
-    case = call(c, "POST", "/api/shipments/SHP-1013/scenarios", "coordinator")
+    d = call(c, "GET", "/api/shipments/SHP-BHW-1116-03", "coordinator")
+    log(f"- SHP-BHW-1116-03 now: {pred_line(d['prediction'])}")
+    case = call(c, "POST", "/api/shipments/SHP-BHW-1116-03/scenarios", "coordinator")
     case_table(case)
     sp = next(s for s in case["scenarios"] if s["code"] == "SPLIT")
     ap = call(c, "POST", f"/api/interventions/{case['id']}/approve", "coordinator", {"selected_scenario_id": sp["id"]})
     log(f"- Case #{ap['id']} status **{ap['status']}**")
-    d = call(c, "GET", "/api/shipments/SHP-1013", "coordinator")
-    log(f"- SHP-1013 disposition **{d['disposition']}**, child lots {d['child_shipment_ids']}")
+    d = call(c, "GET", "/api/shipments/SHP-BHW-1116-03", "coordinator")
+    log(f"- SHP-BHW-1116-03 disposition **{d['disposition']}**, child lots {d['child_shipment_ids']}")
     for cid in d["child_shipment_ids"]:
         k = call(c, "GET", f"/api/shipments/{cid}", "coordinator")
         log(f"  - {cid}: {k['lot_type']} {k['quantity_tonnes']:g} t, vehicle '{k['vehicle_label']}', driver "
             f"{k['driver_name']}, planned loading {ist(k['planned_loading_at'])}, {pred_line(k['prediction'])}")
     rel = call(c, "GET", "/api/transporter/me/shipments", "relief_tr1")
     log(f"- relief_tr1 sees: {[x['id'] for x in rel]}")
-    o = next(x for x in call(c, "GET", "/api/customer/me/orders", "customer_c") if x["id"] == "ORD-1013")
-    log(f"- Customer sees ORD-1013 as {len(o['shipments'])} deliveries: " + "; ".join(
+    o = next(x for x in call(c, "GET", "/api/customer/me/orders", "customer_c") if x["id"] == "ORD-BHW-1116-03")
+    log(f"- Customer sees ORD-BHW-1116-03 as {len(o['shipments'])} deliveries: " + "; ".join(
         f"{s['id']} {s['quantity_tonnes']:g} t expected {ist(s['updated_expected_delivery'])}" for s in o["shipments"]))
 
 (ROOT / "docs" / "flow_trace.md").write_text("\n".join(out) + "\n", encoding="utf-8")

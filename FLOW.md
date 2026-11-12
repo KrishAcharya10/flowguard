@@ -72,15 +72,15 @@ to use, what you should see, and a **Go** button.
 
 *Demo guide → use case 1.* Shows all five official requirements.
 
-**The situation.** Truck **SHP-G1** carries 24 t of PP from Plant X to Northfield Mouldings on the North
-Corridor. Promised by **17:00 IST**. Northfield's stock runs out at **18:30 IST**.
+**The situation.** Truck **SHP-PTH-1116-01** carries 24 t of PP from Plant X (Waluj) to Sharma Mouldings Pvt Ltd in Pithampur.
+Promised by **17:00 IST**. The customer's material runs out at **18:30 IST**.
 
 ### Step 1 — Before anything goes wrong
 
 | Window | What you see |
 | --- | --- |
-| Customer (`customer_a`) | ORD-G1 "Being prepared at Plant X", original promise **16 Nov 17:00**, updated expected delivery **14:44**, delay risk **Low** |
-| Coordinator | SHP-G1 "Loading at Plant X": risk **LOW** (index 0), P(late) **1%**, P(stock-out) **0%**, ETA 14:44 (likely 13:43 – 15:49) |
+| Customer (`customer_a`) | ORD-PTH-1116-01 "Being prepared at Plant X", original promise **16 Nov 17:00**, updated expected delivery **14:44**, delay risk **Low** |
+| Coordinator | SHP-PTH-1116-01 "Loading at Plant X": risk **LOW** (index 0), P(late) **1%**, P(stock-out) **0%**, ETA 14:44 (likely 13:43 – 15:49) |
 
 ![Customer before](docs/screenshots/01-customer-before.png)
 
@@ -93,13 +93,13 @@ Driver window (`driver1`) → **Confirm: Loaded, waiting at plant gate** → "Mi
 
 ![Driver](docs/screenshots/02-driver.png)
 
-*Behind the scenes:* `POST /api/transporter/shipments/SHP-G1/milestones`. The server checks this is the
+*Behind the scenes:* `POST /api/transporter/shipments/SHP-PTH-1116-01/milestones`. The server checks this is the
 driver's own truck, that it is the **next** state only, and not in the future. It writes an event, bumps the
 shipment's version number, recalculates the prediction and writes an audit row.
 
 ### Step 3 — A flood closes the road
 
-Coordinator → Control Tower → Simulation controls → **Flooding – North Corridor river crossing** → Inject.
+Coordinator → Control Tower → Simulation controls → **Flooding - Tapi River Bridge (Waluj to Pithampur road)** → Inject.
 (Closure expected to last 7–12 h.)
 
 | | Before | After the flood |
@@ -113,7 +113,7 @@ Coordinator → Control Tower → Simulation controls → **Flooding – North C
 
 ### Step 4 — Why? (O3: "show the reason")
 
-Open SHP-G1:
+Open SHP-PTH-1116-01:
 
 - **"P50 moved +5.4 h: flooding event DSR-001"** — the change is pinned to the exact event.
 - Reason chips (average hours added vs an undisturbed trip): **Road closure wait +5.45 h**, plant gate queue
@@ -125,7 +125,7 @@ Open SHP-G1:
 
 | Who | Message |
 | --- | --- |
-| Coordinator (HIGH alert) | "P(late) 100%, P(stock-out) 95%, risk index 98. Main driver: road closure wait +5.5 h." **Suggested action: REROUTE via North Bypass.** Modelled P(late) falls from 100% to 20% for Rs 8,131 extra freight. |
+| Coordinator (HIGH alert) | "P(late) 100%, P(stock-out) 95%, risk index 98. Main driver: road closure wait +5.5 h." **Suggested action: REROUTE via Dhule Bypass.** Modelled P(late) falls from 100% to 20% for Rs 8,131 extra freight. |
 | Customer | "A road closure on the planned route may delay your delivery. Our logistics team is **evaluating** an alternate route; no action is required from you." |
 
 Note the customer gets **no costs and no probabilities**, and the message says "evaluating", because nothing
@@ -156,7 +156,7 @@ Why the others lose:
 
 **Approve Reroute** → case **APPLIED**. In one database transaction the server:
 
-1. switches SHP-G1 to the North Bypass,
+1. switches SHP-PTH-1116-01 to the Dhule Bypass,
 2. writes an event and a fresh prediction (now **LOW**, P(late) 20%, ETA **16:14**),
 3. notifies the customer and the coordinator,
 4. records the decision in the audit trail with the modelled impact: **2.82 late hours avoided**,
@@ -170,7 +170,7 @@ would be refused (HTTP 409, "out of date, re-run").
 | Window | What changed |
 | --- | --- |
 | Customer | Original promise **17:00** beside updated expected delivery **16:14**. "Your delivery has been rerouted to protect the delivery time." Alert: "Rerouting has been **initiated**…" |
-| Driver | "Route change approved: follow North Bypass." |
+| Driver | "Route change approved: follow Dhule Bypass." |
 | Coordinator → Analytics → Business impact | Panel A: modelled hours avoided and cost difference, labelled **MODELLED** |
 | Coordinator → Analytics → Audit trail | `DEMO_SETUP → MILESTONE_POSTED → DISRUPTION_CREATED → SCENARIOS_CREATED → INTERVENTION_APPROVED` |
 
@@ -183,17 +183,17 @@ would be refused (HTTP 409, "out of date, re-run").
 
 *Demo guide → use case 4.* Shows that FlowGuard picks a **different** action when the situation is different.
 
-**The situation.** **SHP-1013**: 20 t of caps material for Southbay Packaging on the **West Link**, which has
-**no alternative road**. Planned to start loading at 07:00 IST. Promised **16:55 IST**. Southbay's stock runs
-out at **16:00 IST**.
+**The situation.** **SHP-BHW-1116-03**: 20 t of bottle-cap material for Sahyadri Packaging's Bhiwandi warehouse. The **Waluj to Bhiwandi road** has
+**no alternative route**. Planned to start loading at 07:00 IST. Promised **16:55 IST**. The customer's material
+runs out at **16:00 IST**.
 
 ### Step 1 — Before
 
-SHP-1013 "Planned": risk **LOW**, P(late) 0%, P(stock-out) 1%, ETA **13:54** (likely 13:14 – 14:47).
+SHP-BHW-1116-03 "Planned": risk **LOW**, P(late) 0%, P(stock-out) 1%, ETA **13:54** (likely 13:14 – 14:47).
 
 ### Step 2 — The assigned truck will be 4 hours late
 
-Coordinator → Simulation controls → **Late dispatch**, shipment **SHP-1013**, tick **Custom duration**, enter
+Coordinator → Simulation controls → **Late dispatch**, shipment **SHP-BHW-1116-03**, tick **Custom duration**, enter
 **4 / 4 / 4** → Inject. (Or press **⏩ Jump** in the Demo guide.)
 
 | | Before | After |
@@ -225,12 +225,12 @@ customer's **line keeps running** (stock-out risk 100% → 4%), which is what co
 
 | Lot | Quantity | Vehicle / driver | Loads at | ETA | Risk |
 | --- | --- | --- | --- | --- | --- |
-| SHP-1013 | 20 t | — | — | — | **SPLIT_PARENT**: not a delivery, excluded from KPIs |
-| **SHP-1013-U** (urgent) | 6 t | Second vehicle, **Relief driver TR-1** (separate fictional driver) | 07:30 | **14:25** | LOW |
-| **SHP-1013-R** (remainder) | 14 t | Original truck, Driver 13 | 11:00 (keeps its 4 h delay) | 17:56 | HIGH |
+| SHP-BHW-1116-03 | 20 t | — | — | — | **SPLIT_PARENT**: not a delivery, excluded from KPIs |
+| **SHP-BHW-1116-03-U** (urgent) | 6 t | Second vehicle, **Relief driver TR-1** (separate fictional driver) | 07:30 | **14:25** | LOW |
+| **SHP-BHW-1116-03-R** (remainder) | 14 t | Original truck, Nitin Deshmukh | 11:00 (keeps its 4 h delay) | 17:56 | HIGH |
 
-The two lots add up to exactly 20 t. The relief driver (`relief_tr1`) sees only SHP-1013-U. The customer
-(`customer_c`) sees ORD-1013 as **two deliveries**: 6 t expected 14:25 and 14 t expected 17:56.
+The two lots add up to exactly 20 t. The relief driver (`relief_tr1`) sees only SHP-BHW-1116-03-U. The customer
+(`customer_c`) sees ORD-BHW-1116-03 as **two deliveries**: 6 t expected 14:25 and 14 t expected 17:56.
 
 ![Customer split](docs/screenshots/13-customer-split.png)
 

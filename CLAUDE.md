@@ -21,7 +21,7 @@ E = escalation, auto clock, driver hazards (not built); custom disruption durati
 All phases built. See `PROGRESS.md` (state) and `docs/FINAL_AUDIT.md` (evidence).
 
 ## Commands
-- Backend tests: `cd backend && .venv\Scripts\python -m pytest -q` (212)
+- Backend tests: `cd backend && .venv\Scripts\python -m pytest -q` (217)
 - Start (builds the site first): `start-flowguard.cmd`. The server shows the BUILT site and does not auto-reload.
 - Check the running site: `cd frontend && npx playwright test -c playwright.live.config.ts`
 - Never let a script reset against the live server's document folder: set `FLOWGUARD_DOC_DIR` to a temp folder
@@ -53,7 +53,7 @@ Dev1 backend/data/security (integration owner) · Dev2 frontend/UX · Dev3 engin
 - Golden target ranges (`docs/GOLDEN_SCENARIO.md`) are never edited; only distribution parameters, logged in
   `docs/GOLDEN_BASELINE.md`.
 - Never report a test as passed without running it. Update `docs/AI_DISCLOSURE.md` for any new AI use.
-- No paid API, secret, CDN or live external service in the demo path.
+- No paid API, secret or CDN in the demo path. The ONLY external call is the optional OpenStreetMap map tiles (no key; on by default when online, attribution shown). If they cannot load, the map switches to the local "Illustrative logistics network" automatically, so the demo works fully offline.
 
 ## Stop and ask if
 A paid service or secret is needed; a destructive operation on existing files; a frozen contract must change;

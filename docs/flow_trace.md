@@ -4,89 +4,89 @@
 
 `POST /api/demo/use-cases/flood-reroute/setup` as **coordinator** → HTTP 200
 `GET /api/customer/me/orders` as **customer_a** → HTTP 200
-- Customer sees ORD-G1: status 'Being prepared at Plant X', original promise 16 Nov 17:00 IST, updated expected delivery 16 Nov 14:44 IST, risk Low
-`GET /api/shipments/SHP-G1` as **coordinator** → HTTP 200
-- SHP-G1 'Loading at Plant X': risk **LOW** (index 0), P(late) 1%, P(stock-out) 0%, ETA P50 16 Nov 14:44 IST (range 16 Nov 13:43 IST – 16 Nov 15:49 IST)
+- Customer sees ORD-PTH-1116-01: status 'Being prepared at Plant X', original promise 16 Nov 17:00 IST, updated expected delivery 16 Nov 14:38 IST, risk Low
+`GET /api/shipments/SHP-PTH-1116-01` as **coordinator** → HTTP 200
+- SHP-PTH-1116-01 'Loading at Plant X': risk **LOW** (index 1), P(late) 1%, P(stock-out) 0%, ETA P50 16 Nov 14:38 IST (range 16 Nov 13:36 IST – 16 Nov 15:49 IST)
 - Customer stock runs out 16 Nov 18:30 IST
-`POST /api/transporter/shipments/SHP-G1/milestones` as **driver1** → HTTP 200
+`POST /api/transporter/shipments/SHP-PTH-1116-01/milestones` as **driver1** → HTTP 200
 - Driver: state is now 'Loaded, waiting at plant gate'
 `POST /api/simulations/disruptions` as **coordinator** → HTTP 201
-- Disruption DSR-001: Flooding - North Corridor river crossing, closure expected 7–12 h
-`GET /api/shipments/SHP-G1` as **coordinator** → HTTP 200
-- SHP-G1 now: risk **HIGH** (index 98), P(late) 100%, P(stock-out) 95%, ETA P50 16 Nov 19:54 IST (range 16 Nov 18:27 IST – 16 Nov 21:27 IST)
-- "P50 moved +5.4 h: flooding event DSR-001"
-- Reason chips (mean hours vs the undisturbed baseline): Plant gate queue +0.57, Road closure wait +5.45, Travel variability / interactions +0.05
+- Disruption DSR-001: Flooding - Tapi River Bridge (Waluj to Pithampur road), closure expected 7–12 h
+`GET /api/shipments/SHP-PTH-1116-01` as **coordinator** → HTTP 200
+- SHP-PTH-1116-01 now: risk **HIGH** (index 98), P(late) 100%, P(stock-out) 95%, ETA P50 16 Nov 19:50 IST (range 16 Nov 18:20 IST – 16 Nov 21:23 IST)
+- "P50 moved +5.5 h: flooding event DSR-001"
+- Reason chips (mean hours vs the undisturbed baseline): Plant gate queue +0.58, Road closure wait +5.44, Travel variability / interactions -0.03
 `GET /api/alerts` as **coordinator** → HTTP 200
-- Coordinator alert [HIGH] Delay risk HIGH: SHP-G1: P(late) 100%, P(stock-out) 95%, risk index 98. Main driver (mean contribution): road closure wait +5.5 h.
-  - Suggested action: REROUTE via North Bypass. Modelled P(late) falls from 100% to 20% for Rs 8,131 extra freight. Open the War Room to compare Continue, Reroute and Split before approving.
+- Coordinator alert [HIGH] Delay risk HIGH: SHP-PTH-1116-01: P(late) 100%, P(stock-out) 95%, risk index 98. Main driver (mean contribution): road closure wait +5.4 h.
+  - Suggested action: REROUTE via Dhule Bypass. Modelled P(late) falls from 100% to 18% for Rs 8,131 extra freight. Open the War Room to compare Continue, Reroute and Split before approving.
 `GET /api/customer/me/alerts` as **customer_a** → HTTP 200
 - Customer alert: "A road closure on the planned route may delay your delivery. Our logistics team is evaluating an alternate route; no action is required from you."
-`POST /api/shipments/SHP-G1/scenarios` as **coordinator** → HTTP 201
+`POST /api/shipments/SHP-PTH-1116-01/scenarios` as **coordinator** → HTTP 201
 
 | Option | Eligible | Feasible | P50 | P(late) | P(stock-out) | Extra freight | SLA | Stock-out | **Total** |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CONTINUE | yes | no | 16 Nov 19:54 IST | 100% | 95% | Rs 0 | Rs 58,908 | Rs 117,752 | **Rs 176,660** |
-| REROUTE | yes | yes | 16 Nov 16:14 IST | 20% | 4% | Rs 8,131 | Rs 2,560 | Rs 1,404 | **Rs 12,095** |
-| SPLIT | yes | no | 16 Nov 19:57 IST | 100% | 76% | Rs 40,626 | Rs 51,498 | Rs 50,427 | **Rs 142,551** |
+| CONTINUE | yes | no | 16 Nov 19:50 IST | 100% | 95% | Rs 0 | Rs 57,358 | Rs 112,826 | **Rs 170,184** |
+| REROUTE | yes | yes | 16 Nov 16:06 IST | 18% | 3% | Rs 8,131 | Rs 2,174 | Rs 1,184 | **Rs 11,489** |
+| SPLIT | yes | no | 16 Nov 19:54 IST | 100% | 75% | Rs 40,626 | Rs 49,624 | Rs 44,406 | **Rs 134,656** |
 
 Recommendation: **RECOMMENDED: REROUTE** · stability **STABLE (16/16)**
-> Why: lowest modelled expected total among feasible options - Rs 12,095 versus Rs 176,660 for Continue (advantage Rs 164,564).
+> Why: lowest modelled expected total among feasible options - Rs 11,489 versus Rs 170,184 for Continue (advantage Rs 158,694).
 > ETA difference: median arrival 3.7 h earlier than Continue.
-> Main risk: P(late) is still 20% and P(stock-out) 4%.
+> Main risk: P(late) is still 18% and P(stock-out) 3%.
 > Trade-off: Rs 8,131 extra freight is certain; the avoided penalty and stock-out costs are modelled expectations.
 > Continue violates a hard constraint: P(stock-out) 95% exceeds the limit 10%.
 > Assumptions: SLA Rs 20,000 per late hour; stock-out Rs 60,000 per hour; N = 500 samples; all rates fictional.
 - CONTINUE breaks a rule: P(stock-out) 95% exceeds the limit 10%
-- SPLIT breaks a rule: P(stock-out) 76% exceeds the limit 10%
-- SPLIT breaks a rule: P(urgent lot usable before stock runs out) 22% is below 90%
+- SPLIT breaks a rule: P(stock-out) 75% exceeds the limit 10%
+- SPLIT breaks a rule: P(urgent lot usable before stock runs out) 24% is below 90%
 `POST /api/interventions/1/approve` as **coordinator** → HTTP 200
-- Case #1 status **APPLIED**; modelled impact: 2.82 late hours avoided, Rs 164,564 modelled cost difference, Rs 8,131 extra freight
-`GET /api/shipments/SHP-G1` as **coordinator** → HTTP 200
-- SHP-G1 route: North Corridor → via North Bypass; risk **LOW** (index 14), P(late) 20%, P(stock-out) 4%, ETA P50 16 Nov 16:14 IST (range 16 Nov 14:56 IST – 16 Nov 17:29 IST)
+- Case #1 status **APPLIED**; modelled impact: 2.76 late hours avoided, Rs 158,694 modelled cost difference, Rs 8,131 extra freight
+`GET /api/shipments/SHP-PTH-1116-01` as **coordinator** → HTTP 200
+- SHP-PTH-1116-01 route: Waluj to Pithampur → via Dhule Bypass; risk **LOW** (index 12), P(late) 18%, P(stock-out) 3%, ETA P50 16 Nov 16:06 IST (range 16 Nov 14:53 IST – 16 Nov 17:23 IST)
 `GET /api/customer/me/orders` as **customer_a** → HTTP 200
-- Customer: original promise 16 Nov 17:00 IST · updated expected delivery 16 Nov 16:14 IST · note: "Your delivery has been rerouted to protect the delivery time."
+- Customer: original promise 16 Nov 17:00 IST · updated expected delivery 16 Nov 16:06 IST · note: "Your delivery has been rerouted to protect the delivery time."
 `GET /api/customer/me/alerts` as **customer_a** → HTTP 200
 - Customer alert: "Rerouting has been initiated to protect your delivery."
 `GET /api/transporter/me/shipments` as **driver1** → HTTP 200
-- Driver instruction: "Route change approved: follow North Bypass."
+- Driver instruction: "Route change approved: follow Dhule Bypass."
 `GET /api/audit-events?limit=20` as **coordinator** → HTTP 200
 - Audit trail (newest first): INTERVENTION_APPROVED → SCENARIOS_CREATED → DISRUPTION_CREATED → MILESTONE_POSTED → DEMO_SETUP
 
 ## Example 2 — truck delayed at the plant, no alternative road → Split (use case 4)
 
 `POST /api/demo/use-cases/split/setup` as **coordinator** → HTTP 200
-`GET /api/shipments/SHP-1013` as **coordinator** → HTTP 200
-- SHP-1013 'Planned', 20 t to Southbay Packaging (fictional), route West Link: risk **LOW** (index 0), P(late) 0%, P(stock-out) 1%, ETA P50 16 Nov 13:54 IST (range 16 Nov 13:14 IST – 16 Nov 14:47 IST)
-- Original promise 16 Nov 16:55 IST; stock runs out 16 Nov 16:00 IST
+`GET /api/shipments/SHP-BHW-1116-03` as **coordinator** → HTTP 200
+- SHP-BHW-1116-03 'Planned', 20 t to Sahyadri Packaging Industries (fictional), route Waluj to Bhiwandi: risk **LOW** (index 1), P(late) 0%, P(stock-out) 2%, ETA P50 16 Nov 13:59 IST (range 16 Nov 13:17 IST – 16 Nov 14:49 IST)
+- Original promise 16 Nov 17:00 IST; stock runs out 16 Nov 16:00 IST
 `POST /api/simulations/disruptions` as **coordinator** → HTTP 201
 - Disruption DSR-001: Late dispatch, 4 h
-`GET /api/shipments/SHP-1013` as **coordinator** → HTTP 200
-- SHP-1013 now: risk **HIGH** (index 98), P(late) 97%, P(stock-out) 100%, ETA P50 16 Nov 17:54 IST (range 16 Nov 17:14 IST – 16 Nov 18:47 IST)
-`POST /api/shipments/SHP-1013/scenarios` as **coordinator** → HTTP 201
+`GET /api/shipments/SHP-BHW-1116-03` as **coordinator** → HTTP 200
+- SHP-BHW-1116-03 now: risk **HIGH** (index 98), P(late) 96%, P(stock-out) 100%, ETA P50 16 Nov 17:59 IST (range 16 Nov 17:17 IST – 16 Nov 18:49 IST)
+`POST /api/shipments/SHP-BHW-1116-03/scenarios` as **coordinator** → HTTP 201
 
 | Option | Eligible | Feasible | P50 | P(late) | P(stock-out) | Extra freight | SLA | Stock-out | **Total** |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CONTINUE | yes | no | 16 Nov 17:54 IST | 97% | 100% | Rs 0 | Rs 5,302 | Rs 148,595 | **Rs 153,897** |
+| CONTINUE | yes | no | 16 Nov 17:59 IST | 96% | 100% | Rs 0 | Rs 5,198 | Rs 151,996 | **Rs 157,195** |
 | REROUTE | no – No alternative route is defined for this route | – | – | – | – | – | – | – | – |
-| SPLIT | yes | yes | 16 Nov 17:56 IST | 96% | 4% | Rs 30,694 | Rs 3,647 | Rs 506 | **Rs 34,847** |
+| SPLIT | yes | yes | 16 Nov 17:58 IST | 97% | 4% | Rs 30,694 | Rs 3,573 | Rs 782 | **Rs 35,049** |
 
 Recommendation: **RECOMMENDED: SPLIT** · stability **STABLE (16/16)**
-> Why: lowest modelled expected total among feasible options - Rs 34,847 versus Rs 153,897 for Continue (advantage Rs 119,050).
-> ETA: the urgent 6 t arrives at median 14:25 IST, 1.6 h before the customer's stock runs out; the remaining 14 t follows at 17:56 IST (0.0 h later than Continue for the whole order).
-> Main risk: P(late) is still 96% and P(stock-out) 4%.
+> Why: lowest modelled expected total among feasible options - Rs 35,049 versus Rs 157,195 for Continue (advantage Rs 122,146).
+> ETA: the urgent 6 t arrives at median 14:27 IST, 1.5 h before the customer's stock runs out; the remaining 14 t follows at 17:58 IST (0.0 h earlier than Continue for the whole order).
+> Main risk: P(late) is still 97% and P(stock-out) 4%.
 > Trade-off: Rs 30,694 extra freight is certain; the avoided penalty and stock-out costs are modelled expectations.
 > Continue violates a hard constraint: P(stock-out) 100% exceeds the limit 10%.
 > Assumptions: SLA Rs 5,000 per late hour; stock-out Rs 60,000 per hour; N = 500 samples; all rates fictional.
 - CONTINUE breaks a rule: P(stock-out) 100% exceeds the limit 10%
 `POST /api/interventions/1/approve` as **coordinator** → HTTP 200
 - Case #1 status **APPLIED**
-`GET /api/shipments/SHP-1013` as **coordinator** → HTTP 200
-- SHP-1013 disposition **SPLIT_PARENT**, child lots ['SHP-1013-R', 'SHP-1013-U']
-`GET /api/shipments/SHP-1013-R` as **coordinator** → HTTP 200
-  - SHP-1013-R: REMAINDER 14 t, vehicle 'VEH-113 (fictional)', driver Driver 13 (fictional), planned loading 16 Nov 11:00 IST, risk **HIGH** (index 59), P(late) 96%, P(stock-out) 4%, ETA P50 16 Nov 17:56 IST (range 16 Nov 17:13 IST – 16 Nov 18:40 IST)
-`GET /api/shipments/SHP-1013-U` as **coordinator** → HTTP 200
-  - SHP-1013-U: URGENT 6 t, vehicle 'VEH-113 (fictional)-B (second vehicle)', driver Relief driver TR-1 (fictional), planned loading 16 Nov 07:30 IST, risk **LOW** (index 2), P(late) 0%, P(stock-out) 4%, ETA P50 16 Nov 14:25 IST (range 16 Nov 13:42 IST – 16 Nov 15:14 IST)
+`GET /api/shipments/SHP-BHW-1116-03` as **coordinator** → HTTP 200
+- SHP-BHW-1116-03 disposition **SPLIT_PARENT**, child lots ['SHP-BHW-1116-03-R', 'SHP-BHW-1116-03-U']
+`GET /api/shipments/SHP-BHW-1116-03-R` as **coordinator** → HTTP 200
+  - SHP-BHW-1116-03-R: REMAINDER 14 t, vehicle 'MH20 GH 4113', driver Nitin Deshmukh, planned loading 16 Nov 11:00 IST, risk **HIGH** (index 60), P(late) 97%, P(stock-out) 4%, ETA P50 16 Nov 17:58 IST (range 16 Nov 17:15 IST – 16 Nov 18:48 IST)
+`GET /api/shipments/SHP-BHW-1116-03-U` as **coordinator** → HTTP 200
+  - SHP-BHW-1116-03-U: URGENT 6 t, vehicle 'MH20 GH 4113-B (second vehicle)', driver Sunil Mane (relief), planned loading 16 Nov 07:30 IST, risk **LOW** (index 2), P(late) 0%, P(stock-out) 4%, ETA P50 16 Nov 14:27 IST (range 16 Nov 13:44 IST – 16 Nov 15:16 IST)
 `GET /api/transporter/me/shipments` as **relief_tr1** → HTTP 200
-- relief_tr1 sees: ['SHP-1013-U']
+- relief_tr1 sees: ['SHP-BHW-1116-03-U']
 `GET /api/customer/me/orders` as **customer_c** → HTTP 200
-- Customer sees ORD-1013 as 2 deliveries: SHP-1013-R 14 t expected 16 Nov 17:56 IST; SHP-1013-U 6 t expected 16 Nov 14:25 IST
+- Customer sees ORD-BHW-1116-03 as 2 deliveries: SHP-BHW-1116-03-R 14 t expected 16 Nov 17:58 IST; SHP-BHW-1116-03-U 6 t expected 16 Nov 14:27 IST

@@ -12,15 +12,15 @@ def _h(a, b):
 
 def test_g1_before_injection_is_low(client, auth):
     co = auth("coordinator")
-    d = client.get("/api/shipments/SHP-G1", headers=co).json()
+    d = client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()
     assert d["state"] == "LOADING"                              # seeded LOADING
     p = d["prediction"]
     assert p["p_late"] <= 0.15 and p["p_stockout"] <= 0.05 and p["risk_category"] == "LOW"
-    client.post("/api/transporter/shipments/SHP-G1/milestones", headers=auth("driver1"), json={"to_state": "AT_PLANT_GATE"})
-    p = client.get("/api/shipments/SHP-G1", headers=co).json()["prediction"]
+    client.post("/api/transporter/shipments/SHP-PTH-1116-01/milestones", headers=auth("driver1"), json={"to_state": "AT_PLANT_GATE"})
+    p = client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()["prediction"]
     assert p["p_late"] <= 0.15 and p["p_stockout"] <= 0.05 and p["risk_category"] == "LOW"
     # stock relation: S about 1-2 h after D, u <= 1 h, S - u >= D
-    stock = client.get("/api/shipments/SHP-G1", headers=co).json()["stock"]
+    stock = client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()["stock"]
     s_minus_d = _h(stock["depletion_at"], d["promised_at"])
     assert 1.0 <= s_minus_d <= 2.0 and stock["unloading_hours"] <= 1.0 and s_minus_d - stock["unloading_hours"] >= 0
 
@@ -28,12 +28,12 @@ def test_g1_before_injection_is_low(client, auth):
 def test_g1_flooding_recommends_reroute_and_is_stable(client, auth):
     co = auth("coordinator")
     stage_g1(client, auth)
-    d = client.get("/api/shipments/SHP-G1", headers=co).json()
+    d = client.get("/api/shipments/SHP-PTH-1116-01", headers=co).json()
     p = d["prediction"]
     assert p["risk_category"] == "HIGH" and p["p_late"] >= 0.70 and p["p_stockout"] >= 0.30
     assert 2.0 <= _h(p["p50_at"], d["promised_at"]) <= 4.0
 
-    r = client.post("/api/shipments/SHP-G1/scenarios", headers=co)
+    r = client.post("/api/shipments/SHP-PTH-1116-01/scenarios", headers=co)
     assert r.status_code == 201
     case = r.json()
     cont, rer, split = (scenario(case, c) for c in ("CONTINUE", "REROUTE", "SPLIT"))
@@ -54,7 +54,7 @@ def test_g1_flooding_recommends_reroute_and_is_stable(client, auth):
 def test_g2_same_flood_high_stock_means_no_justified_intervention(client, auth):
     co = auth("coordinator")
     stage_g1(client, auth)
-    case = client.post("/api/shipments/SHP-G2/scenarios", headers=co).json()
+    case = client.post("/api/shipments/SHP-PTH-1116-02/scenarios", headers=co).json()
     cont = scenario(case, "CONTINUE")
     assert cont["metrics"]["p_late"] >= 0.50 and cont["metrics"]["p_stockout"] <= 0.05 and cont["feasible"]
     rec = case["recommendation"]
@@ -68,14 +68,14 @@ def test_g2_same_flood_high_stock_means_no_justified_intervention(client, auth):
 def test_g3_no_feasible_option_escalates_to_all_coordinators(client, auth):
     co = auth("coordinator")
     stage_g1(client, auth)
-    base = client.post("/api/shipments/SHP-G1/scenarios", headers=co).json()
+    base = client.post("/api/shipments/SHP-PTH-1116-01/scenarios", headers=co).json()
     split_freight = scenario(base, "SPLIT")["metrics"]["freight"]
     values = client.get("/api/assumptions", headers=co).json()["values"]
     values.update(alpha=0.01, max_incremental_freight_rs=20000)
     assert values["max_incremental_freight_rs"] < split_freight
     assert client.put("/api/assumptions", headers=co, json=values).status_code == 200
 
-    case = client.post("/api/shipments/SHP-G1/scenarios", headers=co).json()
+    case = client.post("/api/shipments/SHP-PTH-1116-01/scenarios", headers=co).json()
     names = {s["code"]: {v["constraint"] for v in s["violations"]} for s in case["scenarios"]}
     assert "MAX_P_STOCKOUT" in names["CONTINUE"] and "MAX_P_STOCKOUT" in names["REROUTE"]
     assert "MAX_FREIGHT" in names["SPLIT"]

@@ -70,7 +70,15 @@ export default function DemoGuide() {
     <div className="space-y-4">
       <div>
         <h1 className="text-xl font-bold text-navy-900">Demo guide</h1>
-        <p className="text-sm text-slate-600">Eight ready-made use cases. Pick one, press <strong>Start</strong> (you do every step live) or <strong>Jump to the decision</strong> (the setup steps are done for you). A presenter panel then follows you on every page. {data.password_hint}.</p>
+        <p className="text-sm text-slate-600">Eight short stories that show what FlowGuard does. Pick one, press <strong>Jump to the decision point</strong>, and follow the numbered steps. {data.password_hint}.</p>
+      </div>
+      <div className="rounded-xl border border-teal-200 bg-teal-50 p-3 text-sm text-teal-950" data-testid="quick-start">
+        <strong>New here? Start with story 1 (about 6 minutes).</strong> It shows the whole idea: a flood is coming, FlowGuard predicts the delay, explains why, compares the options, and a person approves one.
+        <ol className="list-decimal pl-5 mt-1 space-y-0.5">
+          <li>Pick a story on the left, then press <strong>Jump to the decision point</strong> (or <strong>Start from the beginning</strong> to do every step yourself).</li>
+          <li>Open the extra windows listed on the right (one browser tab per login, all with the same password).</li>
+          <li>Follow the steps in order. Each step says what to do and what you should see. Tick them off as you go.</li>
+        </ol>
       </div>
       {!data.demo_mode && <Notice kind="warn">DEMO_MODE is off: setup buttons are disabled.</Notice>}
 
@@ -84,6 +92,7 @@ export default function DemoGuide() {
                 <span className="font-semibold text-sm text-navy-900">{u.title}</span>
               </div>
               <div className="text-xs text-slate-600 mt-1">{u.tagline}</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">About {u.minutes} min · {u.steps.length} steps</div>
               <div className="flex flex-wrap gap-1 mt-1">{u.proves.map((p) => <span key={p} className="text-[10px] rounded border border-slate-300 px-1">{p}</span>)}
                 {demo?.code === u.code && <span className="text-[10px] rounded bg-green-700 text-white px-1">ACTIVE</span>}</div>
             </button>
@@ -92,6 +101,7 @@ export default function DemoGuide() {
 
         <div className="lg:col-span-2 space-y-4">
           <Card title={`Use case ${uc.number}: ${uc.title}`}>
+            {uc.question && <p className="text-sm font-semibold text-navy-900 mb-1">The question: {uc.question}</p>}
             <p className="text-sm">{uc.story}</p>
             <div className="grid sm:grid-cols-2 gap-3 mt-3 text-sm">
               <div><div className="label mb-1">Proves</div>{uc.proves.join(' · ')}</div>

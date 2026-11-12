@@ -18,6 +18,9 @@ async function login(browser: Browser, username: string, mobile = false): Promis
   await ctx.route('**/*', (route) => {
     const host = new URL(route.request().url()).hostname
     if (host === '127.0.0.1' || host === 'localhost') return route.continue()
+    // The only external call the app may make is for optional OpenStreetMap map tiles. Blocking them here also proves the
+    // whole workflow still works offline (the map falls back to the local logistics network).
+    if (host === 'tile.openstreetmap.org') return route.abort()
     external.push(route.request().url())
     return route.abort()
   })
@@ -53,8 +56,8 @@ test('full workflow across coordinator, driver and customer, then a live simulat
   await dialog.getByLabel('Product').selectOption('FILM-L30')
   await dialog.getByLabel('Priority').selectOption('HIGH')
   await dialog.getByRole('button', { name: 'Create and assign' }).click()
-  await expect(dialog.getByText(/created and assigned to Driver 15/)).toBeVisible()
-  const ids = (await dialog.locator('dd', { hasText: /^ORD-N-\d+ \/ SHP-N-\d+$/ }).innerText()).split(' / ')
+  await expect(dialog.getByText(/created and assigned to Dilip Wagh/)).toBeVisible()
+  const ids = (await dialog.locator('dd', { hasText: /^ORD-[A-Z]{3}-\d{4}-\d{2} \/ SHP-[A-Z]{3}-\d{4}-\d{2}$/ }).innerText()).split(' / ')
   const [orderId, shipmentId] = ids
   await expect(dialog.getByText('driver15', { exact: false }).first()).toBeVisible()
   await dialog.getByRole('button', { name: 'Close', exact: true }).click()
@@ -97,7 +100,7 @@ test('full workflow across coordinator, driver and customer, then a live simulat
   await expect(row.getByText('High')).toBeVisible()
   await expect(coordinator.getByText(`Risk changed from LOW to HIGH: ${shipmentId}`)).toBeVisible()
   await expect(coordinator.getByText(`Delay risk HIGH: ${shipmentId}`).first()).toBeVisible()
-  await expect(coordinator.getByText('Road disruption detected: Flooding - East Corridor market town')).toBeVisible()
+  await expect(coordinator.getByText('Road disruption detected: Flooding - Buldhana market town (Waluj to Amravati road)')).toBeVisible()
   // the customer is told in plain language, with no internal numbers
   await expect(customer.getByText('Why your delivery may be late')).toBeVisible({ timeout: 10_000 })
   await expect(customer.getByText(/road closure on the planned route/).first()).toBeVisible()
@@ -115,10 +118,10 @@ test('full workflow across coordinator, driver and customer, then a live simulat
   // ---- 7. customer gets a safe update; driver and coordinator see the new operational state ----
   await expect(customer.getByText(/Rerouting has been initiated/)).toBeVisible({ timeout: 10_000 })
   await expect(customer.getByText(/rerouted to protect the delivery time/).first()).toBeVisible()
-  await expect(driver.getByText(/follow East Ring Road/)).toBeVisible({ timeout: 10_000 })
+  await expect(driver.getByText(/follow Jalna Ring Road/)).toBeVisible({ timeout: 10_000 })
   await coordinator.getByRole('link', { name: 'Control Tower', exact: true }).click()
   await expect(coordinator.getByText(`Reroute approved: ${shipmentId}`)).toBeVisible()
-  await expect(coordinator.locator('tr', { hasText: shipmentId }).getByText(/→ East Ring Road/)).toBeVisible()
+  await expect(coordinator.locator('tr', { hasText: shipmentId }).getByText(/→ Jalna Ring Road/)).toBeVisible()
   await customer.screenshot({ path: `${SHOTS}/21-customer-portal.png`, fullPage: true })
 
   // ---- 8. the simulation runs by itself (real backend clock), producing real events ----
@@ -166,17 +169,17 @@ test('driver reports a breakdown on the road: coordinator and customer react wit
   const customer = await login(browser, 'customer_b')
   const driver = await login(browser, 'driver14', true)
 
-  const row = coordinator.locator('tr', { hasText: 'SHP-1014' })
+  const row = coordinator.locator('tr', { hasText: 'SHP-AMV-1116-05' })
   await expect(row).toBeVisible()
-  await customer.getByRole('button', { name: /ORD-1014/ }).click()
+  await customer.getByRole('button', { name: /ORD-AMV-1116-05/ }).click()
   await driver.getByRole('button', { name: 'Report breakdown' }).click()
   await driver.getByLabel('What happened? (optional)').fill('Tyre burst, waiting for the service truck')
   await driver.getByRole('button', { name: 'Send report' }).click()
   await expect(driver.getByText(/Breakdown reported/).first()).toBeVisible()
 
-  await expect(coordinator.getByText('Driver report on SHP-1014')).toBeVisible({ timeout: 10_000 })
+  await expect(coordinator.getByText('Driver report on SHP-AMV-1116-05')).toBeVisible({ timeout: 10_000 })
   await expect(coordinator.getByText(/Tyre burst/).first()).toBeVisible()
-  await expect(coordinator.getByText(/(ETA recalculated for SHP-1014: \+\d|Risk changed from \w+ to \w+: SHP-1014)/).first()).toBeVisible()
+  await expect(coordinator.getByText(/(ETA recalculated for SHP-AMV-1116-05: \+\d|Risk changed from \w+ to \w+: SHP-AMV-1116-05)/).first()).toBeVisible()
   await expect(customer.getByText(/disruption was detected affecting your delivery/)).toBeVisible({ timeout: 10_000 })
   await expect(customer.getByText(/Tyre burst/)).toHaveCount(0)             // the driver's note is internal
   // a second report is blocked: the button is gone while a report is active

@@ -1532,6 +1532,21 @@
         "title": "ClockOut",
         "type": "object"
       },
+      "CompleteDeliveryIn": {
+        "properties": {
+          "recipient_name": {
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "Recipient Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recipient_name"
+        ],
+        "title": "CompleteDeliveryIn",
+        "type": "object"
+      },
       "ControlOut": {
         "properties": {
           "clock": {
@@ -2364,6 +2379,11 @@
             "title": "Focus Shipment",
             "type": "string"
           },
+          "minutes": {
+            "default": 3,
+            "title": "Minutes",
+            "type": "integer"
+          },
           "number": {
             "title": "Number",
             "type": "integer"
@@ -2374,6 +2394,11 @@
             },
             "title": "Proves",
             "type": "array"
+          },
+          "question": {
+            "default": "",
+            "title": "Question",
+            "type": "string"
           },
           "steps": {
             "items": {
@@ -3799,6 +3824,29 @@
           "on_alternative"
         ],
         "title": "MapVehicle",
+        "type": "object"
+      },
+      "MessageOut": {
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "shipment_id": {
+            "title": "Shipment Id",
+            "type": "string"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "shipment_id",
+          "state"
+        ],
+        "title": "MessageOut",
         "type": "object"
       },
       "MilestoneIn": {
@@ -8140,6 +8188,64 @@
         ]
       }
     },
+    "/api/shipments/{shipment_id}/complete-delivery": {
+      "post": {
+        "description": "Complete a delivery WITHOUT a document, on the driver's behalf (recipient name only).",
+        "operationId": "coordinator_complete_delivery_api_shipments__shipment_id__complete_delivery_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shipment_id",
+            "required": true,
+            "schema": {
+              "title": "Shipment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteDeliveryIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Coordinator Complete Delivery",
+        "tags": [
+          "documents"
+        ]
+      }
+    },
     "/api/shipments/{shipment_id}/events": {
       "get": {
         "operationId": "shipment_events_api_shipments__shipment_id__events_get",
@@ -8188,6 +8294,76 @@
         "summary": "Shipment Events",
         "tags": [
           "shipments"
+        ]
+      }
+    },
+    "/api/shipments/{shipment_id}/pod-document": {
+      "post": {
+        "description": "The control tower uploads the proof of delivery on the driver's behalf (for example when the driver cannot).\nCompletes the delivery if the vehicle is at the customer gate. Audited as done by the coordinator.",
+        "operationId": "coordinator_upload_pod_api_shipments__shipment_id__pod_document_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shipment_id",
+            "required": true,
+            "schema": {
+              "title": "Shipment Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filename",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Filename",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "recipient_name",
+            "required": true,
+            "schema": {
+              "maxLength": 80,
+              "minLength": 2,
+              "title": "Recipient Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResultOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Coordinator Upload Pod",
+        "tags": [
+          "documents"
         ]
       }
     },
@@ -8871,7 +9047,7 @@
     },
     "/api/transporter/shipments/{shipment_id}/pod": {
       "post": {
-        "description": "Proof of delivery: status + recipient name (v1). On-time is decided at gate arrival, not here.",
+        "description": "Complete the delivery without a document (status + recipient name). On-time is decided at gate arrival.",
         "operationId": "post_pod_api_transporter_shipments__shipment_id__pod_post",
         "parameters": [
           {

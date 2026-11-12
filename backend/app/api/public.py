@@ -15,7 +15,7 @@ from ..services import predictions as pred_svc
 from ..services import reports as report_svc
 from ..services import views
 from ..services.core import audit, get_assumptions, sim_now
-from ..services.shipments import NEXT, advance_state
+from ..services.shipments import NEXT, advance_state, record_delivery
 
 router = APIRouter(prefix="/api")
 
@@ -148,15 +148,11 @@ def post_milestone(shipment_id: str, body: s.MilestoneIn, user: m.User = Depends
 
 @router.post("/transporter/shipments/{shipment_id}/pod", response_model=s.DriverShipmentOut, tags=["transporter"])
 def post_pod(shipment_id: str, body: s.PodIn, user: m.User = Depends(TRANS), db: Session = Depends(get_db)):
-    """Proof of delivery: status + recipient name (v1). On-time is decided at gate arrival, not here."""
+    """Complete the delivery without a document (status + recipient name). On-time is decided at gate arrival."""
     sh = own_shipment(db, user, shipment_id)
     if sh.state == "DELIVERED":
         return views.driver_shipment(db, sh)                # idempotent repeat
-    if sh.state != "ARRIVED_AT_CUSTOMER_GATE":
-        raise HTTPException(409, "Proof of delivery is only possible after arrival at the customer gate")
-    sh.pod_recipient = body.recipient_name.strip()
-    advance_state(db, sh, "DELIVERED", sim_now(db), "DRIVER", user, note=f"Proof of delivery signed by {sh.pod_recipient}")
-    audit(db, user, "POD_RECORDED", "shipment", sh.id, after={"recipient": sh.pod_recipient})
+    record_delivery(db, user, sh, body.recipient_name)
     db.commit()
     return views.driver_shipment(db, sh)
 

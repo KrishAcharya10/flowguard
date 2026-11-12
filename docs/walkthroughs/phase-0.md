@@ -19,7 +19,7 @@ numbers. If they could not, the demo would contradict itself.
 
 ## The one tuning change
 
-The first run failed one check: with the North Bypass at 44 km/h, Reroute's chance of a stock-out was 1.8%,
+The first run failed one check: with the Dhule Bypass at 44 km/h, Reroute's chance of a stock-out was 1.8%,
 below the target 2–8%. We did **not** change the target. We slowed the bypass to 42 km/h (a distribution
 parameter, which the rules allow). All 29 checks then passed: `RESULT: ALL TARGETS COMPATIBLE - GO`.
 Logged in `docs/GOLDEN_BASELINE.md`.

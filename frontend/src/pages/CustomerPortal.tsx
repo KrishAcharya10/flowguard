@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 import { api, refreshAll, useApi, type CustomerAlert, type CustomerDocument, type CustomerHistory, type CustomerOrder, type CustomerShipment } from '../api/client'
 import ChatWidget from '../components/ChatWidget'
-import { Chip, CustomerOrderDocs, DownloadButton } from '../components/Documents'
+import { Chip, CustomerOrderDocs } from '../components/Documents'
 import Icon from '../components/Icons'
 import MapView from '../components/MapView'
-import { Card, ConfidenceBadge, MilestoneBar, RiskBadge, State } from '../components/ui'
+import { Card, ConfidenceBadge, MilestoneBar, PageHeader, RiskBadge, State } from '../components/ui'
 import { fmtEta, fmtTime, hoursBetween } from '../lib/format'
 
 function Summary({ icon, label, value, tone }: { icon: string; label: string; value: number; tone: string }) {
@@ -168,14 +168,7 @@ export default function CustomerPortal() {
 
   return (
     <div className="space-y-4">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-navy-900 via-navy-800 to-sky-700 text-white p-6">
-        <span className="pointer-events-none absolute -right-10 -top-12 h-44 w-44 rounded-full bg-white/10" aria-hidden />
-        <span className="pointer-events-none absolute right-24 -bottom-16 h-40 w-40 rounded-full bg-sky-300/20" aria-hidden />
-        <div className="relative">
-          <h1 className="text-3xl font-bold tracking-tight">My deliveries</h1>
-          <p className="text-sm text-slate-200 mt-1 max-w-xl">Follow your orders from Plant X to your gate, download your invoices and proof of delivery, or ask the assistant. This page updates by itself.</p>
-        </div>
-      </div>
+      <PageHeader title="My deliveries">Follow your orders from Plant X to your gate, download your invoices and proof of delivery, or ask the assistant. This page updates by itself.</PageHeader>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Summary icon="box" label="Open orders" value={open.length} tone="bg-navy-100 text-navy-800" />
         <Summary icon="truck" label="In transit" value={inTransit} tone="bg-sky-100 text-sky-800" />

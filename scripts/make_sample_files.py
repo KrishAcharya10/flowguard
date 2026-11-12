@@ -13,10 +13,10 @@ from app.services import docgen  # noqa: E402
 out = ROOT / "docs" / "demo_files"
 out.mkdir(parents=True, exist_ok=True)
 (out / "sample_invoice.pdf").write_bytes(docgen.make_pdf("INVOICE INV-DEMO-0001", [
-    "Order: ORD-G1", "Customer: Northfield Mouldings (fictional)", "Product: PP-H110", "Quantity: 24 tonnes",
+    "Order: ORD-PTH-1116-01", "Customer: Sharma Mouldings Pvt Ltd (fictional)", "Product: PP-H110", "Quantity: 24 tonnes",
     "Terms: 30 days (fictional)", "Seller: Plant X (fictional)"]))
 (out / "sample_invoice_corrected.pdf").write_bytes(docgen.make_pdf("INVOICE INV-DEMO-0001 (CORRECTED)", [
-    "Order: ORD-G1", "Customer: Northfield Mouldings (fictional)", "Product: PP-H110", "Quantity: 24 tonnes",
+    "Order: ORD-PTH-1116-01", "Customer: Sharma Mouldings Pvt Ltd (fictional)", "Product: PP-H110", "Quantity: 24 tonnes",
     "Correction: quantity and unit price updated (fictional)", "Seller: Plant X (fictional)"]))
 (out / "sample_pod_signed_note.pdf").write_bytes(docgen.make_pdf("DELIVERY NOTE (SIGNED)", [
     "Received in good condition.", "Receiver: Gate Supervisor (fictional)", "Signature: ____________"]))

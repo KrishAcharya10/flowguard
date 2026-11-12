@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { api, refreshAll, useApi, type Booking, type GateOverview, type ReferenceData, type Shipment, type Slot } from '../api/client'
 import { Chip } from '../components/Documents'
 import Icon from '../components/Icons'
-import { Card, Notice, State } from '../components/ui'
+import { Card, Notice, PageHeader, State } from '../components/ui'
 
 const dayKey = (iso: string) => new Date(iso).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
 const hhmm = (iso: string) => new Date(iso).toLocaleTimeString('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false })
@@ -186,15 +186,7 @@ export default function GateSlots() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-gradient-to-r from-navy-900 via-navy-800 to-sky-800 text-white p-5 flex flex-wrap items-center gap-4">
-        <span className="h-12 w-12 rounded-xl bg-white/15 flex items-center justify-center"><Icon name="gate" size={26} /></span>
-        <div className="min-w-0">
-          <h1 className="text-2xl font-bold">Gate slot booking</h1>
-          <p className="text-sm text-slate-200">{ov.data.gate_name}. Hourly appointments for trucks entering Plant X.</p>
-        </div>
-        <div className="ml-auto text-right text-sm"><div className="text-[11px] uppercase tracking-wide text-slate-300">Simulated time</div><div className="text-lg font-bold">{stamp(ov.data.sim_now)}</div>
-          <div className="text-[11px] text-slate-300">Check-in opens {ov.data.check_in_early_minutes} min before a slot · default capacity {ov.data.default_capacity}</div></div>
-      </div>
+      <PageHeader icon={<Icon name="gate" size={22} />} title="Gate slot booking" right={<div className="text-right text-sm"><div className="label !text-[10.5px]">Simulated time</div><div className="text-lg font-bold text-navy-900">{stamp(ov.data.sim_now)}</div><div className="text-[11px] text-slate-500">Check-in opens {ov.data.check_in_early_minutes} min before a slot · default capacity {ov.data.default_capacity}</div></div>}>{ov.data.gate_name}. Hourly appointments for trucks entering Plant X.</PageHeader>
 
       <div className="flex flex-wrap items-center gap-2" role="tablist" aria-label="Day">
         {days.map((d) => {

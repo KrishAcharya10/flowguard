@@ -35,7 +35,7 @@ test('COORDINATOR: control tower, gate slots, documents, analytics, demo guide',
   await expect(page.getByText('Gate slots today')).toBeVisible()
   await expect(page.locator('.leaflet-container')).toBeVisible()
   await expect(page.getByText('Live operational activity')).toBeVisible()
-  await expect(page.getByRole('button', { name: 'SHP-G1', exact: true }).first()).toBeVisible()
+  await expect(page.getByRole('button', { name: 'SHP-PTH-1116-01', exact: true }).first()).toBeVisible()
   await page.screenshot({ path: `${SHOTS}/30-coordinator-tower.png`, fullPage: true })
 
   await go(page, '/gate')
@@ -49,10 +49,10 @@ test('COORDINATOR: control tower, gate slots, documents, analytics, demo guide',
   await go(page, '/documents')
   await expect(page.getByRole('heading', { name: 'Invoices and proof of delivery' })).toBeVisible()
   await expect(page.getByTestId('documents-panel')).toBeVisible()
-  await expect(page.getByTestId('doc-row-ORD-1003').getByText(/INV-2026-1003/)).toBeVisible()
+  await expect(page.getByTestId('doc-row-ORD-AMV-1116-01').getByText(/INV-2026-1003/)).toBeVisible()
   await page.screenshot({ path: `${SHOTS}/32-documents.png`, fullPage: true })
 
-  for (const path of ['/shipments/SHP-G1', '/shipments/SHP-G1/war-room', '/analytics', '/demo']) await go(page, path)
+  for (const path of ['/shipments/SHP-PTH-1116-01', '/shipments/SHP-PTH-1116-01/war-room', '/analytics', '/demo']) await go(page, path)
   expect(problems).toEqual([])
 })
 
@@ -67,8 +67,8 @@ test('CUSTOMER: orders, chat assistant, documents, history', async ({ browser })
   await page.getByRole('button', { name: 'Open the Where is my order chat' }).click()
   const chat = page.getByTestId('chat-panel')
   await chat.getByRole('button', { name: 'Where is my order?' }).click()
-  await expect(chat.getByText(/open orders?|Status:|reported position|not left Plant X/).first()).toBeVisible()
-  await chat.getByLabel('Your question').fill('Where is ORD-1007?')   // in transit in the seed; may have arrived if the demo was advanced
+  await expect(chat.getByText(/Status:|reported position|not left Plant X/).first()).toBeVisible()
+  await chat.getByLabel('Your question').fill('Where is ORD-PTH-1116-03?')   // in transit in the seed; may have arrived if the demo was advanced
   await chat.getByRole('button', { name: 'Send' }).click()
   await expect(chat.getByText(/Latest reported position: near|has arrived|was delivered|reached/).last()).toBeVisible()
   await page.screenshot({ path: `${SHOTS}/33-customer-chat.png` })
@@ -88,7 +88,7 @@ test('DRIVER: deliveries, gate appointment, history (phone size)', async ({ brow
   const { page, problems } = await session(browser, 'driver1', true)
   await go(page, '/driver')
   await expect(page.getByRole('heading', { name: 'My deliveries' })).toBeVisible()
-  await expect(page.getByTestId('driver-card-SHP-G1')).toBeVisible()
+  await expect(page.getByTestId('driver-card-SHP-PTH-1116-01')).toBeVisible()
   await expect(page.getByTestId('gate-appointment')).toBeVisible()
   await expect(page.getByText(/Gate 2/).first()).toBeVisible()
   await expect(page.getByTestId('gate-appointment').getByText(/BOOKED|CHECKED IN|COMPLETED|MISSED|CANCELLED/).first()).toBeVisible()   // state depends on how far the demo was advanced

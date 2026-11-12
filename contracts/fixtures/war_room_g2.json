@@ -32,7 +32,7 @@
     "code": "NO_JUSTIFIED_INTERVENTION",
     "explanation": [
       "Late is not the same as costly.",
-      "Continue is feasible and no option beats its modelled expected total (Rs 7,175) by more than the tie-break threshold (Rs 2,000).",
+      "Continue is feasible and no option beats its modelled expected total (Rs 7,134) by more than the tie-break threshold (Rs 2,000).",
       "Trade-off: an intervention would add certain freight cost for a small modelled benefit.",
       "Assumptions: SLA Rs 2,500 per late hour; stock-out Rs 60,000 per hour; N = 500 samples; all rates fictional."
     ],
@@ -49,27 +49,27 @@
       "id": 4,
       "ineligible_reason": "",
       "metrics": {
-        "exp_late_h": 2.8701068443602162,
+        "exp_late_h": 2.853619218139306,
         "exp_stockout_h": 0.0,
         "extra_km": 0.0,
         "freight": 0.0,
         "lots": [
           {
             "lot_type": "SINGLE",
-            "p50_at": "2026-11-16T14:17:35Z",
-            "p90_at": "2026-11-16T15:57:06Z",
+            "p50_at": "2026-11-16T14:17:12Z",
+            "p90_at": "2026-11-16T15:50:11Z",
             "p_late": 1.0,
             "quantity_t": 24.0
           }
         ],
-        "p50_at": "2026-11-16T14:17:35Z",
-        "p90_at": "2026-11-16T15:57:06Z",
+        "p50_at": "2026-11-16T14:17:12Z",
+        "p90_at": "2026-11-16T15:50:11Z",
         "p_late": 1.0,
         "p_priority_ok": 1.0,
         "p_stockout": 0.0,
-        "sla_cost": 7175.2671109005405,
+        "sla_cost": 7134.048045348265,
         "stockout_cost": 0.0,
-        "total": 7175.2671109005405,
+        "total": 7134.048045348265,
         "urgent_qty_t": null
       },
       "summary": "Keep the current plan",
@@ -82,30 +82,30 @@
       "id": 5,
       "ineligible_reason": "",
       "metrics": {
-        "exp_late_h": 0.17309277603910414,
+        "exp_late_h": 0.16169802894889151,
         "exp_stockout_h": 0.0,
         "extra_km": 56.93188571195503,
         "freight": 8131.253714157527,
         "lots": [
           {
             "lot_type": "SINGLE",
-            "p50_at": "2026-11-16T10:32:20Z",
-            "p90_at": "2026-11-16T12:12:06Z",
-            "p_late": 0.232,
+            "p50_at": "2026-11-16T10:34:28Z",
+            "p90_at": "2026-11-16T12:10:21Z",
+            "p_late": 0.208,
             "quantity_t": 24.0
           }
         ],
-        "p50_at": "2026-11-16T10:32:20Z",
-        "p90_at": "2026-11-16T12:12:06Z",
-        "p_late": 0.232,
+        "p50_at": "2026-11-16T10:34:28Z",
+        "p90_at": "2026-11-16T12:10:21Z",
+        "p_late": 0.208,
         "p_priority_ok": 1.0,
         "p_stockout": 0.0,
-        "sla_cost": 432.73194009776034,
+        "sla_cost": 404.2450723722288,
         "stockout_cost": 0.0,
-        "total": 8563.985654255288,
+        "total": 8535.498786529755,
         "urgent_qty_t": null
       },
-      "summary": "Reroute via North Bypass",
+      "summary": "Reroute via Dhule Bypass",
       "violations": []
     },
     {
@@ -115,34 +115,34 @@
       "id": 6,
       "ineligible_reason": "",
       "metrics": {
-        "exp_late_h": 2.588451268297933,
+        "exp_late_h": 2.5834383809188357,
         "exp_stockout_h": 0.0,
         "extra_km": 411.3808441908257,
         "freight": 40625.946430495416,
         "lots": [
           {
             "lot_type": "URGENT",
-            "p50_at": "2026-11-16T13:07:42Z",
-            "p90_at": "2026-11-16T14:48:09Z",
-            "p_late": 0.94,
+            "p50_at": "2026-11-16T13:11:31Z",
+            "p90_at": "2026-11-16T14:42:24Z",
+            "p_late": 0.958,
             "quantity_t": 6.0
           },
           {
             "lot_type": "REMAINDER",
-            "p50_at": "2026-11-16T14:17:35Z",
-            "p90_at": "2026-11-16T15:57:06Z",
+            "p50_at": "2026-11-16T14:17:12Z",
+            "p90_at": "2026-11-16T15:50:11Z",
             "p_late": 1.0,
             "quantity_t": 18.0
           }
         ],
-        "p50_at": "2026-11-16T14:25:05Z",
-        "p90_at": "2026-11-16T15:58:54Z",
+        "p50_at": "2026-11-16T14:25:55Z",
+        "p90_at": "2026-11-16T15:52:47Z",
         "p_late": 1.0,
         "p_priority_ok": 1.0,
         "p_stockout": 0.0,
-        "sla_cost": 6471.1281707448325,
+        "sla_cost": 6458.595952297089,
         "stockout_cost": 0.0,
-        "total": 47097.07460124025,
+        "total": 47084.542382792504,
         "urgent_qty_t": 6.0
       },
       "summary": "Split: 6 t urgent on a second vehicle, 18 t on the original plan",
@@ -150,7 +150,7 @@
     }
   ],
   "selected_scenario_id": null,
-  "shipment_id": "SHP-G2",
+  "shipment_id": "SHP-PTH-1116-02",
   "shipment_state_version": 2,
   "stability": {
     "break_even": null,

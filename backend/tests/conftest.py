@@ -78,7 +78,7 @@ def auth(client):
     return get
 
 
-def stage_g1(client, auth, shipment="SHP-G1"):
+def stage_g1(client, auth, shipment="SHP-PTH-1116-01"):
     """Staged demo opening: driver moves G1 to the plant gate, then flooding is injected."""
     r = client.post(f"/api/transporter/shipments/{shipment}/milestones", headers=auth("driver1"),
                     json={"to_state": "AT_PLANT_GATE"})

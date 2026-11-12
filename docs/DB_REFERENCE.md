@@ -92,10 +92,10 @@ SQLite, WAL mode, `PRAGMA foreign_keys=ON` on every connection, busy timeout 500
 | created_at | DATETIME | no |  |
 | updated_at | DATETIME | no |  |
 
-- CHECK `unloading_hours >= 0`
-- UNIQUE (customer_id, product_code)
 - CHECK `inventory_tonnes >= 0`
 - CHECK `consumption_tph > 0`
+- CHECK `unloading_hours >= 0`
+- UNIQUE (customer_id, product_code)
 
 ## `orders`
 
@@ -199,10 +199,10 @@ SQLite, WAL mode, `PRAGMA foreign_keys=ON` on every connection, busy timeout 500
 | created_at | DATETIME | no |  |
 | updated_at | DATETIME | no |  |
 
-- CHECK `disposition IN ('ACTIVE', 'SPLIT_PARENT')`
-- CHECK `state IN ('PLANNED', 'LOADING', 'AT_PLANT_GATE', 'IN_TRANSIT', 'ARRIVED_AT_CUSTOMER_GATE', 'DELIVERED')`
-- CHECK `lot_type IN ('SINGLE', 'URGENT', 'REMAINDER')`
 - CHECK `quantity_tonnes > 0`
+- CHECK `state IN ('PLANNED', 'LOADING', 'AT_PLANT_GATE', 'IN_TRANSIT', 'ARRIVED_AT_CUSTOMER_GATE', 'DELIVERED')`
+- CHECK `disposition IN ('ACTIVE', 'SPLIT_PARENT')`
+- CHECK `lot_type IN ('SINGLE', 'URGENT', 'REMAINDER')`
 
 ## `alerts`
 
@@ -245,8 +245,8 @@ SQLite, WAL mode, `PRAGMA foreign_keys=ON` on every connection, busy timeout 500
 | created_at | DATETIME | no |  |
 | updated_at | DATETIME | no |  |
 
-- CHECK `hours >= 0`
 - CHECK `cause IN ('FLOODING', 'BREAKDOWN', 'GATE_CONGESTION', 'SLOW_LOADING', 'LATE_DISPATCH', 'ROUTE_CONGESTION')`
+- CHECK `hours >= 0`
 
 ## `disruptions`
 
@@ -270,10 +270,10 @@ SQLite, WAL mode, `PRAGMA foreign_keys=ON` on every connection, busy timeout 500
 | created_at | DATETIME | no |  |
 | updated_at | DATETIME | no |  |
 
-- CHECK `multiplier >= 1`
-- CHECK `status IN ('ACTIVE', 'ENDED')`
 - CHECK `kind IN ('CLOSURE', 'SLOWDOWN', 'VEHICLE_STOPPAGE', 'GATE_QUEUE_SHIFT', 'HANDLING_SHIFT', 'DEPARTURE_OFFSET', 'TELEMETRY_OUTAGE')`
 - CHECK `dur_min_h <= dur_mode_h AND dur_mode_h <= dur_max_h AND dur_min_h >= 0`
+- CHECK `status IN ('ACTIVE', 'ENDED')`
+- CHECK `multiplier >= 1`
 
 ## `documents`
 
@@ -303,10 +303,10 @@ SQLite, WAL mode, `PRAGMA foreign_keys=ON` on every connection, busy timeout 500
 | created_at | DATETIME | no |  |
 | updated_at | DATETIME | no |  |
 
+- CHECK `status IN ('ISSUED', 'UPLOADED', 'VERIFIED', 'SUPERSEDED')`
 - CHECK `kind IN ('INVOICE', 'POD')`
 - UNIQUE (stored_name)
 - CHECK `size_bytes > 0`
-- CHECK `status IN ('ISSUED', 'UPLOADED', 'VERIFIED', 'SUPERSEDED')`
 
 ## `gate_bookings`
 

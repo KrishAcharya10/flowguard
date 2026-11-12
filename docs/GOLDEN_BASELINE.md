@@ -7,7 +7,7 @@ Frozen after tuning on 2026-11-12. Environment: Windows 11, Python 3.11, NumPy 2
 
 | # | Parameter | From | To | Reason |
 | --- | --- | --- | --- | --- |
-| 1 | North Bypass (R1A) segment speed | 44 km/h | 42 km/h | At 44 km/h Reroute P(stock-out) measured 1.8%, below the G1 target range 2–8%. Speeds 43/42/41 all met every target; 42 sits mid-range (3.8%). No target range was edited. |
+| 1 | Dhule Bypass (R1A) segment speed | 44 km/h | 42 km/h | At 44 km/h Reroute P(stock-out) measured 1.8%, below the G1 target range 2–8%. Speeds 43/42/41 all met every target; 42 sits mid-range (3.8%). No target range was edited. |
 
 No other parameter was tuned.
 

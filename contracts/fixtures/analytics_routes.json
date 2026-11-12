@@ -3,7 +3,7 @@
     "attributed_delay_hours": 16.47,
     "average_delay_hours_late_orders": 1.5,
     "id": "R1",
-    "name": "North Corridor",
+    "name": "Waluj to Pithampur",
     "on_time_pct": 94.1,
     "orders_completed": 51,
     "orders_on_time": 48
@@ -12,7 +12,7 @@
     "attributed_delay_hours": 52.17,
     "average_delay_hours_late_orders": 1.31,
     "id": "R2",
-    "name": "East Corridor",
+    "name": "Waluj to Amravati",
     "on_time_pct": 75.5,
     "orders_completed": 49,
     "orders_on_time": 37
@@ -21,7 +21,7 @@
     "attributed_delay_hours": 32.73,
     "average_delay_hours_late_orders": 1.58,
     "id": "R3",
-    "name": "South Coastal",
+    "name": "Waluj to Satara",
     "on_time_pct": 80.0,
     "orders_completed": 30,
     "orders_on_time": 24
@@ -30,7 +30,7 @@
     "attributed_delay_hours": 12.15,
     "average_delay_hours_late_orders": 0.55,
     "id": "R4",
-    "name": "West Link",
+    "name": "Waluj to Bhiwandi",
     "on_time_pct": 93.5,
     "orders_completed": 31,
     "orders_on_time": 29

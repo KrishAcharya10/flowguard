@@ -280,7 +280,7 @@ def reply(db: Session, user: m.User, message: str, order_id: Optional[str]) -> s
             links += [x for x in ans["links"] if x.kind == "document"]
             links.append(s.ChatLink(kind="order", label=f"Open {o.id}", order_id=o.id))
             position = position or ans["position"]
-        lines.append("Ask about one order (for example “Where is ORD-1007?”) for more detail.")
+        lines.append("Ask about one order (for example “Where is ORD-PTH-1116-03?”) for more detail.")
     sugg = [q for q in SUGGESTIONS if q.lower() != message.strip().lower()][:4]
     return s.ChatReplyOut(text="\n".join(lines), intent=intent, order_id=focus, facts=facts, links=links[:8],
                           suggestions=sugg, position=position, as_of=now)

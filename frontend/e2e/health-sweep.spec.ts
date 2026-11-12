@@ -36,7 +36,7 @@ test('coordinator: every page loads without errors', async ({ browser, request }
   const tok = (await (await request.post('/api/auth/login', { data: { username: 'coordinator', password: PASSWORD } })).json()).access_token
   await request.post('/api/admin/reset', { headers: { Authorization: `Bearer ${tok}` } })
   const { page, problems } = await session(browser, 'coordinator')
-  for (const p of ['/tower', '/shipments/SHP-G1', '/shipments/SHP-G1/war-room', '/analytics', '/demo']) await visit(page, p)
+  for (const p of ['/tower', '/shipments/SHP-PTH-1116-01', '/shipments/SHP-PTH-1116-01/war-room', '/analytics', '/demo']) await visit(page, p)
   expect(problems).toEqual([])
 })
 

@@ -89,6 +89,34 @@ const POD_TEXT: Record<string, [string, 'green' | 'amber' | 'slate' | 'blue']> =
   NO_DOCUMENT: ['Delivered · no document', 'amber'], UPLOADED: ['Document uploaded', 'blue'], VERIFIED: ['Verified', 'green'],
 }
 
+/** Coordinator: finish a delivery on the driver's behalf (the driver cannot, or forgot), or add the missing document. */
+function OnBehalf({ shipmentId, delivered, recipient }: { shipmentId: string; delivered: boolean; recipient?: string | null }) {
+  const [file, setFile] = useState<File | null>(null)
+  const [name, setName] = useState(recipient ?? '')
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null)
+  const ok = name.trim().length >= 2
+  const run = async (fn: () => Promise<unknown>, text: string) => {
+    setBusy(true)
+    setMsg(null)
+    try { await fn(); setMsg({ kind: 'ok', text }); setFile(null); refreshAll() } catch (e) { setMsg({ kind: 'error', text: (e as Error).message }) } finally { setBusy(false) }
+  }
+  return (
+    <div className="rounded-xl border-2 border-amber-400 bg-amber-50 p-3 space-y-2" data-testid={`on-behalf-${shipmentId}`}>
+      <div className="text-sm font-bold text-amber-950">{delivered ? 'Add the missing proof-of-delivery document' : 'The vehicle has arrived. Complete the delivery for the driver'}</div>
+      {!delivered && <p className="text-xs text-amber-950">Use this if the driver cannot do it on the phone. It is recorded as done by the control tower.</p>}
+      <label className="block text-xs font-medium text-slate-700">Who received the delivery?<input className="input mt-1" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} placeholder="Receiver's full name" /></label>
+      <FileDrop file={file} onFile={setFile} label="Choose the signed note or photo" />
+      <div className="flex flex-wrap gap-2">
+        <button className="btn-primary" disabled={busy || !ok || !file} onClick={() => run(() => uploadFile(`/api/shipments/${shipmentId}/pod-document?${new URLSearchParams({ filename: file!.name, recipient_name: name.trim() })}`, file!), delivered ? 'Document added.' : 'Delivery completed with the document.')}><Icon name="upload" size={16} />{delivered ? 'Add document' : 'Upload and complete delivery'}</button>
+        {!delivered && <button className="btn-secondary" disabled={busy || !ok} onClick={() => run(() => api(`/api/shipments/${shipmentId}/complete-delivery`, { method: 'POST', body: { recipient_name: name.trim() } }), 'Delivery completed without a document.')}>Complete without a document</button>}
+      </div>
+      {!ok && <p className="text-xs text-amber-900">Enter the receiver's name to continue.</p>}
+      {msg && <Notice kind={msg.kind}>{msg.text}</Notice>}
+    </div>
+  )
+}
+
 /** Coordinator: manage the invoice and proof-of-delivery documents of one order. */
 export default function DocumentsPanel({ orderId }: { orderId: string }) {
   const { data, error, loading, reload } = useApi<OrderDocuments>(`/api/orders/${orderId}/documents`)
@@ -149,7 +177,8 @@ export default function DocumentsPanel({ orderId }: { orderId: string }) {
             return (
               <div key={sh.shipment_id} className="rounded-xl border border-slate-200 p-3 space-y-2">
                 <div className="flex flex-wrap items-center gap-2"><strong className="text-sm">{sh.shipment_id}</strong><span className="text-xs text-slate-500">{sh.quantity_tonnes} t · {sh.state_label}</span><Chip tone={tone}>{text}</Chip></div>
-                {sh.documents.length === 0 && <p className="text-xs text-slate-500">{sh.pod_status === 'NOT_DELIVERED' ? 'The driver uploads the signed document after the vehicle reaches the customer gate.' : 'No document has been uploaded yet.'}</p>}
+                {(sh.pod_status === 'AWAITING_POD' || sh.pod_status === 'NO_DOCUMENT') && <OnBehalf shipmentId={sh.shipment_id} delivered={sh.pod_status === 'NO_DOCUMENT'} recipient={sh.recipient_name} />}
+                {sh.documents.length === 0 && sh.pod_status !== 'AWAITING_POD' && sh.pod_status !== 'NO_DOCUMENT' && <p className="text-xs text-slate-500">{sh.pod_status === 'NOT_DELIVERED' ? 'The driver uploads the signed document after the vehicle reaches the customer gate.' : 'No document has been uploaded yet.'}</p>}
                 {sh.documents.map((d) => (
                   <DocLine key={d.id} d={d} extra={d.is_current && d.status === 'UPLOADED' && (
                     verifying === d.id ? (

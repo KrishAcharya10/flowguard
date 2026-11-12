@@ -13,9 +13,9 @@ Owner: Dev3. Rehearse five times with a stopwatch. Record a backup video of one 
 | 1 | `cd backend` then `.venv\Scripts\python -m uvicorn app.main:app --port 8000 --workers 1` | "Application startup complete" |
 | 2 | Open http://127.0.0.1:8000/health | `{"status":"ok","demo_mode":true}` |
 | 3 | Tab A: log in as `coordinator`. Control Tower → **Reset demo** | "Demo data reset." |
-| 4 | Check the Control Tower | Simulated time **16 Nov, 06:00 IST · paused**; 14 shipments; SHP-G1 "Loading at Plant X", risk **Low** |
-| 5 | Tab B (new window): log in as `customer_a` | Order ORD-G1, "Delay risk: Low", original promise 16 Nov 17:00 IST |
-| 6 | Tab C (new window): log in as `driver1` | SHP-G1 with button "Confirm: Loaded, waiting at plant gate" |
+| 4 | Check the Control Tower | Simulated time **16 Nov, 06:00 IST · paused**; 14 shipments; SHP-PTH-1116-01 "Loading at Plant X", risk **Low** |
+| 5 | Tab B (new window): log in as `customer_a` | Order ORD-PTH-1116-01, "Delay risk: Low", original promise 16 Nov 17:00 IST |
+| 6 | Tab C (new window): log in as `driver1` | SHP-PTH-1116-01 with button "Confirm: Loaded, waiting at plant gate" |
 | 7 | Turn Wi-Fi **off** | Everything still works (no CDN, no tiles by default) |
 | 8 | Optional: `cd backend; .venv\Scripts\python -m pytest -q tests/test_golden.py` | 4 passed |
 
@@ -36,24 +36,24 @@ own session. **Do not advance the clock during the War Room step** (it correctly
 | Clock | Tab | Action | Say |
 |---|---|---|---|
 | 0:00 | A | Control Tower overview | "Tracking tells you where the truck is. FlowGuard tells you whether it matters and what to do." |
-| 0:10 | B | Customer: ORD-G1, Low risk, original promise 17:00 | "The customer sees one honest view." |
+| 0:10 | B | Customer: ORD-PTH-1116-01, Low risk, original promise 17:00 | "The customer sees one honest view." |
 | 0:20 | C | Driver presses **Confirm: Loaded, waiting at plant gate** | "Drivers update in one tap." |
-| 0:30 | A | Refresh; SHP-G1 is at the plant gate | |
-| 0:35 | A | Simulation controls → **Flooding – North Corridor river crossing** → Inject | "A river crossing floods." |
-| 0:45 | A | SHP-G1 turns **High**, P(late) 100%, P(stock-out) 95% | |
-| 0:55 | A | Open SHP-G1 detail | "P50 moved +5.4 hours: flooding event. Reason chips: road closure wait. The customer runs out of stock 1.5 h after the promise." |
-| 1:10 | A | **Alerts** drawer: "Suggested action: REROUTE via North Bypass…" → **Open War Room** | "An alert is a warning, not an action." |
+| 0:30 | A | Refresh; SHP-PTH-1116-01 is at the plant gate | |
+| 0:35 | A | Simulation controls → **Flooding - Tapi River Bridge (Waluj to Pithampur road)** → Inject | "A river crossing floods." |
+| 0:45 | A | SHP-PTH-1116-01 turns **High**, P(late) 100%, P(stock-out) 95% | |
+| 0:55 | A | Open SHP-PTH-1116-01 detail | "P50 moved +5.4 hours: flooding event. Reason chips: road closure wait. The customer runs out of stock 1.5 h after the promise." |
+| 1:10 | A | **Alerts** drawer: "Suggested action: REROUTE via Dhule Bypass…" → **Open War Room** | "An alert is a warning, not an action." |
 | 1:30 | A | **Run scenarios** | "Same simulated conditions for all three options." |
 | 1:40 | A | Walk the table | "Continue: 95% stock-out, violates our 10% limit. Split: second truck can't reach in time. Reroute: Rs 8,131 extra freight, P(late) 20%, stock-out 4%. Expected total Rs 12k vs Rs 177k." |
 | 2:20 | A | Stability card | "Holds in 16 of 16 stress cases: STABLE." |
 | 2:50 | A | **Approve Reroute** | "A human approves. One transaction: route, prediction, customer message, audit." |
 | 3:05 | B | Refresh customer | "Original promise beside the updated expected delivery. Rerouting initiated; no costs shown." |
 | 3:25 | A | Analytics → Business impact (Panel A), then Audit trail | "Modelled 2.8 late hours avoided. Labelled MODELLED, not achieved." |
-| 3:45 | A | Analytics → Performance | "O5: East Corridor congestion; Coastwise weak on South Coastal." |
+| 3:45 | A | Analytics → Performance | "O5: Waluj to Amravati congestion; Konkan Express weak on Waluj to Satara." |
 | 4:00 | | Close | "Predict. Simulate. Deliver." |
 
-Optional extras if time allows: SHP-G2 War Room → "NO JUSTIFIED INTERVENTION: late is not the same as
-costly"; set α = 1% and freight cap 20,000 in Assumptions → SHP-G1 → "NO FEASIBLE OPTION – ESCALATE".
+Optional extras if time allows: SHP-PTH-1116-02 War Room → "NO JUSTIFIED INTERVENTION: late is not the same as
+costly"; set α = 1% and freight cap 20,000 in Assumptions → SHP-PTH-1116-01 → "NO FEASIBLE OPTION – ESCALATE".
 
 ## 3. Slides (outline)
 

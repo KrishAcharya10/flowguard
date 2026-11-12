@@ -1,0 +1,483 @@
+[
+  {
+    "id": "ORD-1007",
+    "product_code": "LDPE-F20",
+    "promised_at": "2026-11-16T05:36:36Z",
+    "quantity_tonnes": 26.0,
+    "shipments": [
+      {
+        "action_note": null,
+        "arrived_at": null,
+        "data_confidence": "FRESH",
+        "delay_explanation": null,
+        "delivered_at": null,
+        "destination_name": "Northfield receiving gate",
+        "eta_from": "2026-11-16T03:14:31Z",
+        "eta_to": "2026-11-16T04:05:56Z",
+        "id": "SHP-1007",
+        "last_reported_position": {
+          "lat": 21.567274186956087,
+          "lon": 75.29672741869561,
+          "note": "Last reported position (simulated)",
+          "reported_at": "2026-11-16T00:30:00Z"
+        },
+        "lot_type": "SINGLE",
+        "milestones": [
+          {
+            "current": false,
+            "done": true,
+            "label": "Planned",
+            "occurred_at": null,
+            "state": "PLANNED"
+          },
+          {
+            "current": false,
+            "done": true,
+            "label": "Loading at Plant X",
+            "occurred_at": null,
+            "state": "LOADING"
+          },
+          {
+            "current": false,
+            "done": true,
+            "label": "Loaded, waiting at plant gate",
+            "occurred_at": null,
+            "state": "AT_PLANT_GATE"
+          },
+          {
+            "current": true,
+            "done": true,
+            "label": "In transit",
+            "occurred_at": "2026-11-15T20:06:00Z",
+            "state": "IN_TRANSIT"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Arrived at customer gate",
+            "occurred_at": null,
+            "state": "ARRIVED_AT_CUSTOMER_GATE"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Delivered (POD)",
+            "occurred_at": null,
+            "state": "DELIVERED"
+          }
+        ],
+        "order_id": "ORD-1007",
+        "pod_recipient": null,
+        "pod_status": "Not yet delivered",
+        "product_code": "LDPE-F20",
+        "progress_pct": 60,
+        "promised_at": "2026-11-16T05:36:36Z",
+        "quantity_tonnes": 26.0,
+        "risk_level": "Low",
+        "route_name": "Planned delivery route",
+        "route_points": [
+          {
+            "lat": 20.0,
+            "lon": 75.0,
+            "name": "Plant X Gate"
+          },
+          {
+            "lat": 20.55,
+            "lon": 75.1,
+            "name": "Junction N1"
+          },
+          {
+            "lat": 21.1,
+            "lon": 75.25,
+            "name": "River Crossing South"
+          },
+          {
+            "lat": 21.6,
+            "lon": 75.3,
+            "name": "River Crossing North"
+          },
+          {
+            "lat": 22.15,
+            "lon": 75.4,
+            "name": "Ridge Toll"
+          },
+          {
+            "lat": 22.6,
+            "lon": 75.55,
+            "name": "Northfield receiving gate"
+          }
+        ],
+        "state": "IN_TRANSIT",
+        "state_label": "In transit",
+        "stock_note": "Stock data unavailable",
+        "timeline": [
+          {
+            "at": "2026-11-15T20:06:00Z",
+            "kind": "MILESTONE",
+            "text": "Left Plant X, on its way to you"
+          }
+        ],
+        "updated_expected_delivery": "2026-11-16T03:36:20Z"
+      }
+    ],
+    "status": "In transit",
+    "updated_expected_delivery": "2026-11-16T03:36:20Z"
+  },
+  {
+    "id": "ORD-G1",
+    "product_code": "PP-H110",
+    "promised_at": "2026-11-16T11:30:00Z",
+    "quantity_tonnes": 24.0,
+    "shipments": [
+      {
+        "action_note": null,
+        "arrived_at": null,
+        "data_confidence": null,
+        "delay_explanation": null,
+        "delivered_at": null,
+        "destination_name": "Northfield receiving gate",
+        "eta_from": "2026-11-16T08:13:46Z",
+        "eta_to": "2026-11-16T10:19:50Z",
+        "id": "SHP-G1",
+        "last_reported_position": null,
+        "lot_type": "SINGLE",
+        "milestones": [
+          {
+            "current": false,
+            "done": true,
+            "label": "Planned",
+            "occurred_at": null,
+            "state": "PLANNED"
+          },
+          {
+            "current": true,
+            "done": true,
+            "label": "Loading at Plant X",
+            "occurred_at": "2026-11-15T23:42:00Z",
+            "state": "LOADING"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Loaded, waiting at plant gate",
+            "occurred_at": null,
+            "state": "AT_PLANT_GATE"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "In transit",
+            "occurred_at": null,
+            "state": "IN_TRANSIT"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Arrived at customer gate",
+            "occurred_at": null,
+            "state": "ARRIVED_AT_CUSTOMER_GATE"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Delivered (POD)",
+            "occurred_at": null,
+            "state": "DELIVERED"
+          }
+        ],
+        "order_id": "ORD-G1",
+        "pod_recipient": null,
+        "pod_status": "Not yet delivered",
+        "product_code": "PP-H110",
+        "progress_pct": 0,
+        "promised_at": "2026-11-16T11:30:00Z",
+        "quantity_tonnes": 24.0,
+        "risk_level": "Low",
+        "route_name": "Planned delivery route",
+        "route_points": [
+          {
+            "lat": 20.0,
+            "lon": 75.0,
+            "name": "Plant X Gate"
+          },
+          {
+            "lat": 20.55,
+            "lon": 75.1,
+            "name": "Junction N1"
+          },
+          {
+            "lat": 21.1,
+            "lon": 75.25,
+            "name": "River Crossing South"
+          },
+          {
+            "lat": 21.6,
+            "lon": 75.3,
+            "name": "River Crossing North"
+          },
+          {
+            "lat": 22.15,
+            "lon": 75.4,
+            "name": "Ridge Toll"
+          },
+          {
+            "lat": 22.6,
+            "lon": 75.55,
+            "name": "Northfield receiving gate"
+          }
+        ],
+        "state": "LOADING",
+        "state_label": "Loading at Plant X",
+        "stock_note": "Customer stock data is fictional; a real deployment needs customer consent to share coarse stock-cover data.",
+        "timeline": [
+          {
+            "at": "2026-11-15T23:42:00Z",
+            "kind": "MILESTONE",
+            "text": "Loading started at Plant X"
+          }
+        ],
+        "updated_expected_delivery": "2026-11-16T09:14:31Z"
+      }
+    ],
+    "status": "Being prepared at Plant X",
+    "updated_expected_delivery": "2026-11-16T09:14:31Z"
+  },
+  {
+    "id": "ORD-G2",
+    "product_code": "HDPE-B52",
+    "promised_at": "2026-11-16T11:30:00Z",
+    "quantity_tonnes": 24.0,
+    "shipments": [
+      {
+        "action_note": null,
+        "arrived_at": null,
+        "data_confidence": null,
+        "delay_explanation": null,
+        "delivered_at": null,
+        "destination_name": "Northfield receiving gate",
+        "eta_from": "2026-11-16T07:40:47Z",
+        "eta_to": "2026-11-16T10:11:14Z",
+        "id": "SHP-G2",
+        "last_reported_position": null,
+        "lot_type": "SINGLE",
+        "milestones": [
+          {
+            "current": false,
+            "done": true,
+            "label": "Planned",
+            "occurred_at": null,
+            "state": "PLANNED"
+          },
+          {
+            "current": false,
+            "done": true,
+            "label": "Loading at Plant X",
+            "occurred_at": null,
+            "state": "LOADING"
+          },
+          {
+            "current": true,
+            "done": true,
+            "label": "Loaded, waiting at plant gate",
+            "occurred_at": "2026-11-16T00:24:00Z",
+            "state": "AT_PLANT_GATE"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "In transit",
+            "occurred_at": null,
+            "state": "IN_TRANSIT"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Arrived at customer gate",
+            "occurred_at": null,
+            "state": "ARRIVED_AT_CUSTOMER_GATE"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Delivered (POD)",
+            "occurred_at": null,
+            "state": "DELIVERED"
+          }
+        ],
+        "order_id": "ORD-G2",
+        "pod_recipient": null,
+        "pod_status": "Not yet delivered",
+        "product_code": "HDPE-B52",
+        "progress_pct": 0,
+        "promised_at": "2026-11-16T11:30:00Z",
+        "quantity_tonnes": 24.0,
+        "risk_level": "Low",
+        "route_name": "Planned delivery route",
+        "route_points": [
+          {
+            "lat": 20.0,
+            "lon": 75.0,
+            "name": "Plant X Gate"
+          },
+          {
+            "lat": 20.55,
+            "lon": 75.1,
+            "name": "Junction N1"
+          },
+          {
+            "lat": 21.1,
+            "lon": 75.25,
+            "name": "River Crossing South"
+          },
+          {
+            "lat": 21.6,
+            "lon": 75.3,
+            "name": "River Crossing North"
+          },
+          {
+            "lat": 22.15,
+            "lon": 75.4,
+            "name": "Ridge Toll"
+          },
+          {
+            "lat": 22.6,
+            "lon": 75.55,
+            "name": "Northfield receiving gate"
+          }
+        ],
+        "state": "AT_PLANT_GATE",
+        "state_label": "Loaded, waiting at plant gate",
+        "stock_note": "Customer stock data is fictional; a real deployment needs customer consent to share coarse stock-cover data.",
+        "timeline": [
+          {
+            "at": "2026-11-16T00:24:00Z",
+            "kind": "MILESTONE",
+            "text": "Loaded and waiting at the plant gate"
+          }
+        ],
+        "updated_expected_delivery": "2026-11-16T08:51:37Z"
+      }
+    ],
+    "status": "Being prepared at Plant X",
+    "updated_expected_delivery": "2026-11-16T08:51:37Z"
+  },
+  {
+    "id": "ORD-1012",
+    "product_code": "HDPE-B52",
+    "promised_at": "2026-11-16T16:57:36Z",
+    "quantity_tonnes": 24.0,
+    "shipments": [
+      {
+        "action_note": null,
+        "arrived_at": null,
+        "data_confidence": null,
+        "delay_explanation": null,
+        "delivered_at": null,
+        "destination_name": "Northfield receiving gate",
+        "eta_from": "2026-11-16T12:38:00Z",
+        "eta_to": "2026-11-16T15:29:33Z",
+        "id": "SHP-1012",
+        "last_reported_position": null,
+        "lot_type": "SINGLE",
+        "milestones": [
+          {
+            "current": true,
+            "done": true,
+            "label": "Planned",
+            "occurred_at": "2026-11-16T00:30:00Z",
+            "state": "PLANNED"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Loading at Plant X",
+            "occurred_at": null,
+            "state": "LOADING"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Loaded, waiting at plant gate",
+            "occurred_at": null,
+            "state": "AT_PLANT_GATE"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "In transit",
+            "occurred_at": null,
+            "state": "IN_TRANSIT"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Arrived at customer gate",
+            "occurred_at": null,
+            "state": "ARRIVED_AT_CUSTOMER_GATE"
+          },
+          {
+            "current": false,
+            "done": false,
+            "label": "Delivered (POD)",
+            "occurred_at": null,
+            "state": "DELIVERED"
+          }
+        ],
+        "order_id": "ORD-1012",
+        "pod_recipient": null,
+        "pod_status": "Not yet delivered",
+        "product_code": "HDPE-B52",
+        "progress_pct": 0,
+        "promised_at": "2026-11-16T16:57:36Z",
+        "quantity_tonnes": 24.0,
+        "risk_level": "Low",
+        "route_name": "Planned delivery route",
+        "route_points": [
+          {
+            "lat": 20.0,
+            "lon": 75.0,
+            "name": "Plant X Gate"
+          },
+          {
+            "lat": 20.55,
+            "lon": 75.1,
+            "name": "Junction N1"
+          },
+          {
+            "lat": 21.1,
+            "lon": 75.25,
+            "name": "River Crossing South"
+          },
+          {
+            "lat": 21.6,
+            "lon": 75.3,
+            "name": "River Crossing North"
+          },
+          {
+            "lat": 22.15,
+            "lon": 75.4,
+            "name": "Ridge Toll"
+          },
+          {
+            "lat": 22.6,
+            "lon": 75.55,
+            "name": "Northfield receiving gate"
+          }
+        ],
+        "state": "PLANNED",
+        "state_label": "Planned",
+        "stock_note": "Customer stock data is fictional; a real deployment needs customer consent to share coarse stock-cover data.",
+        "timeline": [
+          {
+            "at": "2026-11-16T00:30:00Z",
+            "kind": "MILESTONE",
+            "text": "Order planned"
+          }
+        ],
+        "updated_expected_delivery": "2026-11-16T13:57:25Z"
+      }
+    ],
+    "status": "Being prepared at Plant X",
+    "updated_expected_delivery": "2026-11-16T13:57:25Z"
+  }
+]

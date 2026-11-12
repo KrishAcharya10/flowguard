@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply bg-navy-50 text-slate-900; }
+  :focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+  th { @apply text-left text-xs font-semibold uppercase tracking-wide text-slate-500 px-3 py-2; }
+  td { @apply px-3 py-2 text-sm align-top; }
+}
+
+@layer components {
+  .card { @apply bg-white rounded-lg border border-slate-200 shadow-sm; }
+  .btn { @apply inline-flex items-center justify-center gap-1 rounded-md border px-3 py-1.5 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed; }
+  .btn-primary { @apply btn border-navy-800 bg-navy-800 text-white hover:bg-navy-700; }
+  .btn-secondary { @apply btn border-slate-400 bg-white text-navy-900 hover:bg-slate-100; }
+  .btn-danger { @apply btn border-red-700 bg-red-700 text-white hover:bg-red-800; }
+  .label { @apply text-xs font-semibold uppercase tracking-wide text-slate-500; }
+  .input { @apply w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm; }
+}
+
+.map-label { background: transparent; border: none; font-size: 11px; font-weight: 600; color: #0b1f3a; white-space: nowrap; text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
+.grid-label { background: transparent; border: none; font-size: 10px; color: #64748b; white-space: nowrap; }

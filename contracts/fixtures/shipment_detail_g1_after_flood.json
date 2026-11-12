@@ -1,0 +1,187 @@
+{
+  "active_alternative_route_id": null,
+  "alternative_route_name": null,
+  "arrived_at": null,
+  "bucket": "AT_RISK",
+  "child_shipment_ids": [],
+  "customer_id": "CUST-A",
+  "customer_name": "Northfield Mouldings (fictional)",
+  "delivered_at": null,
+  "departed_at": null,
+  "destination_name": "Northfield receiving gate",
+  "disposition": "ACTIVE",
+  "disruptions": [
+    {
+      "cause": "FLOODING",
+      "dur_max_h": 12.0,
+      "dur_min_h": 7.0,
+      "dur_mode_h": 9.0,
+      "ended_at": null,
+      "id": "DSR-001",
+      "kind": "CLOSURE",
+      "label": "Flooding - North Corridor river crossing",
+      "multiplier": 1.0,
+      "preset": "FLOOD_R1",
+      "route_id": "R1",
+      "segment_waypoint_id": "R1-W2",
+      "shipment_id": null,
+      "start_at": "2026-11-16T00:30:00Z",
+      "status": "ACTIVE"
+    }
+  ],
+  "driver_name": "Driver 1 (fictional)",
+  "id": "SHP-G1",
+  "last_lat": null,
+  "last_lon": null,
+  "last_progress_km": 0.0,
+  "last_telemetry_at": null,
+  "lot_type": "SINGLE",
+  "milestones": [
+    {
+      "current": false,
+      "done": true,
+      "label": "Planned",
+      "occurred_at": null,
+      "state": "PLANNED"
+    },
+    {
+      "current": false,
+      "done": true,
+      "label": "Loading at Plant X",
+      "occurred_at": "2026-11-15T23:42:00Z",
+      "state": "LOADING"
+    },
+    {
+      "current": true,
+      "done": true,
+      "label": "Loaded, waiting at plant gate",
+      "occurred_at": "2026-11-16T00:30:00Z",
+      "state": "AT_PLANT_GATE"
+    },
+    {
+      "current": false,
+      "done": false,
+      "label": "In transit",
+      "occurred_at": null,
+      "state": "IN_TRANSIT"
+    },
+    {
+      "current": false,
+      "done": false,
+      "label": "Arrived at customer gate",
+      "occurred_at": null,
+      "state": "ARRIVED_AT_CUSTOMER_GATE"
+    },
+    {
+      "current": false,
+      "done": false,
+      "label": "Delivered (POD)",
+      "occurred_at": null,
+      "state": "DELIVERED"
+    }
+  ],
+  "open_case_id": null,
+  "order_id": "ORD-G1",
+  "parent_shipment_id": null,
+  "planned_arrival_at": "2026-11-16T09:30:00Z",
+  "planned_loading_at": "2026-11-15T22:42:00Z",
+  "prediction": {
+    "assumptions_version": 1,
+    "created_sim_at": "2026-11-16T00:30:00Z",
+    "data_confidence": "FRESH",
+    "id": 38,
+    "n": 500,
+    "p10_at": "2026-11-16T12:57:01Z",
+    "p50_at": "2026-11-16T14:24:59Z",
+    "p90_at": "2026-11-16T15:57:34Z",
+    "p_late": 1.0,
+    "p_stockout": 0.954,
+    "previous_p50_at": "2026-11-16T08:59:25Z",
+    "reasons": {
+      "baseline_at": "2026-11-16T08:22:36Z",
+      "chips": [
+        {
+          "hours": 0.0,
+          "key": "handling_deviation",
+          "label": "Loading / handling vs reference"
+        },
+        {
+          "hours": 0.5696,
+          "key": "gate_queue",
+          "label": "Plant gate queue"
+        },
+        {
+          "hours": 0.0,
+          "key": "dispatch_delay",
+          "label": "Late dispatch / second-vehicle lead"
+        },
+        {
+          "hours": 0.0,
+          "key": "slowdown",
+          "label": "Route slowdown"
+        },
+        {
+          "hours": 5.4526,
+          "key": "closure_wait",
+          "label": "Road closure wait"
+        },
+        {
+          "hours": 0.0,
+          "key": "repair_wait",
+          "label": "Vehicle repair wait"
+        },
+        {
+          "hours": 0.0466,
+          "key": "variability",
+          "label": "Travel variability / interactions"
+        }
+      ],
+      "expected_late_hours": 2.9454,
+      "expected_stockout_hours": 1.9625,
+      "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+      "mean_at": "2026-11-16T14:26:43Z",
+      "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+      "notes": [
+        "Data confidence: FRESH"
+      ],
+      "p50_change": {
+        "hours": 5.426,
+        "since": "2026-11-16T00:30:00Z",
+        "trigger": "flooding event DSR-001",
+        "trigger_event_id": "DSR-001"
+      },
+      "stock_available": true,
+      "stock_depletion_at": "2026-11-16T13:00:00Z",
+      "telemetry_age_min": null
+    },
+    "risk_category": "HIGH",
+    "risk_index": 98,
+    "shipment_id": "SHP-G1",
+    "state_version": 3,
+    "trigger": "flooding event DSR-001",
+    "trigger_event_id": "DSR-001"
+  },
+  "priority": "HIGH",
+  "product_code": "PP-H110",
+  "promised_at": "2026-11-16T11:30:00Z",
+  "quantity_tonnes": 24.0,
+  "route_id": "R1",
+  "route_name": "North Corridor",
+  "sla_penalty_per_late_hour": 20000.0,
+  "state": "AT_PLANT_GATE",
+  "state_label": "Loaded, waiting at plant gate",
+  "state_version": 3,
+  "stock": {
+    "available": true,
+    "consumption_tph": 2.0,
+    "depletion_at": "2026-11-16T13:00:00Z",
+    "inventory_tonnes": 25.0,
+    "measured_at": "2026-11-16T00:30:00Z",
+    "note": "Customer stock data is fictional; a real deployment needs customer consent to share coarse stock-cover data.",
+    "unloading_hours": 0.5
+  },
+  "total_km": 354.4489584788707,
+  "transporter_id": "TR-1",
+  "transporter_name": "Swiftline Haulage (fictional)",
+  "vehicle_label": "VEH-101 (fictional)"
+}

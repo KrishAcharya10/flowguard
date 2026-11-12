@@ -1,0 +1,321 @@
+{
+  "assumptions_version": 1,
+  "clock_version": 1,
+  "constraints": {
+    "alpha": 0.1,
+    "beta": null,
+    "max_freight_rs": null,
+    "min_urgent_qty_t": 6.0,
+    "tie_min_abs_rs": 2000.0,
+    "tie_pct": 0.02
+  },
+  "context": {
+    "n_samples": 500,
+    "promised_at": "2026-11-16T11:30:00Z",
+    "scope_note": "Single-shipment decision support. Not fleet optimisation.",
+    "sim_now": "2026-11-16T00:30:00Z",
+    "sla_penalty_per_late_hour": 20000.0,
+    "stock_available": true,
+    "stock_depletion_at": "2026-11-16T13:00:00Z",
+    "stockout_cost_per_hour_rs": 60000.0
+  },
+  "created_sim_at": "2026-11-16T00:30:00Z",
+  "decided_by_name": null,
+  "decided_sim_at": null,
+  "id": 1,
+  "impact": null,
+  "is_override": false,
+  "is_stale": false,
+  "override_reason": null,
+  "recommendation": {
+    "banner": "RECOMMENDED: REROUTE",
+    "code": "REROUTE",
+    "explanation": [
+      "Why: lowest modelled expected total among feasible options - Rs 12,095 versus Rs 176,660 for Continue (advantage Rs 164,564).",
+      "ETA difference: median arrival 3.7 h earlier than Continue.",
+      "Main risk: P(late) is still 20% and P(stock-out) 4%.",
+      "Trade-off: Rs 8,131 extra freight is certain; the avoided penalty and stock-out costs are modelled expectations.",
+      "Continue violates a hard constraint: P(stock-out) 95% exceeds the limit 10%.",
+      "Assumptions: SLA Rs 20,000 per late hour; stock-out Rs 60,000 per hour; N = 500 samples; all rates fictional."
+    ],
+    "least_violating_code": null,
+    "option_code": "REROUTE",
+    "saving_vs_continue": 164564.2833155358,
+    "threshold": 3533.193179914815
+  },
+  "scenarios": [
+    {
+      "code": "CONTINUE",
+      "eligible": true,
+      "feasible": false,
+      "id": 1,
+      "ineligible_reason": "",
+      "metrics": {
+        "exp_late_h": 2.9454005657381264,
+        "exp_stockout_h": 1.9625274613496368,
+        "extra_km": 0.0,
+        "freight": 0.0,
+        "lots": [
+          {
+            "lot_type": "SINGLE",
+            "p50_at": "2026-11-16T14:24:59Z",
+            "p90_at": "2026-11-16T15:57:34Z",
+            "p_late": 1.0,
+            "quantity_t": 24.0
+          }
+        ],
+        "p50_at": "2026-11-16T14:24:59Z",
+        "p90_at": "2026-11-16T15:57:34Z",
+        "p_late": 1.0,
+        "p_priority_ok": 0.046,
+        "p_stockout": 0.954,
+        "sla_cost": 58908.01131476253,
+        "stockout_cost": 117751.64768097822,
+        "total": 176659.65899574076,
+        "urgent_qty_t": null
+      },
+      "summary": "Keep the current plan",
+      "violations": [
+        {
+          "constraint": "MAX_P_STOCKOUT",
+          "limit": 0.1,
+          "text": "P(stock-out) 95% exceeds the limit 10%",
+          "value": 0.954
+        }
+      ]
+    },
+    {
+      "code": "REROUTE",
+      "eligible": true,
+      "feasible": true,
+      "id": 2,
+      "ineligible_reason": "",
+      "metrics": {
+        "exp_late_h": 0.1279955374384575,
+        "exp_stockout_h": 0.02340352028797097,
+        "extra_km": 56.93188571195503,
+        "freight": 8131.253714157527,
+        "lots": [
+          {
+            "lot_type": "SINGLE",
+            "p50_at": "2026-11-16T10:44:41Z",
+            "p90_at": "2026-11-16T11:59:27Z",
+            "p_late": 0.204,
+            "quantity_t": 24.0
+          }
+        ],
+        "p50_at": "2026-11-16T10:44:41Z",
+        "p90_at": "2026-11-16T11:59:27Z",
+        "p_late": 0.204,
+        "p_priority_ok": 0.962,
+        "p_stockout": 0.038,
+        "sla_cost": 2559.9107487691504,
+        "stockout_cost": 1404.2112172782583,
+        "total": 12095.375680204936,
+        "urgent_qty_t": null
+      },
+      "summary": "Reroute via North Bypass",
+      "violations": []
+    },
+    {
+      "code": "SPLIT",
+      "eligible": true,
+      "feasible": false,
+      "id": 3,
+      "ineligible_reason": "",
+      "metrics": {
+        "exp_late_h": 2.5748959972986465,
+        "exp_stockout_h": 0.8404560430570273,
+        "extra_km": 411.3808441908257,
+        "freight": 40625.946430495416,
+        "lots": [
+          {
+            "lot_type": "URGENT",
+            "p50_at": "2026-11-16T13:19:32Z",
+            "p90_at": "2026-11-16T14:33:44Z",
+            "p_late": 0.98,
+            "quantity_t": 8.0
+          },
+          {
+            "lot_type": "REMAINDER",
+            "p50_at": "2026-11-16T14:24:59Z",
+            "p90_at": "2026-11-16T15:57:34Z",
+            "p_late": 1.0,
+            "quantity_t": 16.0
+          }
+        ],
+        "p50_at": "2026-11-16T14:27:42Z",
+        "p90_at": "2026-11-16T16:03:53Z",
+        "p_late": 1.0,
+        "p_priority_ok": 0.222,
+        "p_stockout": 0.76,
+        "sla_cost": 51497.91994597293,
+        "stockout_cost": 50427.36258342164,
+        "total": 142551.22895988997,
+        "urgent_qty_t": 8.0
+      },
+      "summary": "Split: 8 t urgent on a second vehicle, 16 t on the original plan",
+      "violations": [
+        {
+          "constraint": "MAX_P_STOCKOUT",
+          "limit": 0.1,
+          "text": "P(stock-out) 76% exceeds the limit 10%",
+          "value": 0.76
+        },
+        {
+          "constraint": "PRIORITY_ARRIVAL",
+          "limit": 0.9,
+          "text": "P(urgent lot usable before stock runs out) 22% is below 90%",
+          "value": 0.222
+        }
+      ]
+    }
+  ],
+  "selected_scenario_id": null,
+  "shipment_id": "SHP-G1",
+  "shipment_state_version": 3,
+  "stability": {
+    "break_even": {
+      "multipliers": {
+        "freight": 21.238488319336152
+      },
+      "nearest": "freight",
+      "nearest_multiplier": 21.238488319336152
+    },
+    "cases": [
+      {
+        "duration": 0.75,
+        "freight": 0.75,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 0.75,
+        "stockout_rate": 0.75
+      },
+      {
+        "duration": 1.25,
+        "freight": 0.75,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 0.75,
+        "stockout_rate": 0.75
+      },
+      {
+        "duration": 0.75,
+        "freight": 0.75,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 0.75,
+        "stockout_rate": 1.25
+      },
+      {
+        "duration": 1.25,
+        "freight": 0.75,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 0.75,
+        "stockout_rate": 1.25
+      },
+      {
+        "duration": 0.75,
+        "freight": 0.75,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 1.25,
+        "stockout_rate": 0.75
+      },
+      {
+        "duration": 1.25,
+        "freight": 0.75,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 1.25,
+        "stockout_rate": 0.75
+      },
+      {
+        "duration": 0.75,
+        "freight": 0.75,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 1.25,
+        "stockout_rate": 1.25
+      },
+      {
+        "duration": 1.25,
+        "freight": 0.75,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 1.25,
+        "stockout_rate": 1.25
+      },
+      {
+        "duration": 0.75,
+        "freight": 1.25,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 0.75,
+        "stockout_rate": 0.75
+      },
+      {
+        "duration": 1.25,
+        "freight": 1.25,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 0.75,
+        "stockout_rate": 0.75
+      },
+      {
+        "duration": 0.75,
+        "freight": 1.25,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 0.75,
+        "stockout_rate": 1.25
+      },
+      {
+        "duration": 1.25,
+        "freight": 1.25,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 0.75,
+        "stockout_rate": 1.25
+      },
+      {
+        "duration": 0.75,
+        "freight": 1.25,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 1.25,
+        "stockout_rate": 0.75
+      },
+      {
+        "duration": 1.25,
+        "freight": 1.25,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 1.25,
+        "stockout_rate": 0.75
+      },
+      {
+        "duration": 0.75,
+        "freight": 1.25,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 1.25,
+        "stockout_rate": 1.25
+      },
+      {
+        "duration": 1.25,
+        "freight": 1.25,
+        "recommendation": "REROUTE",
+        "same": true,
+        "sla_rate": 1.25,
+        "stockout_rate": 1.25
+      }
+    ],
+    "holds": 16,
+    "label": "STABLE",
+    "total": 16
+  },
+  "stale_reason": null,
+  "status": "AWAITING_APPROVAL"
+}

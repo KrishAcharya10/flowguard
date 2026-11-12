@@ -1,0 +1,421 @@
+{
+  "caption": "Illustrative routes. Positions are simulated.",
+  "disruptions": [],
+  "routes": [
+    {
+      "alternative_of": null,
+      "id": "R1",
+      "name": "North Corridor",
+      "points": [
+        {
+          "id": "R1-W0",
+          "is_decision_node": false,
+          "lat": 20.0,
+          "lon": 75.0,
+          "name": "Plant X Gate"
+        },
+        {
+          "id": "R1-W1",
+          "is_decision_node": true,
+          "lat": 20.55,
+          "lon": 75.1,
+          "name": "Junction N1"
+        },
+        {
+          "id": "R1-W2",
+          "is_decision_node": false,
+          "lat": 21.1,
+          "lon": 75.25,
+          "name": "River Crossing South"
+        },
+        {
+          "id": "R1-W3",
+          "is_decision_node": false,
+          "lat": 21.6,
+          "lon": 75.3,
+          "name": "River Crossing North"
+        },
+        {
+          "id": "R1-W4",
+          "is_decision_node": false,
+          "lat": 22.15,
+          "lon": 75.4,
+          "name": "Ridge Toll"
+        },
+        {
+          "id": "R1-W5",
+          "is_decision_node": false,
+          "lat": 22.6,
+          "lon": 75.55,
+          "name": "Northfield receiving gate"
+        }
+      ]
+    },
+    {
+      "alternative_of": "R1",
+      "id": "R1A",
+      "name": "North Bypass",
+      "points": [
+        {
+          "id": "R1A-W0",
+          "is_decision_node": false,
+          "lat": 20.55,
+          "lon": 75.1,
+          "name": "Junction N1"
+        },
+        {
+          "id": "R1A-W1",
+          "is_decision_node": false,
+          "lat": 21.0,
+          "lon": 75.72,
+          "name": "Bypass East"
+        },
+        {
+          "id": "R1A-W2",
+          "is_decision_node": false,
+          "lat": 21.65,
+          "lon": 75.86,
+          "name": "Plateau Road"
+        },
+        {
+          "id": "R1A-W3",
+          "is_decision_node": false,
+          "lat": 22.15,
+          "lon": 75.4,
+          "name": "Ridge Toll"
+        }
+      ]
+    },
+    {
+      "alternative_of": null,
+      "id": "R2",
+      "name": "East Corridor",
+      "points": [
+        {
+          "id": "R2-W0",
+          "is_decision_node": false,
+          "lat": 20.0,
+          "lon": 75.0,
+          "name": "Plant X Gate"
+        },
+        {
+          "id": "R2-W1",
+          "is_decision_node": true,
+          "lat": 20.1,
+          "lon": 75.6,
+          "name": "Junction E1"
+        },
+        {
+          "id": "R2-W2",
+          "is_decision_node": false,
+          "lat": 20.25,
+          "lon": 76.25,
+          "name": "Market Town"
+        },
+        {
+          "id": "R2-W3",
+          "is_decision_node": false,
+          "lat": 20.3,
+          "lon": 76.9,
+          "name": "Canal Bridge"
+        },
+        {
+          "id": "R2-W4",
+          "is_decision_node": false,
+          "lat": 20.45,
+          "lon": 77.5,
+          "name": "Eastgate receiving gate"
+        }
+      ]
+    },
+    {
+      "alternative_of": "R2",
+      "id": "R2A",
+      "name": "East Ring Road",
+      "points": [
+        {
+          "id": "R2A-W0",
+          "is_decision_node": false,
+          "lat": 20.1,
+          "lon": 75.6,
+          "name": "Junction E1"
+        },
+        {
+          "id": "R2A-W1",
+          "is_decision_node": false,
+          "lat": 19.75,
+          "lon": 76.25,
+          "name": "Ring Road South"
+        },
+        {
+          "id": "R2A-W2",
+          "is_decision_node": false,
+          "lat": 20.3,
+          "lon": 76.9,
+          "name": "Canal Bridge"
+        }
+      ]
+    },
+    {
+      "alternative_of": null,
+      "id": "R3",
+      "name": "South Coastal",
+      "points": [
+        {
+          "id": "R3-W0",
+          "is_decision_node": false,
+          "lat": 20.0,
+          "lon": 75.0,
+          "name": "Plant X Gate"
+        },
+        {
+          "id": "R3-W1",
+          "is_decision_node": true,
+          "lat": 19.45,
+          "lon": 74.85,
+          "name": "Junction S1"
+        },
+        {
+          "id": "R3-W2",
+          "is_decision_node": false,
+          "lat": 18.85,
+          "lon": 74.6,
+          "name": "Coast Road"
+        },
+        {
+          "id": "R3-W3",
+          "is_decision_node": false,
+          "lat": 18.3,
+          "lon": 74.45,
+          "name": "Harbour Link"
+        },
+        {
+          "id": "R3-W4",
+          "is_decision_node": false,
+          "lat": 17.85,
+          "lon": 74.3,
+          "name": "Southbay receiving gate"
+        }
+      ]
+    },
+    {
+      "alternative_of": null,
+      "id": "R4",
+      "name": "West Link",
+      "points": [
+        {
+          "id": "R4-W0",
+          "is_decision_node": false,
+          "lat": 20.0,
+          "lon": 75.0,
+          "name": "Plant X Gate"
+        },
+        {
+          "id": "R4-W1",
+          "is_decision_node": true,
+          "lat": 19.9,
+          "lon": 74.35,
+          "name": "Junction W1"
+        },
+        {
+          "id": "R4-W2",
+          "is_decision_node": false,
+          "lat": 19.7,
+          "lon": 73.7,
+          "name": "Quarry Pass"
+        },
+        {
+          "id": "R4-W3",
+          "is_decision_node": false,
+          "lat": 19.4,
+          "lon": 73.1,
+          "name": "Southbay west warehouse gate"
+        }
+      ]
+    }
+  ],
+  "vehicles": [
+    {
+      "age_min": 0.0,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 20.08287055644607,
+      "lon": 75.49722333867642,
+      "on_alternative": false,
+      "reported_at": "2026-11-16T00:30:00Z",
+      "risk_category": "LOW",
+      "route_id": "R2",
+      "shipment_id": "SHP-1003",
+      "state": "IN_TRANSIT"
+    },
+    {
+      "age_min": null,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 20.0,
+      "lon": 75.0,
+      "on_alternative": false,
+      "reported_at": null,
+      "risk_category": "LOW",
+      "route_id": "R2",
+      "shipment_id": "SHP-1004",
+      "state": "PLANNED"
+    },
+    {
+      "age_min": 0.0,
+      "bucket": "AT_RISK",
+      "data_confidence": "FRESH",
+      "lat": 19.2237237026579,
+      "lon": 74.75571820944079,
+      "on_alternative": false,
+      "reported_at": "2026-11-16T00:30:00Z",
+      "risk_category": "MEDIUM",
+      "route_id": "R3",
+      "shipment_id": "SHP-1005",
+      "state": "IN_TRANSIT"
+    },
+    {
+      "age_min": 0.0,
+      "bucket": "LATE",
+      "data_confidence": "FRESH",
+      "lat": 19.75951538208553,
+      "lon": 73.89342499177798,
+      "on_alternative": false,
+      "reported_at": "2026-11-16T00:30:00Z",
+      "risk_category": "HIGH",
+      "route_id": "R4",
+      "shipment_id": "SHP-1006",
+      "state": "IN_TRANSIT"
+    },
+    {
+      "age_min": 0.0,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 21.567274186956087,
+      "lon": 75.29672741869561,
+      "on_alternative": false,
+      "reported_at": "2026-11-16T00:30:00Z",
+      "risk_category": "LOW",
+      "route_id": "R1",
+      "shipment_id": "SHP-1007",
+      "state": "IN_TRANSIT"
+    },
+    {
+      "age_min": null,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 20.0,
+      "lon": 75.0,
+      "on_alternative": false,
+      "reported_at": null,
+      "risk_category": "LOW",
+      "route_id": "R2",
+      "shipment_id": "SHP-1008",
+      "state": "LOADING"
+    },
+    {
+      "age_min": null,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 20.0,
+      "lon": 75.0,
+      "on_alternative": false,
+      "reported_at": null,
+      "risk_category": "LOW",
+      "route_id": "R3",
+      "shipment_id": "SHP-1009",
+      "state": "AT_PLANT_GATE"
+    },
+    {
+      "age_min": 90.0,
+      "bucket": "AT_RISK",
+      "data_confidence": "STALE",
+      "lat": 20.058742868344652,
+      "lon": 75.35245721006791,
+      "on_alternative": false,
+      "reported_at": "2026-11-15T23:00:00Z",
+      "risk_category": "MEDIUM",
+      "route_id": "R2",
+      "shipment_id": "SHP-1010",
+      "state": "IN_TRANSIT"
+    },
+    {
+      "age_min": null,
+      "bucket": "ARRIVED_PENDING_POD",
+      "data_confidence": "FRESH",
+      "lat": 19.4,
+      "lon": 73.1,
+      "on_alternative": false,
+      "reported_at": "2026-11-16T00:06:00Z",
+      "risk_category": null,
+      "route_id": "R4",
+      "shipment_id": "SHP-1011",
+      "state": "ARRIVED_AT_CUSTOMER_GATE"
+    },
+    {
+      "age_min": null,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 20.0,
+      "lon": 75.0,
+      "on_alternative": false,
+      "reported_at": null,
+      "risk_category": "LOW",
+      "route_id": "R1",
+      "shipment_id": "SHP-1012",
+      "state": "PLANNED"
+    },
+    {
+      "age_min": null,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 20.0,
+      "lon": 75.0,
+      "on_alternative": false,
+      "reported_at": null,
+      "risk_category": "LOW",
+      "route_id": "R4",
+      "shipment_id": "SHP-1013",
+      "state": "PLANNED"
+    },
+    {
+      "age_min": 0.0,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 20.026120042686493,
+      "lon": 75.15672025611896,
+      "on_alternative": false,
+      "reported_at": "2026-11-16T00:30:00Z",
+      "risk_category": "LOW",
+      "route_id": "R2",
+      "shipment_id": "SHP-1014",
+      "state": "IN_TRANSIT"
+    },
+    {
+      "age_min": null,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 20.0,
+      "lon": 75.0,
+      "on_alternative": false,
+      "reported_at": null,
+      "risk_category": "LOW",
+      "route_id": "R1",
+      "shipment_id": "SHP-G1",
+      "state": "LOADING"
+    },
+    {
+      "age_min": null,
+      "bucket": "ON_TRACK",
+      "data_confidence": "FRESH",
+      "lat": 20.0,
+      "lon": 75.0,
+      "on_alternative": false,
+      "reported_at": null,
+      "risk_category": "LOW",
+      "route_id": "R1",
+      "shipment_id": "SHP-G2",
+      "state": "AT_PLANT_GATE"
+    }
+  ]
+}

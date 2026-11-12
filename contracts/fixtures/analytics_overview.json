@@ -1,0 +1,24 @@
+{
+  "active_orders": 13,
+  "active_shipments": 13,
+  "average_delay_hours_late_orders": 1.34,
+  "avg_predicted_delay_hours": 0.67,
+  "buckets": {
+    "ARRIVED_PENDING_POD": 1,
+    "AT_RISK": 4,
+    "DELIVERED": 0,
+    "LATE": 1,
+    "ON_TRACK": 8,
+    "active_total": 13
+  },
+  "definition": "On-time = every lot of the order reached the customer gate by promised_at + grace. Orders still in transit are excluded.",
+  "delayed_shipments": 3,
+  "high_risk_shipments": 3,
+  "on_time_pct": 85.7,
+  "orders_completed": 161,
+  "orders_on_time": 138,
+  "predicted_on_time_pct_active": 71.3,
+  "warning_lead_time_hours": 7.17,
+  "warning_lead_time_note": "promised_at minus first HIGH alert, for lots predicted late or breached. Baseline assumption: without the tool, customers learn at the breach (lead time 0).",
+  "window_days": 56
+}

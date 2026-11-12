@@ -1,0 +1,15 @@
+.env
+*.db
+*.db-wal
+*.db-shm
+__pycache__/
+.pytest_cache/
+backend/.venv/
+node_modules/
+frontend/dist/
+*.pyc
+frontend/test-results/
+frontend/playwright-report/
+.vite/
+backend/storage/
+backend/storage-e2e/

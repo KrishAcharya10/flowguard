@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pydantic
+numpy
+argon2-cffi
+pyjwt
+pytest
+httpx

@@ -1,0 +1,1500 @@
+{
+  "clock": {
+    "clock_version": 1,
+    "display_timezone": "Asia/Kolkata",
+    "pause_on_alert": true,
+    "paused": true,
+    "sim_now": "2026-11-16T00:30:00Z",
+    "speed": 1.0
+  },
+  "kpis": {
+    "active_orders": 13,
+    "active_shipments": 13,
+    "average_delay_hours_late_orders": 1.34,
+    "avg_predicted_delay_hours": 0.23,
+    "buckets": {
+      "ARRIVED_PENDING_POD": 1,
+      "AT_RISK": 2,
+      "DELIVERED": 0,
+      "LATE": 1,
+      "ON_TRACK": 10,
+      "active_total": 13
+    },
+    "definition": "On-time = every lot of the order reached the customer gate by promised_at + grace. Orders still in transit are excluded.",
+    "delayed_shipments": 1,
+    "high_risk_shipments": 1,
+    "on_time_pct": 85.7,
+    "orders_completed": 161,
+    "orders_on_time": 138,
+    "predicted_on_time_pct_active": 86.7,
+    "warning_lead_time_hours": -0.5,
+    "warning_lead_time_note": "promised_at minus first HIGH alert, for lots predicted late or breached. Baseline assumption: without the tool, customers learn at the breach (lead time 0).",
+    "window_days": 56
+  },
+  "open_alerts": 4,
+  "shipments": [
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-B",
+      "customer_name": "Eastgate Films (fictional)",
+      "delivered_at": null,
+      "departed_at": "2026-11-15T23:12:00Z",
+      "destination_name": "Eastgate receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 3 (fictional)",
+      "id": "SHP-1003",
+      "last_lat": 20.08287055644607,
+      "last_lon": 75.49722333867642,
+      "last_progress_km": 63.298820601654185,
+      "last_telemetry_at": "2026-11-16T00:30:00Z",
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1003",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T05:50:24Z",
+      "planned_loading_at": "2026-11-15T21:36:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 1,
+        "n": 500,
+        "p10_at": "2026-11-16T05:23:10Z",
+        "p50_at": "2026-11-16T06:08:26Z",
+        "p90_at": "2026-11-16T06:56:44Z",
+        "p_late": 0.01,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T06:10:41Z",
+          "chips": [
+            {
+              "hours": 0.0,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.0,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": -0.0047,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.0018,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T06:10:25Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH",
+            "Transporter variability factor x1.15 (widens the range, not the mean)"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-18T02:30:00Z",
+          "telemetry_age_min": 0.0
+        },
+        "risk_category": "LOW",
+        "risk_index": 1,
+        "shipment_id": "SHP-1003",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "FILM-L30",
+      "promised_at": "2026-11-16T08:08:24Z",
+      "quantity_tonnes": 22.0,
+      "route_id": "R2",
+      "route_name": "East Corridor",
+      "sla_penalty_per_late_hour": 8000.0,
+      "state": "IN_TRANSIT",
+      "state_label": "In transit",
+      "state_version": 1,
+      "total_km": 319.5232252053453,
+      "transporter_id": "TR-2",
+      "transporter_name": "Meridian Bulk Carriers (fictional)",
+      "vehicle_label": "VEH-103 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-B",
+      "customer_name": "Eastgate Films (fictional)",
+      "delivered_at": null,
+      "departed_at": null,
+      "destination_name": "Eastgate receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 4 (fictional)",
+      "id": "SHP-1004",
+      "last_lat": null,
+      "last_lon": null,
+      "last_progress_km": 0.0,
+      "last_telemetry_at": null,
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1004",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T10:48:36Z",
+      "planned_loading_at": "2026-11-16T02:30:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 2,
+        "n": 500,
+        "p10_at": "2026-11-16T10:14:53Z",
+        "p50_at": "2026-11-16T11:06:29Z",
+        "p90_at": "2026-11-16T12:04:55Z",
+        "p_late": 0.0,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T10:29:49Z",
+          "chips": [
+            {
+              "hours": 0.0975,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.5637,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": -0.0113,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.0,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T11:08:48Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-18T02:30:00Z",
+          "telemetry_age_min": null
+        },
+        "risk_category": "LOW",
+        "risk_index": 0,
+        "shipment_id": "SHP-1004",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "FILM-L30",
+      "promised_at": "2026-11-16T13:36:36Z",
+      "quantity_tonnes": 20.0,
+      "route_id": "R2",
+      "route_name": "East Corridor",
+      "sla_penalty_per_late_hour": 5000.0,
+      "state": "PLANNED",
+      "state_label": "Planned",
+      "state_version": 1,
+      "total_km": 319.5232252053453,
+      "transporter_id": "TR-1",
+      "transporter_name": "Swiftline Haulage (fictional)",
+      "vehicle_label": "VEH-104 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "AT_RISK",
+      "customer_id": "CUST-C",
+      "customer_name": "Southbay Packaging (fictional)",
+      "delivered_at": null,
+      "departed_at": "2026-11-15T21:30:00Z",
+      "destination_name": "Southbay receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 5 (fictional)",
+      "id": "SHP-1005",
+      "last_lat": 19.2237237026579,
+      "last_lon": 74.75571820944079,
+      "last_progress_km": 108.2162118422566,
+      "last_telemetry_at": "2026-11-16T00:30:00Z",
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1005",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T04:51:00Z",
+      "planned_loading_at": "2026-11-15T19:54:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 3,
+        "n": 500,
+        "p10_at": "2026-11-16T04:24:18Z",
+        "p50_at": "2026-11-16T05:08:56Z",
+        "p90_at": "2026-11-16T06:07:20Z",
+        "p_late": 0.362,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T05:16:14Z",
+          "chips": [
+            {
+              "hours": 0.0,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.0,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": -0.0404,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.1923,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T05:13:48Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH",
+            "Transporter variability factor x1.30 (widens the range, not the mean)"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-16T18:30:00Z",
+          "telemetry_age_min": 0.0
+        },
+        "risk_category": "MEDIUM",
+        "risk_index": 22,
+        "shipment_id": "SHP-1005",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "HIGH",
+      "product_code": "PACK-P40",
+      "promised_at": "2026-11-16T05:24:00Z",
+      "quantity_tonnes": 18.0,
+      "route_id": "R3",
+      "route_name": "South Coastal",
+      "sla_penalty_per_late_hour": 12000.0,
+      "state": "IN_TRANSIT",
+      "state_label": "In transit",
+      "state_version": 1,
+      "total_km": 300.59696267731755,
+      "transporter_id": "TR-3",
+      "transporter_name": "Coastwise Logistics (fictional)",
+      "vehicle_label": "VEH-105 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "LATE",
+      "customer_id": "CUST-C",
+      "customer_name": "Southbay Packaging (fictional)",
+      "delivered_at": null,
+      "departed_at": "2026-11-15T21:30:00Z",
+      "destination_name": "Southbay west warehouse gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 6 (fictional)",
+      "id": "SHP-1006",
+      "last_lat": 19.75951538208553,
+      "last_lon": 73.89342499177798,
+      "last_progress_km": 142.92027134867294,
+      "last_telemetry_at": "2026-11-16T00:30:00Z",
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1006",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-15T22:00:00Z",
+      "planned_loading_at": "2026-11-15T19:54:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 4,
+        "n": 500,
+        "p10_at": "2026-11-16T02:33:38Z",
+        "p50_at": "2026-11-16T02:56:37Z",
+        "p90_at": "2026-11-16T03:23:55Z",
+        "p_late": 1.0,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T02:57:07Z",
+          "chips": [
+            {
+              "hours": 0.0,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.0,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": 0.012,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 2.9641,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T02:57:51Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH",
+            "Transporter variability factor x1.30 (widens the range, not the mean)"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-16T10:30:00Z",
+          "telemetry_age_min": 0.0
+        },
+        "risk_category": "HIGH",
+        "risk_index": 60,
+        "shipment_id": "SHP-1006",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "CAP-H08",
+      "promised_at": "2026-11-16T00:00:00Z",
+      "quantity_tonnes": 20.0,
+      "route_id": "R4",
+      "route_name": "West Link",
+      "sla_penalty_per_late_hour": 5000.0,
+      "state": "IN_TRANSIT",
+      "state_label": "In transit",
+      "state_version": 1,
+      "total_km": 253.87632676281265,
+      "transporter_id": "TR-3",
+      "transporter_name": "Coastwise Logistics (fictional)",
+      "vehicle_label": "VEH-106 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-A",
+      "customer_name": "Northfield Mouldings (fictional)",
+      "delivered_at": null,
+      "departed_at": "2026-11-15T20:06:00Z",
+      "destination_name": "Northfield receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 7 (fictional)",
+      "id": "SHP-1007",
+      "last_lat": 21.567274186956087,
+      "last_lon": 75.29672741869561,
+      "last_progress_km": 212.80419344221752,
+      "last_telemetry_at": "2026-11-16T00:30:00Z",
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1007",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T03:18:36Z",
+      "planned_loading_at": "2026-11-15T18:30:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 5,
+        "n": 500,
+        "p10_at": "2026-11-16T03:14:31Z",
+        "p50_at": "2026-11-16T03:36:20Z",
+        "p90_at": "2026-11-16T04:05:56Z",
+        "p_late": 0.0,
+        "p_stockout": null,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T03:38:52Z",
+          "chips": [
+            {
+              "hours": 0.0,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.0,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": -0.0064,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.0,
+          "expected_stockout_hours": null,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T03:38:29Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH"
+          ],
+          "p50_change": null,
+          "stock_available": false,
+          "stock_depletion_at": null,
+          "telemetry_age_min": 0.0
+        },
+        "risk_category": "LOW",
+        "risk_index": 0,
+        "shipment_id": "SHP-1007",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "LDPE-F20",
+      "promised_at": "2026-11-16T05:36:36Z",
+      "quantity_tonnes": 26.0,
+      "route_id": "R1",
+      "route_name": "North Corridor",
+      "sla_penalty_per_late_hour": 8000.0,
+      "state": "IN_TRANSIT",
+      "state_label": "In transit",
+      "state_version": 1,
+      "total_km": 354.4489584788707,
+      "transporter_id": "TR-1",
+      "transporter_name": "Swiftline Haulage (fictional)",
+      "vehicle_label": "VEH-107 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-B",
+      "customer_name": "Eastgate Films (fictional)",
+      "delivered_at": null,
+      "departed_at": null,
+      "destination_name": "Eastgate receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 8 (fictional)",
+      "id": "SHP-1008",
+      "last_lat": null,
+      "last_lon": null,
+      "last_progress_km": 0.0,
+      "last_telemetry_at": null,
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1008",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T08:35:24Z",
+      "planned_loading_at": "2026-11-15T23:12:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 6,
+        "n": 500,
+        "p10_at": "2026-11-16T07:53:23Z",
+        "p50_at": "2026-11-16T08:53:26Z",
+        "p90_at": "2026-11-16T10:00:18Z",
+        "p_late": 0.008,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T08:11:49Z",
+          "chips": [
+            {
+              "hours": 0.1071,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.5722,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": 0.0489,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.0027,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T08:55:30Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH",
+            "Transporter variability factor x1.15 (widens the range, not the mean)"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-18T02:30:00Z",
+          "telemetry_age_min": null
+        },
+        "risk_category": "LOW",
+        "risk_index": 0,
+        "shipment_id": "SHP-1008",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "FILM-L30",
+      "promised_at": "2026-11-16T11:23:24Z",
+      "quantity_tonnes": 24.0,
+      "route_id": "R2",
+      "route_name": "East Corridor",
+      "sla_penalty_per_late_hour": 5000.0,
+      "state": "LOADING",
+      "state_label": "Loading at Plant X",
+      "state_version": 1,
+      "total_km": 319.5232252053453,
+      "transporter_id": "TR-2",
+      "transporter_name": "Meridian Bulk Carriers (fictional)",
+      "vehicle_label": "VEH-108 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-C",
+      "customer_name": "Southbay Packaging (fictional)",
+      "delivered_at": null,
+      "departed_at": null,
+      "destination_name": "Southbay receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 9 (fictional)",
+      "id": "SHP-1009",
+      "last_lat": null,
+      "last_lon": null,
+      "last_progress_km": 0.0,
+      "last_telemetry_at": null,
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1009",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T08:06:36Z",
+      "planned_loading_at": "2026-11-15T23:18:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 7,
+        "n": 500,
+        "p10_at": "2026-11-16T07:26:58Z",
+        "p50_at": "2026-11-16T08:24:25Z",
+        "p90_at": "2026-11-16T09:24:37Z",
+        "p_late": 0.004,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T07:50:49Z",
+          "chips": [
+            {
+              "hours": 0.0,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.5722,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": -0.0151,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.0016,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T08:24:15Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-16T18:30:00Z",
+          "telemetry_age_min": null
+        },
+        "risk_category": "LOW",
+        "risk_index": 0,
+        "shipment_id": "SHP-1009",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "PACK-P40",
+      "promised_at": "2026-11-16T10:24:36Z",
+      "quantity_tonnes": 18.0,
+      "route_id": "R3",
+      "route_name": "South Coastal",
+      "sla_penalty_per_late_hour": 8000.0,
+      "state": "AT_PLANT_GATE",
+      "state_label": "Loaded, waiting at plant gate",
+      "state_version": 1,
+      "total_km": 300.59696267731755,
+      "transporter_id": "TR-1",
+      "transporter_name": "Swiftline Haulage (fictional)",
+      "vehicle_label": "VEH-109 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "AT_RISK",
+      "customer_id": "CUST-B",
+      "customer_name": "Eastgate Films (fictional)",
+      "delivered_at": null,
+      "departed_at": "2026-11-15T22:00:00Z",
+      "destination_name": "Eastgate receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 10 (fictional)",
+      "id": "SHP-1010",
+      "last_lat": 20.058742868344652,
+      "last_lon": 75.35245721006791,
+      "last_progress_km": 44.86942581825868,
+      "last_telemetry_at": "2026-11-15T23:00:00Z",
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1010",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T05:46:12Z",
+      "planned_loading_at": "2026-11-15T20:24:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "STALE",
+        "id": 8,
+        "n": 500,
+        "p10_at": "2026-11-16T03:42:13Z",
+        "p50_at": "2026-11-16T06:04:25Z",
+        "p90_at": "2026-11-16T09:59:02Z",
+        "p_late": 0.296,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T06:33:44Z",
+          "chips": [
+            {
+              "hours": 0.0,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.0,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": -0.0013,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.6559,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T06:33:39Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: STALE (telemetry is 90 min old; uncertainty widened x3.00)",
+            "Transporter variability factor x1.30 (widens the range, not the mean)"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-18T02:30:00Z",
+          "telemetry_age_min": 90.0
+        },
+        "risk_category": "MEDIUM",
+        "risk_index": 18,
+        "shipment_id": "SHP-1010",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "HIGH",
+      "product_code": "FILM-L30",
+      "promised_at": "2026-11-16T07:34:12Z",
+      "quantity_tonnes": 22.0,
+      "route_id": "R2",
+      "route_name": "East Corridor",
+      "sla_penalty_per_late_hour": 15000.0,
+      "state": "IN_TRANSIT",
+      "state_label": "In transit",
+      "state_version": 1,
+      "total_km": 319.5232252053453,
+      "transporter_id": "TR-3",
+      "transporter_name": "Coastwise Logistics (fictional)",
+      "vehicle_label": "VEH-110 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": "2026-11-16T00:06:00Z",
+      "bucket": "ARRIVED_PENDING_POD",
+      "customer_id": "CUST-C",
+      "customer_name": "Southbay Packaging (fictional)",
+      "delivered_at": null,
+      "departed_at": "2026-11-15T18:30:00Z",
+      "destination_name": "Southbay west warehouse gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 11 (fictional)",
+      "id": "SHP-1011",
+      "last_lat": 19.4,
+      "last_lon": 73.1,
+      "last_progress_km": 253.87632676281265,
+      "last_telemetry_at": "2026-11-16T00:06:00Z",
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1011",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-15T23:54:00Z",
+      "planned_loading_at": "2026-11-15T16:54:00Z",
+      "prediction": null,
+      "priority": "NORMAL",
+      "product_code": "CAP-H08",
+      "promised_at": "2026-11-16T01:00:00Z",
+      "quantity_tonnes": 20.0,
+      "route_id": "R4",
+      "route_name": "West Link",
+      "sla_penalty_per_late_hour": 5000.0,
+      "state": "ARRIVED_AT_CUSTOMER_GATE",
+      "state_label": "Arrived at customer gate",
+      "state_version": 1,
+      "total_km": 253.87632676281265,
+      "transporter_id": "TR-2",
+      "transporter_name": "Meridian Bulk Carriers (fictional)",
+      "vehicle_label": "VEH-111 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-A",
+      "customer_name": "Northfield Mouldings (fictional)",
+      "delivered_at": null,
+      "departed_at": null,
+      "destination_name": "Northfield receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 12 (fictional)",
+      "id": "SHP-1012",
+      "last_lat": null,
+      "last_lon": null,
+      "last_progress_km": 0.0,
+      "last_telemetry_at": null,
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1012",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T13:39:36Z",
+      "planned_loading_at": "2026-11-16T04:30:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 9,
+        "n": 500,
+        "p10_at": "2026-11-16T12:38:00Z",
+        "p50_at": "2026-11-16T13:57:25Z",
+        "p90_at": "2026-11-16T15:29:33Z",
+        "p_late": 0.008,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T13:22:36Z",
+          "chips": [
+            {
+              "hours": 0.1066,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.5669,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": 0.0018,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.0044,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T14:03:07Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH",
+            "Transporter variability factor x1.30 (widens the range, not the mean)"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-19T08:30:00Z",
+          "telemetry_age_min": null
+        },
+        "risk_category": "LOW",
+        "risk_index": 0,
+        "shipment_id": "SHP-1012",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "HDPE-B52",
+      "promised_at": "2026-11-16T16:57:36Z",
+      "quantity_tonnes": 24.0,
+      "route_id": "R1",
+      "route_name": "North Corridor",
+      "sla_penalty_per_late_hour": 2500.0,
+      "state": "PLANNED",
+      "state_label": "Planned",
+      "state_version": 1,
+      "total_km": 354.4489584788707,
+      "transporter_id": "TR-3",
+      "transporter_name": "Coastwise Logistics (fictional)",
+      "vehicle_label": "VEH-112 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-C",
+      "customer_name": "Southbay Packaging (fictional)",
+      "delivered_at": null,
+      "departed_at": null,
+      "destination_name": "Southbay west warehouse gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 13 (fictional)",
+      "id": "SHP-1013",
+      "last_lat": null,
+      "last_lon": null,
+      "last_progress_km": 0.0,
+      "last_telemetry_at": null,
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1013",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T08:07:12Z",
+      "planned_loading_at": "2026-11-16T01:30:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 10,
+        "n": 500,
+        "p10_at": "2026-11-16T07:44:33Z",
+        "p50_at": "2026-11-16T08:24:59Z",
+        "p90_at": "2026-11-16T09:17:06Z",
+        "p_late": 0.0,
+        "p_stockout": 0.006,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T07:48:38Z",
+          "chips": [
+            {
+              "hours": 0.1062,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.5708,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": -0.0109,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.0,
+          "expected_stockout_hours": 0.0013,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T08:28:36Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-16T10:30:00Z",
+          "telemetry_age_min": null
+        },
+        "risk_category": "LOW",
+        "risk_index": 0,
+        "shipment_id": "SHP-1013",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "CAP-H08",
+      "promised_at": "2026-11-16T11:25:12Z",
+      "quantity_tonnes": 20.0,
+      "route_id": "R4",
+      "route_name": "West Link",
+      "sla_penalty_per_late_hour": 5000.0,
+      "state": "PLANNED",
+      "state_label": "Planned",
+      "state_version": 1,
+      "total_km": 253.87632676281265,
+      "transporter_id": "TR-1",
+      "transporter_name": "Swiftline Haulage (fictional)",
+      "vehicle_label": "VEH-113 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-B",
+      "customer_name": "Eastgate Films (fictional)",
+      "delivered_at": null,
+      "departed_at": "2026-11-16T00:06:00Z",
+      "destination_name": "Eastgate receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 14 (fictional)",
+      "id": "SHP-1014",
+      "last_lat": 20.026120042686493,
+      "last_lon": 75.15672025611896,
+      "last_progress_km": 19.951210261220233,
+      "last_telemetry_at": "2026-11-16T00:30:00Z",
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-1014",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T06:46:12Z",
+      "planned_loading_at": "2026-11-15T22:30:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 11,
+        "n": 500,
+        "p10_at": "2026-11-16T06:06:31Z",
+        "p50_at": "2026-11-16T07:04:21Z",
+        "p90_at": "2026-11-16T07:58:51Z",
+        "p_late": 0.02,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T07:04:52Z",
+          "chips": [
+            {
+              "hours": 0.0,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.0,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": -0.0169,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.006,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T07:03:52Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-18T02:30:00Z",
+          "telemetry_age_min": 0.0
+        },
+        "risk_category": "LOW",
+        "risk_index": 1,
+        "shipment_id": "SHP-1014",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "FILM-L30",
+      "promised_at": "2026-11-16T08:34:12Z",
+      "quantity_tonnes": 22.0,
+      "route_id": "R2",
+      "route_name": "East Corridor",
+      "sla_penalty_per_late_hour": 8000.0,
+      "state": "IN_TRANSIT",
+      "state_label": "In transit",
+      "state_version": 1,
+      "total_km": 319.5232252053453,
+      "transporter_id": "TR-1",
+      "transporter_name": "Swiftline Haulage (fictional)",
+      "vehicle_label": "VEH-114 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-A",
+      "customer_name": "Northfield Mouldings (fictional)",
+      "delivered_at": null,
+      "departed_at": null,
+      "destination_name": "Northfield receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 1 (fictional)",
+      "id": "SHP-G1",
+      "last_lat": null,
+      "last_lon": null,
+      "last_progress_km": 0.0,
+      "last_telemetry_at": null,
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-G1",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T09:30:00Z",
+      "planned_loading_at": "2026-11-15T22:42:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 12,
+        "n": 500,
+        "p10_at": "2026-11-16T08:13:46Z",
+        "p50_at": "2026-11-16T09:14:31Z",
+        "p90_at": "2026-11-16T10:19:50Z",
+        "p_late": 0.006,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T08:34:36Z",
+          "chips": [
+            {
+              "hours": 0.0949,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.5696,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": 0.0466,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.0037,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T09:17:16Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-16T13:00:00Z",
+          "telemetry_age_min": null
+        },
+        "risk_category": "LOW",
+        "risk_index": 0,
+        "shipment_id": "SHP-G1",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "HIGH",
+      "product_code": "PP-H110",
+      "promised_at": "2026-11-16T11:30:00Z",
+      "quantity_tonnes": 24.0,
+      "route_id": "R1",
+      "route_name": "North Corridor",
+      "sla_penalty_per_late_hour": 20000.0,
+      "state": "LOADING",
+      "state_label": "Loading at Plant X",
+      "state_version": 1,
+      "total_km": 354.4489584788707,
+      "transporter_id": "TR-1",
+      "transporter_name": "Swiftline Haulage (fictional)",
+      "vehicle_label": "VEH-101 (fictional)"
+    },
+    {
+      "active_alternative_route_id": null,
+      "alternative_route_name": null,
+      "arrived_at": null,
+      "bucket": "ON_TRACK",
+      "customer_id": "CUST-A",
+      "customer_name": "Northfield Mouldings (fictional)",
+      "delivered_at": null,
+      "departed_at": null,
+      "destination_name": "Northfield receiving gate",
+      "disposition": "ACTIVE",
+      "driver_name": "Driver 2 (fictional)",
+      "id": "SHP-G2",
+      "last_lat": null,
+      "last_lon": null,
+      "last_progress_km": 0.0,
+      "last_telemetry_at": null,
+      "lot_type": "SINGLE",
+      "open_case_id": null,
+      "order_id": "ORD-G2",
+      "parent_shipment_id": null,
+      "planned_arrival_at": "2026-11-16T09:30:00Z",
+      "planned_loading_at": "2026-11-15T23:24:00Z",
+      "prediction": {
+        "assumptions_version": 1,
+        "created_sim_at": "2026-11-16T00:30:00Z",
+        "data_confidence": "FRESH",
+        "id": 13,
+        "n": 500,
+        "p10_at": "2026-11-16T07:40:47Z",
+        "p50_at": "2026-11-16T08:51:37Z",
+        "p90_at": "2026-11-16T10:11:14Z",
+        "p_late": 0.01,
+        "p_stockout": 0.0,
+        "previous_p50_at": null,
+        "reasons": {
+          "baseline_at": "2026-11-16T08:22:36Z",
+          "chips": [
+            {
+              "hours": 0.0,
+              "key": "handling_deviation",
+              "label": "Loading / handling vs reference"
+            },
+            {
+              "hours": 0.5818,
+              "key": "gate_queue",
+              "label": "Plant gate queue"
+            },
+            {
+              "hours": 0.0,
+              "key": "dispatch_delay",
+              "label": "Late dispatch / second-vehicle lead"
+            },
+            {
+              "hours": 0.0,
+              "key": "slowdown",
+              "label": "Route slowdown"
+            },
+            {
+              "hours": 0.0,
+              "key": "closure_wait",
+              "label": "Road closure wait"
+            },
+            {
+              "hours": 0.0,
+              "key": "repair_wait",
+              "label": "Vehicle repair wait"
+            },
+            {
+              "hours": -0.0243,
+              "key": "variability",
+              "label": "Travel variability / interactions"
+            }
+          ],
+          "expected_late_hours": 0.004,
+          "expected_stockout_hours": 0.0,
+          "explains": "mean contribution (hours) versus the deterministic baseline; P50/P90 are shown separately",
+          "mean_at": "2026-11-16T08:56:03Z",
+          "method": "Monte Carlo, N=500. Probabilities carry a sampling error of up to about 2.2 percentage points. Assumed distributions; not a trained ML model.",
+          "notes": [
+            "Data confidence: FRESH",
+            "Transporter variability factor x1.15 (widens the range, not the mean)"
+          ],
+          "p50_change": null,
+          "stock_available": true,
+          "stock_depletion_at": "2026-11-19T08:30:00Z",
+          "telemetry_age_min": null
+        },
+        "risk_category": "LOW",
+        "risk_index": 1,
+        "shipment_id": "SHP-G2",
+        "state_version": 1,
+        "trigger": "initial seed",
+        "trigger_event_id": null
+      },
+      "priority": "NORMAL",
+      "product_code": "HDPE-B52",
+      "promised_at": "2026-11-16T11:30:00Z",
+      "quantity_tonnes": 24.0,
+      "route_id": "R1",
+      "route_name": "North Corridor",
+      "sla_penalty_per_late_hour": 2500.0,
+      "state": "AT_PLANT_GATE",
+      "state_label": "Loaded, waiting at plant gate",
+      "state_version": 1,
+      "total_km": 354.4489584788707,
+      "transporter_id": "TR-2",
+      "transporter_name": "Meridian Bulk Carriers (fictional)",
+      "vehicle_label": "VEH-102 (fictional)"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+flowchart LR
+  subgraph Browser["Browser - one tab per role, token in sessionStorage"]
+    C["Customer Portal"]
+    D["Transporter Portal"]
+    K["Coordinator: Control Tower, Shipment Detail, War Room, Analytics"]
+  end
+
+  subgraph Server["FastAPI - one Uvicorn worker, same origin, serves the React build"]
+    SEC["security.py: JWT + Argon2, role and ownership check on every request"]
+    API["API routers: Pydantic schemas, customer allow-list schemas"]
+    SVC["services: mapping, predictions, alerts, War Room, analytics, audit"]
+    ENG["engine (NumPy only): simulate_arrival, stock, risk, War Room maths"]
+    SIM["simulator: hidden truth from seed_truth, clock ticks of 5 min"]
+  end
+
+  DB[("SQLite, WAL, foreign keys: orders, shipments, events, predictions, alerts, interventions, audit_events, assumptions, simulation_state")]
+
+  C --> SEC
+  D --> SEC
+  K --> SEC
+  SEC --> API --> SVC
+  SVC -->|"observed state only"| ENG
+  SIM -->|"milestones, reported positions, disruption ends"| DB
+  SVC <--> DB
+  API -->|"POST clock advance"| SIM
+  SIM -.->|"never imported by"| ENG

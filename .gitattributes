@@ -1,0 +1,6 @@
+# never convert line endings inside binary files (a converted PDF is a broken PDF)
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.svg -text

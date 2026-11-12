@@ -1,0 +1,29 @@
+[
+  {
+    "attributed_delay_hours": 38.1,
+    "average_delay_hours_late_orders": 1.19,
+    "id": "TR-1",
+    "name": "Swiftline Haulage (fictional)",
+    "on_time_pct": 85.2,
+    "orders_completed": 54,
+    "orders_on_time": 46
+  },
+  {
+    "attributed_delay_hours": 16.63,
+    "average_delay_hours_late_orders": 1.72,
+    "id": "TR-2",
+    "name": "Meridian Bulk Carriers (fictional)",
+    "on_time_pct": 97.9,
+    "orders_completed": 47,
+    "orders_on_time": 46
+  },
+  {
+    "attributed_delay_hours": 58.78,
+    "average_delay_hours_late_orders": 1.39,
+    "id": "TR-3",
+    "name": "Coastwise Logistics (fictional)",
+    "on_time_pct": 76.7,
+    "orders_completed": 60,
+    "orders_on_time": 46
+  }
+]

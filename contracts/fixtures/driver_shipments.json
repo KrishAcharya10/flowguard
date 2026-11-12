@@ -1,0 +1,76 @@
+[
+  {
+    "active_report": null,
+    "alternative_route_name": null,
+    "can_report": false,
+    "customer_name": "Northfield Mouldings (fictional)",
+    "destination_name": "Northfield receiving gate",
+    "id": "SHP-G1",
+    "instruction": null,
+    "last_reported_at": null,
+    "lot_type": "SINGLE",
+    "milestones": [
+      {
+        "current": false,
+        "done": true,
+        "label": "Planned",
+        "occurred_at": null,
+        "state": "PLANNED"
+      },
+      {
+        "current": true,
+        "done": true,
+        "label": "Loading at Plant X",
+        "occurred_at": "2026-11-15T23:42:00Z",
+        "state": "LOADING"
+      },
+      {
+        "current": false,
+        "done": false,
+        "label": "Loaded, waiting at plant gate",
+        "occurred_at": null,
+        "state": "AT_PLANT_GATE"
+      },
+      {
+        "current": false,
+        "done": false,
+        "label": "In transit",
+        "occurred_at": null,
+        "state": "IN_TRANSIT"
+      },
+      {
+        "current": false,
+        "done": false,
+        "label": "Arrived at customer gate",
+        "occurred_at": null,
+        "state": "ARRIVED_AT_CUSTOMER_GATE"
+      },
+      {
+        "current": false,
+        "done": false,
+        "label": "Delivered (POD)",
+        "occurred_at": null,
+        "state": "DELIVERED"
+      }
+    ],
+    "next_state": "AT_PLANT_GATE",
+    "next_state_label": "Loaded, waiting at plant gate",
+    "order_id": "ORD-G1",
+    "planned_loading_at": "2026-11-15T22:42:00Z",
+    "pod_document_id": null,
+    "pod_document_name": null,
+    "pod_recipient": null,
+    "pod_uploaded_at": null,
+    "priority": "HIGH",
+    "product_code": "PP-H110",
+    "progress_km": 0.0,
+    "progress_pct": 0,
+    "promised_at": "2026-11-16T11:30:00Z",
+    "quantity_tonnes": 24.0,
+    "route_name": "North Corridor",
+    "state": "LOADING",
+    "state_label": "Loading at Plant X",
+    "total_km": 354.4489584788707,
+    "vehicle_label": "VEH-101 (fictional)"
+  }
+]
